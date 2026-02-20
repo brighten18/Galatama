@@ -62,6 +62,7 @@ public class InteractUIManager : MonoBehaviour
                     if (_Input.Interact)
                     {
                         interactable.InteractObject(); // Panggil method interaksi
+                        Destroy(interactable.gameObject); // Hapus objek setelah berinteraksi
                     }
                 }
                 else

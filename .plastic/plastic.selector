@@ -1,0 +1,4 @@
+repository "Galatama/Galatama@18967493292062@cloud"
+  path "/"
+    br "/main"
+    co "/main"

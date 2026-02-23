@@ -1,88 +1,113 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using UnityEngine.InputSystem.Controls;
 using StarterAssets;
-
 
 public class InteractUIManager : MonoBehaviour
 {   
+    public static InteractUIManager Instance { get; private set; }
+
     [Header("UI Settings")]
-    public GameObject interactionInfoUI;      // Panel UI yang akan ditampilkan
-    private Text interactionText;             // Komponen Text di dalam panel
+    public GameObject interactionInfoUI;
+    private Text interactionText;
 
     [Header("Interaction Settings")]
-    public float maxInteractionDistance = 5f;  // Jarak maksimal interaksi
+    public float maxInteractionDistance = 5f;
+    public bool OnTargeted = false;
+    public RaycastHit lastNonTriggerHit;
+    public bool HasNonTriggerHit => lastNonTriggerHit.collider != null;
 
-    public bool isLookingAtInteractingRange { get; private set; } = false; // Status apakah sedang berinteraksi
-    private InteractableObject currentInteractable; // Objek yang sedang dilihat
-    // InputControler inputController referensi ke InputController
+    private InteractableObject currentInteractable;
     public StarterAssetsInputs _Input;
+
+    private Camera mainCamera;
+
+    private bool isReady = false;
 
     private void Awake()
     {
-        _Input = new StarterAssetsInputs();
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
     }
 
     private void Start()
     {
+        mainCamera = Camera.main;
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
-        _Input = player.GetComponent<StarterAssetsInputs>();
+            _Input = player.GetComponent<StarterAssetsInputs>();
 
-        // Ambil komponen Text dari UI
         if (interactionInfoUI != null)
             interactionText = interactionInfoUI.GetComponent<Text>();
         else
             Debug.LogError("interactionInfoUI belum diassign di Inspector!");
+
+        isReady = mainCamera != null && _Input != null && interactionText != null;
     }
 
     private void Update()
     {
-        // 1. Buat ray dari tengah layar (viewport point 0.5, 0.5)
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        if (!isReady) return;
+
+        Ray ray = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
-            // 2. Lakukan raycast dengan jarak terbatas
-        if (_Input != null && interactionText != null)
+        if (Physics.Raycast(ray, out hit, maxInteractionDistance, Physics.AllLayers, QueryTriggerInteraction.Collide))
         {
-            if (Physics.Raycast(ray, out hit, maxInteractionDistance))
+            // Simpan hit hanya jika collider bukan trigger
+            if (!hit.collider.isTrigger)
             {
-                InteractableObject interactable = hit.transform.GetComponent<InteractableObject>();
-                isLookingAtInteractingRange = true;
-
-                if (interactable != null)
-                {
-                    // Jika objek memiliki komponen InteractableObject
-                    currentInteractable = interactable;
-                    interactionText.text = interactable.GetItemName(); // Tampilkan nama item
-                    interactionInfoUI.SetActive(true);
-
-                    // 3. Cek jika tombol interaksi ditekan
-                    if (_Input.Interact)
-                    {
-                        interactable.InteractObject(); // Panggil method interaksi
-                        Destroy(interactable.gameObject); // Hapus objek setelah berinteraksi
-                    }
-                }
-                else
-                {
-                    // Bukan objek interaksi
-                    ClearInteraction();
-                }
+                lastNonTriggerHit = hit;   // <<-- nilai hit non-trigger disimpan
+                OnTargeted = true;
+                Debug.Log("Kena collide");
             }
             else
             {
-                isLookingAtInteractingRange = false;
-                // Tidak ada yang terkena ray
-                ClearInteraction();
+                // Jika mengenai trigger, reset lastNonTriggerHit (opsional, bisa juga dibiarkan)
+                lastNonTriggerHit = default;
+                OnTargeted = false;
+                Debug.Log("Kena Istrigger");
             }
-        }  
+
+            InteractableObject interactable = hit.transform.GetComponent<InteractableObject>();
+
+            if (interactable != null)
+            {
+                currentInteractable = interactable;
+                interactionText.text = interactable.GetItemName();
+                interactionInfoUI.SetActive(true);
+                // OnTargeted sudah diatur di atas, tidak perlu diubah lagi
+                interactable.SetLookingAt(true);
+            }
+            else
+            {
+                if (currentInteractable != null)
+                    currentInteractable.SetLookingAt(false);
+
+                ClearInteraction();   // Di dalamnya OnTargeted di-set false
+            }
+        }
+        else
+        {
+            // Tidak ada hit sama sekali → reset lastNonTriggerHit
+            lastNonTriggerHit = default;
+
+            if (currentInteractable != null)
+                currentInteractable.SetLookingAt(false);
+
+            ClearInteraction();
+        }
     }
 
     private void ClearInteraction()
     {
         currentInteractable = null;
         interactionInfoUI.SetActive(false);
+        OnTargeted = false;
+        lastNonTriggerHit = default;  
     }
 }

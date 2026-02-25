@@ -1,22 +1,17 @@
 using UnityEngine;
-using StarterAssets;
 
 public class InteractableObject : MonoBehaviour
 {
-    private StarterAssetsInputs _Input;
+    // ✏️ DIHAPUS: private StarterAssetsInputs _Input;
     [SerializeField] private string itemName;
     private bool isBeingLookedAt = false;
 
-    private void Start()
-    {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-            _Input = player.GetComponent<StarterAssetsInputs>();
-    }
+    // ✏️ DIHAPUS: Start() karena tidak ada lagi GetComponent yang diperlukan
 
     void Update()
     {
-        if (isBeingLookedAt && _Input != null && _Input.Interact && InteractUIManager.Instance.OnTargeted)
+        // ✏️ DIUBAH: _Input.Interact diganti PlayerInputManager.Instance.Interact
+        if (isBeingLookedAt && PlayerInputManager.Instance != null && PlayerInputManager.Instance.Interact && InteractUIManager.Instance.OnTargeted)
         {
             InteractObject();
             Destroy(gameObject);

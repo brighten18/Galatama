@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using StarterAssets;
 
 public class InteractUIManager : MonoBehaviour
 {   
@@ -17,10 +16,9 @@ public class InteractUIManager : MonoBehaviour
     public bool HasNonTriggerHit => lastNonTriggerHit.collider != null;
 
     private InteractableObject currentInteractable;
-    public StarterAssetsInputs _Input;
+    // ✏️ DIHAPUS: public StarterAssetsInputs _Input;
 
     private Camera mainCamera;
-
     private bool isReady = false;
 
     private void Awake()
@@ -37,16 +35,15 @@ public class InteractUIManager : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-            _Input = player.GetComponent<StarterAssetsInputs>();
+        // ✏️ DIHAPUS: FindGameObjectWithTag dan GetComponent StarterAssetsInputs
 
         if (interactionInfoUI != null)
             interactionText = interactionInfoUI.GetComponent<Text>();
         else
             Debug.LogError("interactionInfoUI belum diassign di Inspector!");
 
-        isReady = mainCamera != null && _Input != null && interactionText != null;
+        // ✏️ DIUBAH: Hapus _Input != null dari pengecekan isReady
+        isReady = mainCamera != null && interactionText != null;
     }
 
     private void Update()
@@ -58,19 +55,17 @@ public class InteractUIManager : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, maxInteractionDistance, Physics.AllLayers, QueryTriggerInteraction.Collide))
         {
-            // Simpan hit hanya jika collider bukan trigger
             if (!hit.collider.isTrigger)
             {
-                lastNonTriggerHit = hit;   // <<-- nilai hit non-trigger disimpan
+                lastNonTriggerHit = hit;
                 OnTargeted = true;
                 Debug.Log("Kena collide");
             }
             else
             {
-                // Jika mengenai trigger, reset lastNonTriggerHit (opsional, bisa juga dibiarkan)
                 lastNonTriggerHit = default;
                 OnTargeted = false;
-                Debug.Log("Kena Istrigger");
+                Debug.Log("Kena trigger");
             }
 
             InteractableObject interactable = hit.transform.GetComponent<InteractableObject>();
@@ -80,7 +75,6 @@ public class InteractUIManager : MonoBehaviour
                 currentInteractable = interactable;
                 interactionText.text = interactable.GetItemName();
                 interactionInfoUI.SetActive(true);
-                // OnTargeted sudah diatur di atas, tidak perlu diubah lagi
                 interactable.SetLookingAt(true);
             }
             else
@@ -88,12 +82,11 @@ public class InteractUIManager : MonoBehaviour
                 if (currentInteractable != null)
                     currentInteractable.SetLookingAt(false);
 
-                ClearInteraction();   // Di dalamnya OnTargeted di-set false
+                ClearInteraction();
             }
         }
         else
         {
-            // Tidak ada hit sama sekali → reset lastNonTriggerHit
             lastNonTriggerHit = default;
 
             if (currentInteractable != null)
@@ -108,6 +101,6 @@ public class InteractUIManager : MonoBehaviour
         currentInteractable = null;
         interactionInfoUI.SetActive(false);
         OnTargeted = false;
-        lastNonTriggerHit = default;  
+        lastNonTriggerHit = default;
     }
 }

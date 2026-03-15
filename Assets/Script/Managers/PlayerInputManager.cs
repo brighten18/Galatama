@@ -5,6 +5,7 @@ using StarterAssets;
 public class PlayerInputManager : MonoBehaviour
 {
     public static PlayerInputManager Instance { get; private set; }
+    private MonoBehaviour playerController;
 
     private StarterAssetsInputs _input;
 
@@ -37,14 +38,47 @@ public class PlayerInputManager : MonoBehaviour
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
+        {
             _input = player.GetComponent<StarterAssetsInputs>();
-        else
-            Debug.LogError("Player tidak ditemukan! Pastikan Player memiliki tag 'Player'.");
+            // ✏️ DITAMBAH: Cache controller component
+            playerController = player.GetComponent<StarterAssets.ThirdPersonController>();
+        }
+            
     }
 
     public void ResetInventoryInput()
     {
     if (_input != null)
         _input.Inventory = false;
+    }
+
+    public void ResetInteractInput()
+    {
+        if (_input != null)
+            _input.Interact = false;
+    }
+
+    public void SetCursorAndLook(bool locked, bool enableLook)
+    {
+        if (_input != null)
+        {
+            _input.cursorLocked = locked;
+            _input.cursorInputForLook = enableLook;
+            Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !locked;
+        }
+    }
+
+    public void SetPlayerMovement(bool enabled)
+    {
+        if (_input != null)
+        {
+            _input.move = Vector2.zero;
+            _input.jump = false;
+            _input.sprint = false;
+        }
+
+        if (playerController != null)
+            playerController.enabled = enabled;
     }
 }

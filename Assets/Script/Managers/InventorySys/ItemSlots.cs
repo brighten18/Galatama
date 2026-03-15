@@ -15,13 +15,7 @@ public class ItemSlots : MonoBehaviour, IDropHandler
  
             return null;
         }
-    }
- 
- 
- 
- 
- 
- 
+    } 
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log("OnDrop");

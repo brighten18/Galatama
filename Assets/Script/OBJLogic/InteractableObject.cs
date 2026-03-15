@@ -1,4 +1,4 @@
-using UnityEngine;
+ using UnityEngine;
 
 public class InteractableObject : MonoBehaviour
 {
@@ -7,16 +7,22 @@ public class InteractableObject : MonoBehaviour
     private bool isBeingLookedAt = false;
 
     // ✏️ DIHAPUS: Start() karena tidak ada lagi GetComponent yang diperlukan
-
     void Update()
     {
-        // ✏️ DIUBAH: _Input.Interact diganti PlayerInputManager.Instance.Interact
         if (isBeingLookedAt && PlayerInputManager.Instance != null && PlayerInputManager.Instance.Interact && InteractUIManager.Instance.OnTargeted)
-        {
-            InteractObject();
-            Destroy(gameObject);
+        { 
+            if(!InventorySystem.Instance.CheckFull())
+            {            
+                PlayerInputManager.Instance.ResetInteractInput();
+                InteractObject();
+                Destroy(gameObject);
+                InventorySystem.Instance.AddItemToInventory(itemName);
+            }else
+            {
+                Debug.Log("Inventory penuh, tidak bisa mengambil " + itemName);
+            }
         }
-    }
+    }    
 
     public void SetLookingAt(bool value)
     {

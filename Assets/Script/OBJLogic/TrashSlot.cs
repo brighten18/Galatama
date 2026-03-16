@@ -3,8 +3,6 @@ using UnityEngine.EventSystems;
 
 public class TrashSlot : MonoBehaviour, IDropHandler
 {
-    // ✏️ DIHAPUS: trash_closed, trash_opened, imageComponent, OnPointerEnter, OnPointerExit
-
     GameObject draggedItem
     {
         get { return DragDrop.itemBeingDragged; }
@@ -14,7 +12,9 @@ public class TrashSlot : MonoBehaviour, IDropHandler
     {
         if (draggedItem != null && draggedItem.GetComponent<InventoryItemLogic>().isTrashable == true)
         {
-            DestroyImmediate(draggedItem.gameObject);
+            // ✏️ DIPERBAIKI: Ganti DestroyImmediate dengan Destroy
+            //               DestroyImmediate saat event berjalan menyebabkan error di OnEndDrag
+            Destroy(draggedItem.gameObject);
             InventorySystem.Instance.ReCalculeList();
         }
     }

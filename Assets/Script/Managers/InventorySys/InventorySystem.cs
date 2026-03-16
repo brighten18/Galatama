@@ -45,14 +45,24 @@ public class InventorySystem : MonoBehaviour
         
     public void CountSlotList()
     {
+        slotList.Clear();
         foreach (Transform child in inventoryScreenUI.transform)
         {
             if (child.CompareTag("Slot"))
-            {
                 slotList.Add(child.gameObject);
-            }
         }
+
+        // Fallback: jika slotList masih kosong, cari semua slot di scene
+        if (slotList.Count == 0)
+        {
+            Debug.LogWarning("[Inventory] Slot tidak ditemukan via inventoryScreenUI, mencari manual...");
+            GameObject[] allSlots = GameObject.FindGameObjectsWithTag("Slot");
+            slotList.AddRange(allSlots);
+        }
+
+        Debug.Log($"[Inventory] slotList populated: {slotList.Count} slots");
     }
+
 
     void Update()
     {
@@ -84,23 +94,29 @@ public class InventorySystem : MonoBehaviour
 
     public void AddItemToInventory(string ItemName)
     {
-        Debug.Log("Penuh");
-        isFull = true;
         whatToEquipSlot = FindNewNextSlot();
-        ObjToAdd = Instantiate(Resources.Load<GameObject>(ItemName), whatToEquipSlot.transform.position,whatToEquipSlot.transform.rotation);
+        if (whatToEquipSlot == null)
+        {
+            Debug.LogError("[Inventory] Tidak bisa menambah item — tidak ada slot valid!");
+            return;
+        }
+
+        ObjToAdd = Instantiate(Resources.Load<GameObject>(ItemName),
+        whatToEquipSlot.transform.position, whatToEquipSlot.transform.rotation);
         ObjToAdd.transform.SetParent(whatToEquipSlot.transform);
         itemList.Add(ItemName);
+        CheckFull();
     }
     private GameObject FindNewNextSlot()
     {
         foreach (GameObject slot in slotList)
         {
             if (slot.transform.childCount == 0)
-            {
                 return slot;
-            }
         }
-        return gameObject; // Return a default value if no empty slot is found
+
+        Debug.LogError("[Inventory] Tidak ada slot kosong ditemukan! slotList.Count: " + slotList.Count);
+        return null; // return null instead of gameObject
     }
 
     public bool CheckFull()

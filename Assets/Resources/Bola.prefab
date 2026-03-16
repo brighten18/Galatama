@@ -118,7 +118,3 @@ MonoBehaviour:
   thisName: Bola
   thisDescription: tikutikutik pala botak
   thisFunctionality: hiburan
-  isConsumable: 0
-  healthEffect: 0
-  caloriesEffect: 0
-  hydrationEffect: 0

@@ -20,7 +20,6 @@ public class ItemSlots : MonoBehaviour, IDropHandler
     {
         Debug.Log("OnDrop");
  
-        //if there is not item already then set our item.
         if (!Item)
         {
  

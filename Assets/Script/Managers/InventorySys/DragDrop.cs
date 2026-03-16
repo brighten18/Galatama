@@ -1,70 +1,74 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class DragDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    // [SerializeField] private Canvas canvas;
+    private Canvas canvas;
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
- 
+
     public static GameObject itemBeingDragged;
     Vector3 startPosition;
     Transform startParent;
- 
- 
- 
+
     private void Awake()
     {
-        
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
- 
     }
- 
- 
+
+    private void Start()
+    {
+        // Cache canvas saat item masih di dalam hierarki Canvas
+        canvas = GetComponentInParent<Canvas>();
+
+        if (canvas == null)
+            Debug.LogError("Canvas tidak ditemukan! Pastikan item berada di dalam Canvas.");
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
- 
-        Debug.Log("OnBeginDrag");
-        canvasGroup.alpha = .6f;
-        //So the ray cast will ignore the item itself.
-        canvasGroup.blocksRaycasts = false;
+     if (canvas == null)
+        canvas = GetComponentInParent<Canvas>();
+
+    if (canvas == null)
+    {
+        Debug.LogError("[DragDrop] Canvas tidak ditemukan saat drag!");
+        return;
+    }
+        itemBeingDragged = gameObject;
         startPosition = transform.position;
         startParent = transform.parent;
-        transform.SetParent(transform.root);
-        itemBeingDragged = gameObject;
- 
+
+        // DIPERBAIKI: SetParent ke canvas.transform bukan transform.root
+        // agar item tetap di dalam hierarki Canvas dan masih ter-render
+        transform.SetParent(canvas.transform);
+
+        canvasGroup.alpha = .6f;
+        canvasGroup.blocksRaycasts = false;
     }
- 
+
     public void OnDrag(PointerEventData eventData)
     {
-        //So the item will move with our mouse (at same speed)  and so it will be consistant if the canvas has a different scale (other then 1);
-        rectTransform.anchoredPosition += eventData.delta;
- 
+        if (canvas == null) return;
+
+        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
- 
- 
- 
+
     public void OnEndDrag(PointerEventData eventData)
     {
- 
         itemBeingDragged = null;
- 
-        if (transform.parent == startParent || transform.parent == transform.root)
+        canvasGroup.alpha = 1f;
+        canvasGroup.blocksRaycasts = true;
+
+        // Jika item tidak di-drop ke slot manapun, kembalikan ke posisi semula
+        if (transform.parent == canvas.transform)
         {
             transform.position = startPosition;
             transform.SetParent(startParent);
- 
         }
- 
+
         Debug.Log("OnEndDrag");
-        canvasGroup.alpha = 1f;
-        canvasGroup.blocksRaycasts = true;
     }
- 
- 
- 
 }

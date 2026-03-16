@@ -2991,6 +2991,8 @@ MonoBehaviour:
   ItemInfoUI: {fileID: 1522556531}
   isFull: 0
   isOpen: 0
+  isEquippable: 0
+  isEquiped: 0
 --- !u!4 &845938149
 Transform:
   m_ObjectHideFlags: 0

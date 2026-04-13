@@ -12,11 +12,13 @@ public class DragDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     Vector3 startPosition;
     Transform startParent;
 
-    private void Awake()
-    {
-        rectTransform = GetComponent<RectTransform>();
-        canvasGroup = GetComponent<CanvasGroup>();
-    }
+private void Awake()
+{
+    rectTransform = GetComponent<RectTransform>();
+    canvasGroup = GetComponent<CanvasGroup>();
+    if (canvasGroup == null)
+        canvasGroup = gameObject.AddComponent<CanvasGroup>();
+}
 
     private void Start()
     {
@@ -28,26 +30,24 @@ public class DragDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     }
 
     public void OnBeginDrag(PointerEventData eventData)
-    {
-     if (canvas == null)
+{
+    if (canvas == null)
         canvas = GetComponentInParent<Canvas>();
 
+    // ✏️ DITAMBAH: Debug jika canvas masih null
     if (canvas == null)
     {
-        Debug.LogError("[DragDrop] Canvas tidak ditemukan saat drag!");
+        Debug.LogError("[DragDrop] Canvas null saat OnBeginDrag pada: " + gameObject.name);
         return;
     }
-        itemBeingDragged = gameObject;
-        startPosition = transform.position;
-        startParent = transform.parent;
 
-        // DIPERBAIKI: SetParent ke canvas.transform bukan transform.root
-        // agar item tetap di dalam hierarki Canvas dan masih ter-render
-        transform.SetParent(canvas.transform);
-
-        canvasGroup.alpha = .6f;
-        canvasGroup.blocksRaycasts = false;
-    }
+    itemBeingDragged = gameObject;
+    startPosition = transform.position;
+    startParent = transform.parent;
+    transform.SetParent(canvas.transform);
+    canvasGroup.alpha = .6f;
+    canvasGroup.blocksRaycasts = false;
+}
 
     public void OnDrag(PointerEventData eventData)
     {

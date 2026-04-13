@@ -14,6 +14,12 @@ namespace StarterAssets
 		public bool sprint;
 		public bool Interact;
 		public bool Inventory;
+		public bool QuickSlot1;
+		public bool QuickSlot2;
+		public bool QuickSlot3;
+		public bool QuickSlot4;
+		public bool QuickSlot5;
+		public bool QuickSlot6;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -55,9 +61,37 @@ namespace StarterAssets
 		{
 			InventoryInput(value.isPressed);
 		}
+
+		public void OnQuickSlot1(InputValue value)
+		{
+			QuickSlot1 = value.isPressed;
+		}
+
+		public void OnQuickSlot2(InputValue value)
+		{
+			QuickSlot2 = value.isPressed;
+		}
+
+		public void OnQuickSlot3(InputValue value)
+		{
+			QuickSlot3 = value.isPressed;
+		}	
+
+		public void OnQuickSlot4(InputValue value)
+		{
+			QuickSlot4 = value.isPressed;
+		}
+
+		public void OnQuickSlot5(InputValue value)
+		{
+			QuickSlot5 = value.isPressed;
+		}
+
+		public void OnQuickSlot6(InputValue value)
+		{
+			QuickSlot6 = value.isPressed;
+		}
 #endif
-
-
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
@@ -86,6 +120,36 @@ namespace StarterAssets
 		public void InventoryInput(bool newInventoryState)
 		{
 			Inventory = newInventoryState;
+		}
+
+		public void OnQuickSlot1Input(bool newQuickSlot1State)
+		{
+			QuickSlot1 = newQuickSlot1State;
+		}
+
+		public void OnQuickSlot2Input(bool newQuickSlot2State)
+		{
+			QuickSlot2 = newQuickSlot2State;
+		}
+
+		public void OnQuickSlot3Input(bool newQuickSlot3State)
+		{
+			QuickSlot3 = newQuickSlot3State;
+		}
+
+		public void OnQuickSlot4Input(bool newQuickSlot4State)
+		{
+			QuickSlot4 = newQuickSlot4State;
+		}
+
+		public void OnQuickSlot5Input(bool newQuickSlot5State)
+		{
+			QuickSlot5 = newQuickSlot5State;
+		}
+
+		public void OnQuickSlot6Input(bool newQuickSlot6State)
+		{
+			QuickSlot6 = newQuickSlot6State;
 		}
 
 		private void OnApplicationFocus(bool hasFocus)

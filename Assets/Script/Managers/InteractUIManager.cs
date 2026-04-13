@@ -59,7 +59,7 @@ public class InteractUIManager : MonoBehaviour
             {
                 lastNonTriggerHit = hit;
                 OnTargeted = true;
-                Debug.Log("Kena collide");
+
             }
             else
             {

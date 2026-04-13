@@ -17,6 +17,14 @@ public class PlayerInputManager : MonoBehaviour
     public bool Interact => _input != null && _input.Interact;
     public bool Inventory => _input != null && _input.Inventory;
 
+    // Quick Slot Inputs
+    public bool QuickSlot1 => _input != null && _input.QuickSlot1;
+    public bool QuickSlot2 => _input != null && _input.QuickSlot2;
+    public bool QuickSlot3 => _input != null && _input.QuickSlot3;
+    public bool QuickSlot4 => _input != null && _input.QuickSlot4;
+    public bool QuickSlot5 => _input != null && _input.QuickSlot5;
+    public bool QuickSlot6 => _input != null && _input.QuickSlot6;
+
     // Movement Settings
     public bool AnalogMovement => _input != null && _input.analogMovement;
 
@@ -80,5 +88,44 @@ public class PlayerInputManager : MonoBehaviour
 
         if (playerController != null)
             playerController.enabled = enabled;
+    }
+    public int GetPressedQuickSlot()
+    {
+        if (QuickSlot1) return 1;
+        if (QuickSlot2) return 2;
+        if (QuickSlot3) return 3;
+        if (QuickSlot4) return 4;
+        if (QuickSlot5) return 5;
+        if (QuickSlot6) return 6;
+        return 0;
+    }
+
+        public void ResetQuickSlotInput(int slotIndex)
+    {
+        if (_input == null) return;
+
+        switch (slotIndex)
+        {
+            case 1: _input.QuickSlot1 = false; break;
+            case 2: _input.QuickSlot2 = false; break;
+            case 3: _input.QuickSlot3 = false; break;
+            case 4: _input.QuickSlot4 = false; break;
+            case 5: _input.QuickSlot5 = false; break;
+            case 6: _input.QuickSlot6 = false; break;
+            default: Debug.LogWarning("QuickSlot index tidak valid: " + slotIndex); break;
+        }
+    }
+
+    // ✏️ DITAMBAH: Reset semua QuickSlot sekaligus
+    public void ResetAllQuickSlotInputs()
+    {
+        if (_input == null) return;
+
+        _input.QuickSlot1 = false;
+        _input.QuickSlot2 = false;
+        _input.QuickSlot3 = false;
+        _input.QuickSlot4 = false;
+        _input.QuickSlot5 = false;
+        _input.QuickSlot6 = false;
     }
 }

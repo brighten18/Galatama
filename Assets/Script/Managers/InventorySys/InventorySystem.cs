@@ -17,9 +17,6 @@ public class InventorySystem : MonoBehaviour
     public bool isFull;
     public bool isOpen;
     private bool inventoryPressedLastFrame = false;
-    public bool isEquippable;
-    private GameObject itemPenddingEquip;
-    public bool isEquiped;
 
     private void Awake()
     {

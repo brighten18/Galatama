@@ -11,18 +11,19 @@ public class InteractableObject : MonoBehaviour
     {
         if (isBeingLookedAt && PlayerInputManager.Instance != null && PlayerInputManager.Instance.Interact && InteractUIManager.Instance.OnTargeted)
         { 
-            if(!InventorySystem.Instance.CheckFull())
+            if (!InventorySystem.Instance.CheckFull())
             {            
                 PlayerInputManager.Instance.ResetInteractInput();
+                InventorySystem.Instance.AddItemToInventory(itemName);
                 InteractObject();
                 Destroy(gameObject);
-                InventorySystem.Instance.AddItemToInventory(itemName);
-            }else
+            }
+            else
             {
                 Debug.Log("Inventory penuh, tidak bisa mengambil " + itemName);
             }
         }
-    }    
+    }   
 
     public void SetLookingAt(bool value)
     {

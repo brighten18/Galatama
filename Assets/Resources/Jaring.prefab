@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5758282267561667560}
   - component: {fileID: -780906972128198966}
   m_Layer: 5
-  m_Name: Bola
+  m_Name: Jaring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: baec72a25b0b77b45bacd69f30b0bbe1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: dd1268167e645594fb58ada66b20fefa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -114,10 +114,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fb6fa21f4e159d4eb0f3e1309de1f68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemLogic
-  isTrashable: 1
-  thisName: Bola
-  thisDescription: tikutikutik pala botak
-  thisFunctionality: hiburan
+  isTrashable: 0
+  thisName: Jaring
+  thisDescription: Nangkep Ikan
+  thisFunctionality: Tangkep Ikan dengan ramah lingkungan
   isEquippable: 1
   IsNowInsideQcSlot: 1
   isSelected: 0

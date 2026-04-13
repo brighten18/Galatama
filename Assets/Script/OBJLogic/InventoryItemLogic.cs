@@ -15,6 +15,13 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
     private Text itemInfoUI_itemFunctionality;
  
     public string thisName, thisDescription, thisFunctionality;
+
+    //Quick select//
+    public bool isEquippable;
+    private GameObject IsPenddingEquipped;
+    public bool IsNowInsideQcSlot;
+    public bool isSelected;
+
  
     private void Start()
     {
@@ -23,7 +30,18 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
         itemInfoUI_itemDescription = itemInfoUI.transform.Find("ItemDescription").GetComponent<Text>();
         itemInfoUI_itemFunctionality = itemInfoUI.transform.Find("ItemFunc").GetComponent<Text>();
     }
- 
+
+    void Update()
+    {
+        if (isSelected)
+        {
+            gameObject.GetComponent<DragDrop>().enabled = false;
+        }else
+        {
+            gameObject.GetComponent<DragDrop>().enabled = true;
+        }
+    }
+
     // Triggered when the mouse enters into the area of the item that has this script.
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -45,6 +63,12 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
         //Right Mouse Button Click on
         if (eventData.button == PointerEventData.InputButton.Right)
         {
+            if (isEquippable && !IsNowInsideQcSlot && EquipSystem.Instance.CheckIsfFull()== false)
+            {
+                EquipSystem.Instance.AddToQuickSlots(gameObject);
+                IsNowInsideQcSlot = true;
+                
+            }
 
         }
     }

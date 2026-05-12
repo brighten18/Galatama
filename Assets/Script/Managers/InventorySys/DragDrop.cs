@@ -12,42 +12,49 @@ public class DragDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     Vector3 startPosition;
     Transform startParent;
 
-private void Awake()
-{
-    rectTransform = GetComponent<RectTransform>();
-    canvasGroup = GetComponent<CanvasGroup>();
-    if (canvasGroup == null)
-        canvasGroup = gameObject.AddComponent<CanvasGroup>();
-}
+    private void Awake()
+    {
+        rectTransform = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+    }
 
     private void Start()
     {
-        // Cache canvas saat item masih di dalam hierarki Canvas
         canvas = GetComponentInParent<Canvas>();
 
+        // FIX: Jika tidak ada Canvas di parent hierarchy,
+        // komponen ini tidak relevan di konteks ini (misal saat di-clone ke ToolsHolder).
+        // Disable saja diri sendiri daripada error.
         if (canvas == null)
-            Debug.LogError("Canvas tidak ditemukan! Pastikan item berada di dalam Canvas.");
+        {
+            Debug.LogWarning($"[DragDrop] Canvas tidak ditemukan pada '{gameObject.name}'. " +
+                             $"DragDrop di-disable karena object berada di luar hierarki Canvas.");
+            enabled = false;
+            return;
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
-{
-    if (canvas == null)
-        canvas = GetComponentInParent<Canvas>();
-
-    // ✏️ DITAMBAH: Debug jika canvas masih null
-    if (canvas == null)
     {
-        Debug.LogError("[DragDrop] Canvas null saat OnBeginDrag pada: " + gameObject.name);
-        return;
-    }
+        // FIX: Coba cari canvas sekali lagi jika null (fallback)
+        if (canvas == null)
+            canvas = GetComponentInParent<Canvas>();
 
-    itemBeingDragged = gameObject;
-    startPosition = transform.position;
-    startParent = transform.parent;
-    transform.SetParent(canvas.transform);
-    canvasGroup.alpha = .6f;
-    canvasGroup.blocksRaycasts = false;
-}
+        if (canvas == null)
+        {
+            Debug.LogWarning("[DragDrop] OnBeginDrag dibatalkan, Canvas tidak ditemukan pada: " + gameObject.name);
+            return;
+        }
+
+        itemBeingDragged = gameObject;
+        startPosition = transform.position;
+        startParent = transform.parent;
+        transform.SetParent(canvas.transform);
+        canvasGroup.alpha = .6f;
+        canvasGroup.blocksRaycasts = false;
+    }
 
     public void OnDrag(PointerEventData eventData)
     {
@@ -62,8 +69,7 @@ private void Awake()
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
 
-        // Jika item tidak di-drop ke slot manapun, kembalikan ke posisi semula
-        if (transform.parent == canvas.transform)
+        if (canvas != null && transform.parent == canvas.transform)
         {
             transform.position = startPosition;
             transform.SetParent(startParent);

@@ -16,6 +16,7 @@ public class PlayerInputManager : MonoBehaviour
     public bool Sprint => _input != null && _input.sprint;
     public bool Interact => _input != null && _input.Interact;
     public bool Inventory => _input != null && _input.Inventory;
+    public bool InteractOBJ => _input != null && _input.InteractOBJ;
 
     // Quick Slot Inputs
     public bool QuickSlot1 => _input != null && _input.QuickSlot1;
@@ -48,7 +49,6 @@ public class PlayerInputManager : MonoBehaviour
         if (player != null)
         {
             _input = player.GetComponent<StarterAssetsInputs>();
-            // ✏️ DITAMBAH: Cache controller component
             playerController = player.GetComponent<StarterAssets.ThirdPersonController>();
         }
             
@@ -57,13 +57,30 @@ public class PlayerInputManager : MonoBehaviour
     public void ResetInventoryInput()
     {
     if (_input != null)
-        _input.Inventory = false;
+        {
+            _input.Inventory = false;
+
+            Debug.Log("Inventory input reset via PlayerInputManager");
+        }
+
     }
 
     public void ResetInteractInput()
     {
         if (_input != null)
+        {
             _input.Interact = false;
+            Debug.Log("Interact input reset via PlayerInputManager");
+        }
+    }
+
+    public void ResetInteractOBJInput()
+    {
+        if (_input != null)
+        {
+            _input.InteractOBJ = false;
+            Debug.Log("InteractOBJ input reset via PlayerInputManager");
+        }
     }
 
     public void SetCursorAndLook(bool locked, bool enableLook)

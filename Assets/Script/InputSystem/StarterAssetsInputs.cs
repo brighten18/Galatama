@@ -13,6 +13,7 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool Interact;
+		public bool InteractOBJ;
 		public bool Inventory;
 		public bool QuickSlot1;
 		public bool QuickSlot2;
@@ -20,6 +21,7 @@ namespace StarterAssets
 		public bool QuickSlot4;
 		public bool QuickSlot5;
 		public bool QuickSlot6;
+	
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -57,10 +59,17 @@ namespace StarterAssets
 			InteractInput(value.isPressed);
 		}
 
+		public void OnInteractOBJ(InputValue value)
+		{
+			InteractOBJ = value.isPressed;
+		}
+
 		public void OnInventory(InputValue value)
 		{
 			InventoryInput(value.isPressed);
 		}
+
+		// Quick Slot Input Handlers!!!!!!!
 
 		public void OnQuickSlot1(InputValue value)
 		{
@@ -91,6 +100,8 @@ namespace StarterAssets
 		{
 			QuickSlot6 = value.isPressed;
 		}
+
+		// END OF INPUT SYSTEM HANDLERS
 #endif
 		public void MoveInput(Vector2 newMoveDirection)
 		{
@@ -122,6 +133,13 @@ namespace StarterAssets
 			Inventory = newInventoryState;
 		}
 
+		public void InteractOBJInput(bool newInteractOBJState)
+		{
+			InteractOBJ = newInteractOBJState;
+		}
+
+		// Quick Slot Input Handlers!!!!!!!
+
 		public void OnQuickSlot1Input(bool newQuickSlot1State)
 		{
 			QuickSlot1 = newQuickSlot1State;
@@ -151,6 +169,7 @@ namespace StarterAssets
 		{
 			QuickSlot6 = newQuickSlot6State;
 		}
+		// END OF INPUT SYSTEM HANDLERS
 
 		private void OnApplicationFocus(bool hasFocus)
 		{

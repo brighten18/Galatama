@@ -147,15 +147,15 @@ public class InventorySystem : MonoBehaviour
         {
             if (slot.transform.childCount > 0)
             {
-                string itemName = slot.transform.GetChild(0).name;
-                string cleaned = itemName.Replace("(Clone)", "").Trim();
+                string rawName = slot.transform.GetChild(0).name;
+
+                // FIX: Gunakan utility method
+                string cleaned = ItemNameUtility.CleanName(rawName);
                 itemList.Add(cleaned);
             }
         }
 
-        // Update status isFull setelah recalculate
         CheckFull();
-
         Debug.Log("Item list setelah recalculate: " + itemList.Count);
     }
 }

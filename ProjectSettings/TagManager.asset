@@ -8,6 +8,8 @@ TagManager:
   - Slot
   - QuickSlot
   - Fish
+  - OceanZone
+  - AquariumZone
   layers:
   - Default
   - TransparentFX
@@ -15,8 +17,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Post
+  - FishBoundary
   - 
   - 
   - 

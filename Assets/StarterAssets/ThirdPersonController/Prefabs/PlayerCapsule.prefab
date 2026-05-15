@@ -149,6 +149,7 @@ Transform:
   m_Children:
   - {fileID: 6074239116653777070}
   - {fileID: 29811324}
+  - {fileID: 8359751752227871165}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &1925873226565265912
@@ -197,7 +198,7 @@ MonoBehaviour:
   FootstepAudioVolume: 0.5
   JumpHeight: 1.2
   Gravity: -15
-  JumpTimeout: 0.5
+  JumpTimeout: 0.2
   FallTimeout: 0.15
   Grounded: 1
   GroundedOffset: -0.14
@@ -341,6 +342,15 @@ MonoBehaviour:
   look: {x: 0, y: 0}
   jump: 0
   sprint: 0
+  Interact: 0
+  InteractOBJ: 0
+  Inventory: 0
+  QuickSlot1: 0
+  QuickSlot2: 0
+  QuickSlot3: 0
+  QuickSlot4: 0
+  QuickSlot5: 0
+  QuickSlot6: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
@@ -370,6 +380,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1.375, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1293029876712600392}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6917060810644750951
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8359751752227871165}
+  m_Layer: 8
+  m_Name: Tool_holder
+  m_TagString: Untagged
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8359751752227871165
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6917060810644750951}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.475, y: 0.936, z: 0.096}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

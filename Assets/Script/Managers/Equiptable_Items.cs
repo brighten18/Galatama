@@ -1,26 +1,68 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(SphereCollider))]
 public class Equiptable_Items : MonoBehaviour
 {
     private Animator animator;
+    private SphereCollider sphereCollider;
+
+    private bool isUsingItem = false;
+
+    [Header("Delay / Cooldown")]
+    public float interactCooldown = 2f;
 
     void Start()
     {
         animator = GetComponent<Animator>();
+        sphereCollider = GetComponent<SphereCollider>();
+
+        sphereCollider.enabled = false;
     }
 
     void Update()
     {
-        // cek item ini sedang diequip
-        if (!IsEquipped()) return;
+        if (!IsEquipped())
+            return;
 
-        if (PlayerInputManager.Instance.InteractOBJ && !InventorySystem.Instance.isOpen)
+        // Jika masih cooldown / sedang animasi
+        if (isUsingItem)
+            return;
+
+        if (PlayerInputManager.Instance.InteractOBJ &&
+            !InventorySystem.Instance.isOpen)
         {
-            animator.SetTrigger("Tangkap");
-            // DIPERBAIKI: reset hanya saat input diterima
+            StartCoroutine(UseItemCoroutine());
+
             PlayerInputManager.Instance.ResetInteractOBJInput();
         }
+    }
+
+    IEnumerator UseItemCoroutine()
+    {
+        isUsingItem = true;
+
+        animator.SetTrigger("Tangkap");
+
+        EnableSphereCollider();
+
+        // Delay cooldown
+        yield return new WaitForSeconds(interactCooldown);
+
+        DisableSphereCollider();
+
+        isUsingItem = false;
+    }
+
+    public void EnableSphereCollider()
+    {
+        sphereCollider.enabled = true;
+    }
+
+    public void DisableSphereCollider()
+    {
+        sphereCollider.enabled = false;
     }
 
     private bool IsEquipped()

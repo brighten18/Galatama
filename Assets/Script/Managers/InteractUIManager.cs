@@ -65,7 +65,6 @@ public class InteractUIManager : MonoBehaviour
             {
                 lastNonTriggerHit = default;
                 OnTargeted = false;
-                Debug.Log("Kena trigger");
             }
 
             InteractableObject interactable = hit.transform.GetComponent<InteractableObject>();

@@ -22,15 +22,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f759c76cd8972d94fb93b40cb5d62f60, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.622
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f759c76cd8972d94fb93b40cb5d62f60, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.936
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f759c76cd8972d94fb93b40cb5d62f60, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.804
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f759c76cd8972d94fb93b40cb5d62f60, type: 3}
       propertyPath: m_LocalRotation.w
@@ -106,7 +106,7 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -164,7 +164,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b201dd538a5b51f48bb340b7f6a665cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Equiptable_Items
-  animator: {fileID: 0}
 --- !u!135 &5710760277066378543
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -175,7 +174,7 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0

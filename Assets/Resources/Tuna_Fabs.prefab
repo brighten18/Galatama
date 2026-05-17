@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: dbdef292ec79bbd4d89f21e9afba5883, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.6
+      value: 5.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: dbdef292ec79bbd4d89f21e9afba5883, type: 3}
       propertyPath: m_LocalPosition.y
@@ -63,6 +63,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: dbdef292ec79bbd4d89f21e9afba5883, type: 3}
       propertyPath: m_Name
       value: Tuna_Fabs
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: dbdef292ec79bbd4d89f21e9afba5883, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: dbdef292ec79bbd4d89f21e9afba5883, type: 3}
       propertyPath: m_TagString

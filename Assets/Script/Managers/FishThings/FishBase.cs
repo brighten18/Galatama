@@ -22,9 +22,17 @@ public class FishBase : MonoBehaviour
 
         InventorySystem.Instance.AddItemToInventory(fishData.ItemName);
         Debug.Log("[FishBase] Ikan tertangkap: " + fishData.ItemName);
+
+        OnCaughtBehavior();
         Destroy(gameObject);
     }
 
-    // method kosong untuk AI nanti, override di subclass
-    public virtual void OnCaughtBehavior() { }
+    public virtual void OnCaughtBehavior()
+    {
+        FishBrain fishBrain = GetComponent<FishBrain>();
+        if (fishBrain != null)
+        {
+            fishBrain.OnCaptured(false);
+        }
+    }
 }

@@ -3616,10 +3616,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlueTang_Fabs
       objectReference: {fileID: 0}
-    - target: {fileID: 7299444679652092792, guid: c380eca042cf96f42a3afb66b68afcf4, type: 3}
-      propertyPath: m_IncludeLayers.m_Bits
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7747323268095244665, guid: c380eca042cf96f42a3afb66b68afcf4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.61
@@ -4709,14 +4705,16 @@ MonoBehaviour:
   fishPrefabs:
   - {fileID: 1704875253}
   spawnZone: {fileID: 1784833552}
-  maxPopulation: 10
-  initialSpawnCount: 3
+  parentSpawnedFish: 1
+  spawnPadding: 2
+  maxPopulation: 50
+  initialSpawnCount: 35
   autoRespawn: 1
   respawnDelay: 1
   spawnInWaves: 1
-  fishPerWave: 3
+  fishPerWave: 10
   delayBetweenWaves: 2
-  useSpeciesWeights: 1
+  useSpeciesWeights: 0
   speciesWeights:
   - 5
 --- !u!1001 &1374161895
@@ -4883,7 +4881,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4.9669, y: 4.9669, z: 4.9669}
+  m_LocalScale: {x: 8.980472, y: 8.980472, z: 8.980472}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -5755,7 +5753,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 9, y: 1, z: 9}
+  m_Size: {x: 30, y: 1, z: 30}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1784833549
 MeshRenderer:
@@ -5822,7 +5820,7 @@ Transform:
   m_GameObject: {fileID: 1784833546}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.89, y: 0.8, z: 2.22003}
+  m_LocalPosition: {x: 21.9, y: 0.8, z: 17.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5842,7 +5840,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishZone
   zoneType: 0
-  showDebugLog: 1
+  showDebugLog: 0
 --- !u!1 &1786232142
 GameObject:
   m_ObjectHideFlags: 0

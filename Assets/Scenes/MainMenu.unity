@@ -312,7 +312,7 @@ MonoBehaviour:
   - {fileID: 3093266493861896466, guid: 9f0b6a8a0e82a58439dfd7e7e81797bf, type: 3}
   fishCount: 50
   spawnOnStart: 1
-  spawnAreaCenter: {x: 18, y: 3.5, z: 11}
+  spawnAreaCenter: {x: 21, y: 3.5, z: 11}
   spawnAreaSize: {x: 25, y: 2, z: 21}
   minScale: 3
   maxScale: 5

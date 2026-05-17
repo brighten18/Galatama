@@ -1,78 +1,125 @@
-// Scripts/Fish/Zones/FishZone.cs
+// Scripts/Fish/FishZone.cs - DEBUG VERSION
 
 using UnityEngine;
-using System.Collections.Generic;
 
-[RequireComponent(typeof(Collider))]
-public abstract class FishZone : MonoBehaviour
+[RequireComponent(typeof(BoxCollider))]
+public class FishZone : MonoBehaviour
 {
-    [Header("Zone Configuration")]
-    [SerializeField] protected FishEnvironment zoneType;
+    [Header("Zone Settings")]
+    [SerializeField] private ZoneType zoneType = ZoneType.Ocean;
     
-    protected Bounds zoneBounds;
-    protected List<FishBrain> fishInZone = new List<FishBrain>();
-    protected Collider zoneCollider;
+    [Header("Debug")]
+    [SerializeField] private bool showDebugLog = true; // ✏️ DITAMBAH
     
-    protected virtual void Awake()
+    private BoxCollider zoneCollider;
+    private Bounds zoneBounds;
+    
+    void Awake()
     {
-        zoneCollider = GetComponent<Collider>();
+        zoneCollider = GetComponent<BoxCollider>();
         
         if (!zoneCollider.isTrigger)
         {
-            Debug.LogWarning($"[FishZone] Collider pada {gameObject.name} harus IsTrigger = true");
+            Debug.LogError($"[FishZone] BoxCollider pada {gameObject.name} HARUS IsTrigger = true!");
             zoneCollider.isTrigger = true;
         }
         
-        zoneBounds = zoneCollider.bounds;
-    }
-    
-    protected virtual void OnTriggerEnter(Collider other)
-    {
-        FishBrain fish = other.GetComponent<FishBrain>();
-        if (fish != null && !fishInZone.Contains(fish))
+        // ✏️ DITAMBAH: Update bounds setiap kali (bukan hanya Awake)
+        UpdateBounds();
+        
+        if (showDebugLog)
         {
-            OnFishEnterZone(fish);
+            Debug.Log($"[FishZone] {zoneType} zone initialized. Bounds: {zoneBounds}");
         }
     }
     
-    protected virtual void OnTriggerExit(Collider other)
+    void Start()
     {
-        FishBrain fish = other.GetComponent<FishBrain>();
-        if (fish != null && fishInZone.Contains(fish))
+        // ✏️ DITAMBAH: Update bounds lagi di Start (setelah transform final)
+        UpdateBounds();
+    }
+    
+    // ✏️ DITAMBAH: Method untuk update bounds
+    private void UpdateBounds()
+    {
+        zoneBounds = new Bounds(
+            transform.position + zoneCollider.center,
+            Vector3.Scale(zoneCollider.size, transform.lossyScale)
+        );
+    }
+    
+    void OnTriggerEnter(Collider other)
+    {
+        // ✏️ DITAMBAH: Debug log untuk semua trigger enter
+        if (showDebugLog)
         {
-            OnFishExitZone(fish);
+            Debug.Log($"[FishZone] OnTriggerEnter detected: {other.gameObject.name}");
+        }
+        
+        FishBrain fish = other.GetComponent<FishBrain>();
+        if (fish != null)
+        {
+            fish.SetBoundary(zoneBounds);
+            
+            if (showDebugLog)
+            {
+                Debug.Log($"[FishZone] Fish '{other.gameObject.name}' entered {zoneType} zone. Boundary set: {zoneBounds.center}, size: {zoneBounds.size}");
+            }
+        }
+        else
+        {
+            if (showDebugLog)
+            {
+                Debug.LogWarning($"[FishZone] Object '{other.gameObject.name}' entered zone but has no FishBrain component");
+            }
         }
     }
     
-    protected abstract void OnFishEnterZone(FishBrain fish);
-    protected abstract void OnFishExitZone(FishBrain fish);
-    
-    public Bounds GetBounds()
+    void OnTriggerExit(Collider other)
     {
-        return zoneBounds;
+        if (showDebugLog)
+        {
+            Debug.LogWarning($"[FishZone] Fish '{other.gameObject.name}' EXITED zone! (This should not happen)");
+        }
     }
     
-    public bool IsPointInZone(Vector3 point)
-    {
-        return zoneBounds.Contains(point);
-    }
+    public Bounds GetBounds() => zoneBounds;
     
     public Vector3 GetRandomPointInZone()
     {
         return new Vector3(
-            Random.Range(zoneBounds.min.x, zoneBounds.max.x),
-            Random.Range(zoneBounds.min.y, zoneBounds.max.y),
-            Random.Range(zoneBounds.min.z, zoneBounds.max.z)
+            Random.Range(zoneBounds.min.x + 2f, zoneBounds.max.x - 2f),
+            Random.Range(zoneBounds.min.y + 1f, zoneBounds.max.y - 1f),
+            Random.Range(zoneBounds.min.z + 2f, zoneBounds.max.z - 2f)
         );
     }
     
-    public int GetFishCount()
+    void OnDrawGizmos()
     {
-        return fishInZone.Count;
-    }
-    
-    public List<FishBrain> GetFishInZone()
-    {
-        return new List<FishBrain>(fishInZone);
+        // ✏️ DIPERBAIKI: Update bounds di OnDrawGizmos juga
+        if (Application.isPlaying)
+        {
+            UpdateBounds();
+        }
+        else
+        {
+            if (zoneCollider == null)
+                zoneCollider = GetComponent<BoxCollider>();
+            
+            zoneBounds = new Bounds(
+                transform.position + zoneCollider.center,
+                Vector3.Scale(zoneCollider.size, transform.lossyScale)
+            );
+        }
+        
+        Gizmos.color = zoneType == ZoneType.Ocean ? 
+            new Color(0f, 0.5f, 1f, 0.3f) : 
+            new Color(0f, 1f, 0.5f, 0.3f);
+        
+        Gizmos.DrawCube(zoneBounds.center, zoneBounds.size);
+        
+        // ✏️ DITAMBAH: Draw wireframe untuk lebih jelas
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireCube(zoneBounds.center, zoneBounds.size);
     }
 }

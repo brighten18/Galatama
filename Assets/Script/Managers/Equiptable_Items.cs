@@ -19,16 +19,22 @@ public class Equiptable_Items : MonoBehaviour
         sphereCollider = GetComponent<SphereCollider>();
 
         sphereCollider.enabled = false;
+        animator.enabled = false;
     }
 
     void Update()
     {
         if (!IsEquipped())
-            return;
+        {
+            return;            
+        }
+
 
         // Jika masih cooldown / sedang animasi
         if (isUsingItem)
+        {
             return;
+        }
 
         if (PlayerInputManager.Instance.InteractOBJ &&
             !InventorySystem.Instance.isOpen)
@@ -67,7 +73,11 @@ public class Equiptable_Items : MonoBehaviour
 
     private bool IsEquipped()
     {
-        return EquipSystem.Instance.isnowEquipped &&
-               transform.parent == EquipSystem.Instance.ToolsHolder.transform;
+        bool isEquipped = EquipSystem.Instance.isnowEquipped &&
+                          transform.parent == EquipSystem.Instance.ToolsHolder.transform;
+        
+        animator.enabled = isEquipped;
+        
+        return isEquipped;
     }
 }

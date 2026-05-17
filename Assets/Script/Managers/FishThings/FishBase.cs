@@ -3,7 +3,7 @@ using UnityEngine;
 public class FishBase : MonoBehaviour
 {
     [Header("Fish Data")]
-    public FishData fishData;
+    public AI_Fish_Data fishData;
 
     // dipanggil oleh FishingNet saat ikan tertangkap
     public virtual void GetCaught()
@@ -16,12 +16,12 @@ public class FishBase : MonoBehaviour
 
         if (InventorySystem.Instance.CheckFull())
         {
-            Debug.Log("[FishBase] Inventory penuh, tidak bisa menangkap: " + fishData.itemName);
+            Debug.Log("[FishBase] Inventory penuh, tidak bisa menangkap: " + fishData.ItemName);
             return;
         }
 
-        InventorySystem.Instance.AddItemToInventory(fishData.itemName);
-        Debug.Log("[FishBase] Ikan tertangkap: " + fishData.itemName);
+        InventorySystem.Instance.AddItemToInventory(fishData.ItemName);
+        Debug.Log("[FishBase] Ikan tertangkap: " + fishData.ItemName);
         Destroy(gameObject);
     }
 

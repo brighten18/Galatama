@@ -18,6 +18,10 @@ public class InventorySystem : MonoBehaviour
     public bool isOpen;
     private bool inventoryPressedLastFrame = false;
 
+    public GameObject PickupAlertUI;
+    public Text PickupAlertName;
+    public Image PickupAlertImage;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -38,6 +42,7 @@ public class InventorySystem : MonoBehaviour
 
         CountSlotList();
         Cursor.visible = false;
+        PickupAlertUI.SetActive(false);
     }
         
     public void CountSlotList()
@@ -103,6 +108,22 @@ public class InventorySystem : MonoBehaviour
         ObjToAdd.transform.SetParent(whatToEquipSlot.transform);
         itemList.Add(ItemName);
         CheckFull();
+
+        TriggerPickupAlert(ItemName, ObjToAdd.GetComponent<Image>().sprite);
+    }
+
+    public void TriggerPickupAlert(string itemName, Sprite itemSprite)
+    {
+        PickupAlertName.text = itemName;
+        PickupAlertImage.sprite = itemSprite;
+        PickupAlertUI.SetActive(true);
+        StartCoroutine(HidePickupAlertAfterDelay(2f)); 
+    }
+
+    private IEnumerator HidePickupAlertAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        PickupAlertUI.SetActive(false);
     }
     private GameObject FindNewNextSlot()
     {

@@ -515,6 +515,7 @@ GameObject:
   - component: {fileID: 886697408}
   - component: {fileID: 886697407}
   - component: {fileID: 886697406}
+  - component: {fileID: 886697409}
   m_Layer: 5
   m_Name: Keluar
   m_TagString: Untagged
@@ -548,7 +549,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 886697404}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -623,6 +624,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 886697404}
   m_CullTransparentMesh: 1
+--- !u!114 &886697409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 886697404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c6b2e2f73a83b24689d16f31dbd0c94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GALATAMA.MainMenu.MenuButtonHoverEffect
+  hoveredScale: 1.12
+  scaleDuration: 0.18
+  highlightColor: {r: 0.65, g: 0.95, b: 1, a: 1}
+  colorDuration: 0.12
 --- !u!1 &908625202
 GameObject:
   m_ObjectHideFlags: 0
@@ -635,6 +652,7 @@ GameObject:
   - component: {fileID: 908625206}
   - component: {fileID: 908625205}
   - component: {fileID: 908625204}
+  - component: {fileID: 908625207}
   m_Layer: 5
   m_Name: Setting
   m_TagString: Untagged
@@ -668,7 +686,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 908625202}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -743,6 +761,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 908625202}
   m_CullTransparentMesh: 1
+--- !u!114 &908625207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908625202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c6b2e2f73a83b24689d16f31dbd0c94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GALATAMA.MainMenu.MenuButtonHoverEffect
+  hoveredScale: 1.12
+  scaleDuration: 0.18
+  highlightColor: {r: 0.65, g: 0.95, b: 1, a: 1}
+  colorDuration: 0.12
 --- !u!1 &1008921424
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,6 +1207,7 @@ GameObject:
   - component: {fileID: 1424460398}
   - component: {fileID: 1424460397}
   - component: {fileID: 1424460396}
+  - component: {fileID: 1424460399}
   m_Layer: 5
   m_Name: LoadGame
   m_TagString: Untagged
@@ -1206,7 +1241,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1424460394}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -1281,6 +1316,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1424460394}
   m_CullTransparentMesh: 1
+--- !u!114 &1424460399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1424460394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c6b2e2f73a83b24689d16f31dbd0c94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GALATAMA.MainMenu.MenuButtonHoverEffect
+  hoveredScale: 1.12
+  scaleDuration: 0.18
+  highlightColor: {r: 0.65, g: 0.95, b: 1, a: 1}
+  colorDuration: 0.12
 --- !u!1 &1782913257
 GameObject:
   m_ObjectHideFlags: 0
@@ -1293,6 +1344,7 @@ GameObject:
   - component: {fileID: 1782913261}
   - component: {fileID: 1782913260}
   - component: {fileID: 1782913259}
+  - component: {fileID: 1782913262}
   m_Layer: 5
   m_Name: NewGame
   m_TagString: Untagged
@@ -1326,7 +1378,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1782913257}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -1401,6 +1453,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1782913257}
   m_CullTransparentMesh: 1
+--- !u!114 &1782913262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782913257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c6b2e2f73a83b24689d16f31dbd0c94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GALATAMA.MainMenu.MenuButtonHoverEffect
+  hoveredScale: 1.12
+  scaleDuration: 0.18
+  highlightColor: {r: 0.65, g: 0.95, b: 1, a: 1}
+  colorDuration: 0.12
 --- !u!1 &1913328586
 GameObject:
   m_ObjectHideFlags: 0
@@ -1538,7 +1606,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 552, y: 364}
+  m_AnchoredPosition: {x: 606, y: 426}
   m_SizeDelta: {x: 2593.0002, y: 624.1939}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2021182605

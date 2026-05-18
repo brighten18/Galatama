@@ -4658,6 +4658,99 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1316776557}
   m_CullTransparentMesh: 1
+--- !u!1 &1356414182
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1356414185}
+  - component: {fileID: 1356414184}
+  - component: {fileID: 1356414183}
+  m_Layer: 0
+  m_Name: Terrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 0
+--- !u!154 &1356414183
+TerrainCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1356414182}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_TerrainData: {fileID: 15600000, guid: d7af46e9dc0f0cc4f90eaba045e02b94, type: 2}
+  m_EnableTreeColliders: 1
+--- !u!218 &1356414184
+Terrain:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1356414182}
+  m_Enabled: 1
+  serializedVersion: 6
+  m_TerrainData: {fileID: 15600000, guid: d7af46e9dc0f0cc4f90eaba045e02b94, type: 2}
+  m_TreeDistance: 5000
+  m_TreeBillboardDistance: 50
+  m_TreeCrossFadeLength: 5
+  m_TreeMaximumFullLODCount: 50
+  m_DetailObjectDistance: 80
+  m_DetailObjectDensity: 1
+  m_HeightmapPixelError: 5
+  m_SplatMapDistance: 1000
+  m_HeightmapMinimumLODSimplification: 0
+  m_HeightmapMaximumLOD: 0
+  m_ShadowCastingMode: 2
+  m_DrawHeightmap: 1
+  m_DrawInstanced: 0
+  m_DrawTreesAndFoliage: 1
+  m_StaticShadowCaster: 0
+  m_IgnoreQualitySettings: 0
+  m_ReflectionProbeUsage: 1
+  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
+  m_BakeLightProbesForTrees: 1
+  m_PreserveTreePrototypeLayers: 0
+  m_DeringLightProbesForTrees: 1
+  m_ReceiveGI: 1
+  m_ScaleInLightmap: 0.0256
+  m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
+  m_GroupingID: 0
+  m_RenderingLayerMask: 1
+  m_AllowAutoConnect: 1
+  m_EnableHeightmapRayTracing: 1
+  m_EnableTreesAndDetailsRayTracing: 0
+  m_TreeMotionVectorModeOverride: 3
+--- !u!4 &1356414185
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1356414182}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -80.7, y: 0, z: -145.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1357198010
 GameObject:
   m_ObjectHideFlags: 0
@@ -6678,6 +6771,7 @@ MonoBehaviour:
   itemList: []
   equipmentDataList:
   - {fileID: 11400000, guid: 8d628f9cfc7a77041bb6ff7cb3fe4936, type: 2}
+  - {fileID: 11400000, guid: eb2ebd9631244754688e3299b871d42c, type: 2}
 --- !u!1 &2024592665
 GameObject:
   m_ObjectHideFlags: 0
@@ -7364,6 +7458,141 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 243ab3e202aebad4a8e26430b2dc42b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSlots
+--- !u!1001 &5004112447204189727
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8441463031951753083, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951753083, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.286
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951753083, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951753083, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951753083, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951753083, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951753083, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951753083, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951753083, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951753083, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9110158947458950593, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      propertyPath: m_Name
+      value: Perangkap_World
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9110158947458950593, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5004112447204189729}
+  m_SourcePrefab: {fileID: 100100000, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+--- !u!1 &5004112447204189728 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9110158947458950593, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
+  m_PrefabInstance: {fileID: 5004112447204189727}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5004112447204189729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5004112447204189728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4937360f043924849acb865d718358eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
+  itemName: Perangkap
+--- !u!1001 &7688337085081631367
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8441463031951749955, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4.3454
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951749955, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951749955, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.3548627
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951749955, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951749955, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951749955, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951749955, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951749955, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951749955, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8441463031951749955, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9110158947458951673, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
+      propertyPath: m_Name
+      value: Perangkap_Equipped
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -7383,3 +7612,6 @@ SceneRoots:
   - {fileID: 1784833551}
   - {fileID: 1285350698}
   - {fileID: 1374161895}
+  - {fileID: 7688337085081631367}
+  - {fileID: 5004112447204189727}
+  - {fileID: 1356414185}

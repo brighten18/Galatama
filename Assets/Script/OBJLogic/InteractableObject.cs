@@ -1,29 +1,41 @@
- using UnityEngine;
+using UnityEngine;
 
 public class InteractableObject : MonoBehaviour
 {
-    // ✏️ DIHAPUS: private StarterAssetsInputs _Input;
-    [SerializeField] private string itemName;
-    private bool isBeingLookedAt = false;
+    [SerializeField] protected string itemName;
+    protected bool isBeingLookedAt = false;
 
-    // ✏️ DIHAPUS: Start() karena tidak ada lagi GetComponent yang diperlukan
-    void Update()
+    protected virtual void Update()
     {
-        if (isBeingLookedAt && PlayerInputManager.Instance != null && PlayerInputManager.Instance.Interact && InteractUIManager.Instance.OnTargeted)
-        { 
-            if (!InventorySystem.Instance.CheckFull())
-            {            
-                PlayerInputManager.Instance.ResetInteractInput();
-                InventorySystem.Instance.AddItemToInventory(itemName);
-                InteractObject();
-                Destroy(gameObject);
-            }
-            else
-            {
-                Debug.Log("Inventory penuh, tidak bisa mengambil " + itemName);
-            }
+        if (CanInteract())
+        {
+            HandleInteract();
         }
-    }   
+    }
+
+    protected bool CanInteract()
+    {
+        return isBeingLookedAt &&
+               PlayerInputManager.Instance != null &&
+               PlayerInputManager.Instance.Interact &&
+               InteractUIManager.Instance != null &&
+               InteractUIManager.Instance.OnTargeted;
+    }
+
+    protected virtual void HandleInteract()
+    {
+        if (!InventorySystem.Instance.CheckFull())
+        {
+            PlayerInputManager.Instance.ResetInteractInput();
+            InventorySystem.Instance.AddItemToInventory(itemName);
+            InteractObject();
+            Destroy(gameObject);
+        }
+        else
+        {
+            Debug.Log("Inventory penuh, tidak bisa mengambil " + itemName);
+        }
+    }
 
     public void SetLookingAt(bool value)
     {

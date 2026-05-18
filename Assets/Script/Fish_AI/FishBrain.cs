@@ -20,6 +20,9 @@ public class FishBrain : MonoBehaviour
     private FishWanderBehavior wander;
     private FishSpawner ownerSpawner;
     private bool isCaptured;
+    private bool hasTemporaryTarget;
+    private Vector3 temporaryTarget;
+    private float temporaryTargetStopDistance = 0.5f;
 
     void Awake()
     {
@@ -31,6 +34,17 @@ public class FishBrain : MonoBehaviour
     void Update()
     {
         if (isCaptured) return;
+
+        if (hasTemporaryTarget)
+        {
+            Vector3 targetDirection = temporaryTarget - transform.position;
+            if (targetDirection.sqrMagnitude > temporaryTargetStopDistance * temporaryTargetStopDistance)
+            {
+                movement.Move(targetDirection, 1.25f);
+            }
+
+            return;
+        }
 
         Vector3 flockingForce = flocking.CalculateFlockingForce();
         Vector3 wanderForce = wander.CalculateWanderForce();
@@ -57,10 +71,23 @@ public class FishBrain : MonoBehaviour
         ownerSpawner = spawner;
     }
 
+    public void SetTemporaryTarget(Vector3 target, float stopDistance)
+    {
+        temporaryTarget = target;
+        temporaryTargetStopDistance = Mathf.Max(0.05f, stopDistance);
+        hasTemporaryTarget = true;
+    }
+
+    public void ClearTemporaryTarget()
+    {
+        hasTemporaryTarget = false;
+    }
+
     public void OnCaptured(bool destroyObject = true)
     {
         if (isCaptured) return;
         isCaptured = true;
+        hasTemporaryTarget = false;
 
         FishSpawner spawner = ownerSpawner != null ? ownerSpawner : Object.FindFirstObjectByType<FishSpawner>();
         if (spawner != null)
@@ -73,4 +100,6 @@ public class FishBrain : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public bool IsCaptured => isCaptured;
 }

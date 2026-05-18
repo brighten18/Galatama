@@ -228,6 +228,50 @@ public class EquipSystem : MonoBehaviour
         return EquipmentType.Default;
     }
 
+    public string GetEquippedItemName()
+    {
+        if (!isnowEquipped || SelectedItem == null)
+            return string.Empty;
+
+        return ItemNameUtility.CleanName(SelectedItem.name);
+    }
+
+    public bool TryConsumeSelectedItem(string expectedItemName)
+    {
+        if (SelectedItem == null)
+            return false;
+
+        string itemName = ItemNameUtility.CleanName(SelectedItem.name);
+        if (!string.IsNullOrEmpty(expectedItemName) && itemName != expectedItemName)
+            return false;
+
+        InventoryItemLogic itemLogic = SelectedItem.GetComponent<InventoryItemLogic>();
+        if (itemLogic != null)
+        {
+            itemLogic.isSelected = false;
+            itemLogic.IsNowInsideQcSlot = false;
+        }
+
+        GameObject consumedItem = SelectedItem;
+        consumedItem.transform.SetParent(null);
+        Destroy(consumedItem);
+
+        itemList.Remove(itemName);
+        SelectedItem = null;
+        SelectedNumber = -1;
+        isnowEquipped = false;
+        ClearToolsHolder();
+        SetNumberColor(-1, Color.gray);
+
+        if (InventorySystem.Instance != null)
+        {
+            InventorySystem.Instance.ReCalculeList();
+        }
+
+        Debug.Log("[EquipSystem] Item dipakai: " + itemName);
+        return true;
+    }
+
     bool CheckIsQcSlotFull(int slotIndex)
     {
         return quickSlotsList[slotIndex - 1].transform.childCount > 0;

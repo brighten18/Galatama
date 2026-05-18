@@ -82,6 +82,14 @@ public class FishZone : MonoBehaviour
         return zoneBounds;
     }
 
+    public ZoneType ZoneType => zoneType;
+
+    public bool ContainsPoint(Vector3 point)
+    {
+        UpdateBounds();
+        return zoneBounds.Contains(point);
+    }
+
     public Vector3 GetRandomPointInZone(float padding = 2f)
     {
         UpdateBounds();

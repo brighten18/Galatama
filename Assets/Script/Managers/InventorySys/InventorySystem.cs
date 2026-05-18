@@ -44,7 +44,7 @@ public class InventorySystem : MonoBehaviour
         Cursor.visible = false;
         PickupAlertUI.SetActive(false);
     }
-        
+
     public void CountSlotList()
     {
         slotList.Clear();
@@ -54,7 +54,6 @@ public class InventorySystem : MonoBehaviour
                 slotList.Add(child.gameObject);
         }
 
-        // Fallback: jika slotList masih kosong, cari semua slot di scene
         if (slotList.Count == 0)
         {
             Debug.LogWarning("[Inventory] Slot tidak ditemukan via inventoryScreenUI, mencari manual...");
@@ -65,51 +64,113 @@ public class InventorySystem : MonoBehaviour
         Debug.Log($"[Inventory] slotList populated: {slotList.Count} slots");
     }
 
-
     void Update()
     {
         bool inventoryPressed = PlayerInputManager.Instance != null && PlayerInputManager.Instance.Inventory;
 
         if (inventoryPressed && !inventoryPressedLastFrame)
         {
-        if (!isOpen)
-        {
-            inventoryScreenUI.SetActive(true);
-            isOpen = true;
-            PlayerInputManager.Instance.SetCursorAndLook(false, false);
-            PlayerInputManager.Instance.SetPlayerMovement(false);
-            Cursor.visible = true;
-        }
-        else
-        {
-            inventoryScreenUI.SetActive(false);
-            isOpen = false;
-            PlayerInputManager.Instance.SetCursorAndLook(true, true);
-            PlayerInputManager.Instance.SetPlayerMovement(true);
-            ReCalculeList();
-            Cursor.visible = false;
-        }
+            if (!isOpen)
+            {
+                inventoryScreenUI.SetActive(true);
+                isOpen = true;
+                PlayerInputManager.Instance.SetCursorAndLook(false, false);
+                PlayerInputManager.Instance.SetPlayerMovement(false);
+                Cursor.visible = true;
+            }
+            else
+            {
+                inventoryScreenUI.SetActive(false);
+                isOpen = false;
+                PlayerInputManager.Instance.SetCursorAndLook(true, true);
+                PlayerInputManager.Instance.SetPlayerMovement(true);
+                ReCalculeList();
+                Cursor.visible = false;
+            }
+
             PlayerInputManager.Instance.ResetInventoryInput();
         }
+
         inventoryPressedLastFrame = inventoryPressed;
     }
 
     public void AddItemToInventory(string ItemName)
     {
+        TryAddItemToInventory(ItemName);
+    }
+
+    public bool TryAddItemToInventory(string ItemName)
+    {
         whatToEquipSlot = FindNewNextSlot();
         if (whatToEquipSlot == null)
         {
-            Debug.LogError("[Inventory] Tidak bisa menambah item — tidak ada slot valid!");
-            return;
+            Debug.LogError("[Inventory] Tidak bisa menambah item - tidak ada slot valid!");
+            return false;
         }
 
-        ObjToAdd = Instantiate(Resources.Load<GameObject>(ItemName),
-        whatToEquipSlot.transform.position, whatToEquipSlot.transform.rotation);
+        GameObject itemPrefab = Resources.Load<GameObject>(ItemName);
+        if (itemPrefab == null)
+        {
+            Debug.LogError("[Inventory] Prefab item tidak ditemukan di Resources: " + ItemName);
+            return false;
+        }
+
+        ObjToAdd = Instantiate(itemPrefab, whatToEquipSlot.transform.position, whatToEquipSlot.transform.rotation);
         ObjToAdd.transform.SetParent(whatToEquipSlot.transform);
         itemList.Add(ItemName);
         CheckFull();
 
-        TriggerPickupAlert(ItemName, ObjToAdd.GetComponent<Image>().sprite);
+        Image itemImage = ObjToAdd.GetComponent<Image>();
+        TriggerPickupAlert(ItemName, itemImage != null ? itemImage.sprite : null);
+        return true;
+    }
+
+    public int GetEmptySlotCount()
+    {
+        if (slotList.Count == 0)
+        {
+            CountSlotList();
+        }
+
+        int emptySlots = 0;
+        foreach (GameObject slot in slotList)
+        {
+            if (slot.transform.childCount == 0)
+            {
+                emptySlots++;
+            }
+        }
+
+        return emptySlots;
+    }
+
+    public bool HasSpaceForItems(int itemCount)
+    {
+        return GetEmptySlotCount() >= itemCount;
+    }
+
+    public bool CanAddItemsToInventory(params string[] itemNames)
+    {
+        if (itemNames == null || itemNames.Length == 0)
+        {
+            return true;
+        }
+
+        if (!HasSpaceForItems(itemNames.Length))
+        {
+            return false;
+        }
+
+        foreach (string itemName in itemNames)
+        {
+            if (Resources.Load<GameObject>(itemName) == null)
+            {
+                Debug.LogError("[Inventory] Prefab item tidak ditemukan di Resources: " + itemName);
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public void TriggerPickupAlert(string itemName, Sprite itemSprite)
@@ -117,7 +178,7 @@ public class InventorySystem : MonoBehaviour
         PickupAlertName.text = itemName;
         PickupAlertImage.sprite = itemSprite;
         PickupAlertUI.SetActive(true);
-        StartCoroutine(HidePickupAlertAfterDelay(2f)); 
+        StartCoroutine(HidePickupAlertAfterDelay(2f));
     }
 
     private IEnumerator HidePickupAlertAfterDelay(float delay)
@@ -125,6 +186,7 @@ public class InventorySystem : MonoBehaviour
         yield return new WaitForSeconds(delay);
         PickupAlertUI.SetActive(false);
     }
+
     private GameObject FindNewNextSlot()
     {
         foreach (GameObject slot in slotList)
@@ -134,16 +196,17 @@ public class InventorySystem : MonoBehaviour
         }
 
         Debug.LogError("[Inventory] Tidak ada slot kosong ditemukan! slotList.Count: " + slotList.Count);
-        return null; // return null instead of gameObject
+        return null;
     }
 
     public bool CheckFull()
     {
         int couter = 0;
-        foreach (GameObject slot in slotList)        {
+        foreach (GameObject slot in slotList)
+        {
             if (slot.transform.childCount > 0)
             {
-                couter+=1;
+                couter += 1;
             }
         }
 
@@ -159,7 +222,6 @@ public class InventorySystem : MonoBehaviour
         }
     }
 
-    // ✏️ DITAMBAH: Recalculate itemList setelah item dihapus dari inventory
     public void ReCalculeList()
     {
         itemList.Clear();
@@ -169,8 +231,6 @@ public class InventorySystem : MonoBehaviour
             if (slot.transform.childCount > 0)
             {
                 string rawName = slot.transform.GetChild(0).name;
-
-                // FIX: Gunakan utility method
                 string cleaned = ItemNameUtility.CleanName(rawName);
                 itemList.Add(cleaned);
             }

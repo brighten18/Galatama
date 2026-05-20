@@ -51,7 +51,15 @@ public class PlayerInputManager : MonoBehaviour
             _input = player.GetComponent<StarterAssetsInputs>();
             playerController = player.GetComponent<StarterAssets.ThirdPersonController>();
         }
-            
+             
+    }
+
+    private void LateUpdate()
+    {
+        if (_input == null) return;
+
+        _input.Interact = false;
+        _input.InteractOBJ = false;
     }
 
     public void ResetInventoryInput()

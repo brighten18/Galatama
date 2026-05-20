@@ -68,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: dd1268167e645594fb58ada66b20fefa, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 44e509e0d5093214aaf9afaed16f3e90, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -114,7 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fb6fa21f4e159d4eb0f3e1309de1f68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemLogic
-  isTrashable: 0
+  isTrashable: 1
   thisName: Perangkap
   thisDescription: Perangkap ikan
   thisFunctionality: Pasang di area laut untuk menangkap 1 ikan

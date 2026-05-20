@@ -20,7 +20,13 @@ public class FishBase : MonoBehaviour
             return;
         }
 
-        InventorySystem.Instance.AddItemToInventory(fishData.ItemName);
+        FishInstanceState fishState = FishFactory.CreateFromWildFish(fishData.ItemName, fishData);
+        if (!InventorySystem.Instance.TryAddFishStateToInventory(fishState))
+        {
+            Debug.LogError("[FishBase] Gagal membuat state ikan saat tertangkap: " + fishData.ItemName);
+            return;
+        }
+
         Debug.Log("[FishBase] Ikan tertangkap: " + fishData.ItemName);
 
         OnCaughtBehavior();

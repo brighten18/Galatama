@@ -63,6 +63,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8263156001259001002}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6074130840569722095}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5433603371758549045}
   m_SourcePrefab: {fileID: 100100000, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
 --- !u!1 &9110158947458951673 stripped
 GameObject:
@@ -82,5 +88,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishTrapPlacer
   trapItemName: Perangkap
-  worldTrapPrefab: {fileID: 8263156001259002001, guid: e9320d528a7f436f8cf508f0ddb03df3, type: 3}
-  maxPlacementDistance: 10
+  worldTrapPrefab: {fileID: 0}
+  maxPlacementDistance: 1
+  seaFloorRayDistance: 10
+  trapBottomOffset: 0.5
+  seaFloorLayer:
+    serializedVersion: 2
+    m_Bits: 385
+--- !u!65 &6074130840569722095
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9110158947458951673}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.02, z: 0.06}
+  m_Center: {x: -0.0000081588505, y: 0.0006932709, z: -0.0014699827}
+--- !u!114 &5433603371758549045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9110158947458951673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4937360f043924849acb865d718358eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
+  itemName: Perangkap

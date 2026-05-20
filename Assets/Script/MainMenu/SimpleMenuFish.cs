@@ -18,7 +18,7 @@ public class SimpleMenuFish : MonoBehaviour
     [SerializeField] private float rotationSpeed = 180f;
     
     [Header("Wander Settings")]
-    [SerializeField] private float wanderRadius = 5.0f;
+    // [SerializeField] private float wanderRadius = 5.0f;
     [SerializeField] private float waypointReachThreshold = 1.5f;
     [SerializeField] private float changeWaypointInterval = 5.0f;
     
@@ -52,16 +52,10 @@ public class SimpleMenuFish : MonoBehaviour
             UpdateForwardCorrection();
     }
     
+
     private void UpdateForwardCorrection()
     {
-        // Tentukan vektor arah depan lokal berdasarkan enum
         Vector3 localForward = GetLocalForwardVector();
-        // Rotasi yang memetakan localForward menjadi world forward (Vector3.forward)
-        // Saat kita melakukan LookRotation(direction), sumbu Z akan menuju direction.
-        // Kita ingin localForward yang menunjuk ke direction, jadi kita perlu koreksi:
-        // targetRotation = LookRotation(direction) * Quaternion.FromToRotation(localForward, Vector3.forward)
-        // Karena FromToRotation(localForward, Vector3.forward) memutar localForward ke Z+,
-        // maka setelah rotasi oleh LookRotation, localForward akan sejajar dengan direction.
         forwardCorrection = Quaternion.FromToRotation(localForward, Vector3.forward);
     }
     

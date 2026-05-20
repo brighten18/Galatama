@@ -9,6 +9,9 @@ public class FishTrapPlacer : MonoBehaviour
 
     [Header("Placement")]
     [SerializeField] private float maxPlacementDistance = 10f;
+    [SerializeField] private float seaFloorRayDistance = 30f;
+    [SerializeField] private float trapBottomOffset = 0.1f;
+    [SerializeField] private LayerMask seaFloorLayer = ~0;
 
     private bool isPlacing;
 
@@ -42,20 +45,33 @@ public class FishTrapPlacer : MonoBehaviour
 
     private void TryPlaceTrap()
     {
-        if (!TryGetOceanPlacement(out Vector3 placePosition))
+        if (!TryGetOceanPlacement(out Vector3 floorPoint))
         {
-            Debug.Log("[FishTrapPlacer] Perangkap hanya bisa dipasang di FishZone Ocean.");
+            Debug.Log("[FishTrapPlacer] Perangkap hanya bisa dipasang di dasar FishZone Ocean.");
             return;
         }
 
-        GameObject prefab = worldTrapPrefab != null ? worldTrapPrefab : Resources.Load<GameObject>("Perangkap_World");
+        GameObject prefab = worldTrapPrefab != null
+            ? worldTrapPrefab
+            : Resources.Load<GameObject>("Perangkap_World");
+
         if (prefab == null)
         {
-            Debug.LogError("[FishTrapPlacer] Prefab Perangkap_World belum tersedia di Resources.");
+            Debug.LogError("[FishTrapPlacer] Prefab tidak ditemukan.");
             return;
         }
 
-        GameObject spawnedTrap = Instantiate(prefab, placePosition, Quaternion.identity);
+        // Spawn dulu di posisi sementara
+        GameObject spawnedTrap = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+
+        // Hitung tinggi objek dari Bounds semua Renderer-nya
+        float halfHeight = GetObjectHalfHeight(spawnedTrap);
+
+        // Letakan trap sehingga bagian bawahnya menyentuh lantai
+        // halfHeight = jarak dari pivot ke bawah objek
+        Vector3 finalPosition = floorPoint + Vector3.up * (halfHeight + trapBottomOffset);
+        spawnedTrap.transform.position = finalPosition;
+
         FishTrapWorld trapWorld = spawnedTrap.GetComponent<FishTrapWorld>();
         if (trapWorld != null)
         {
@@ -69,31 +85,70 @@ public class FishTrapPlacer : MonoBehaviour
         }
     }
 
+    private float GetObjectHalfHeight(GameObject obj)
+    {
+        Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+
+        if (renderers.Length == 0)
+        {
+            // Fallback ke Collider kalau tidak ada Renderer
+            Collider col = obj.GetComponentInChildren<Collider>();
+            if (col != null) return col.bounds.extents.y;
+            return 0f;
+        }
+
+        // Gabungkan semua bounds dari setiap child renderer
+        Bounds combinedBounds = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++)
+        {
+            combinedBounds.Encapsulate(renderers[i].bounds);
+        }
+
+        // extents.y = setengah tinggi total objek
+        return combinedBounds.extents.y;
+    }
+
     private bool TryGetOceanPlacement(out Vector3 placePosition)
     {
         placePosition = Vector3.zero;
 
-        Camera mainCamera = Camera.main;
-        if (mainCamera == null)
+        // Titik awal ray dari posisi objek ini sendiri
+        Vector3 rayOrigin = transform.position;
+
+        // Tembak ke bawah sejauh seaFloorRayDistance
+        if (!Physics.Raycast(
+                rayOrigin,
+                Vector3.down,
+                out RaycastHit seaFloorHit,
+                seaFloorRayDistance,
+                seaFloorLayer,
+                QueryTriggerInteraction.Ignore))
         {
-            Debug.LogError("[FishTrapPlacer] Camera.main tidak ditemukan.");
+            Debug.Log("[FishTrapPlacer] Dasar laut tidak ditemukan.");
             return false;
         }
 
-        Ray ray = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        RaycastHit[] hits = Physics.RaycastAll(ray, maxPlacementDistance, Physics.AllLayers, QueryTriggerInteraction.Collide);
-        Array.Sort(hits, (left, right) => left.distance.CompareTo(right.distance));
+        Collider[] nearby = Physics.OverlapSphere(seaFloorHit.point, 2f,
+            Physics.AllLayers, QueryTriggerInteraction.Collide);
 
-        foreach (RaycastHit hit in hits)
+        bool insideOceanZone = false;
+        foreach (Collider col in nearby)
         {
-            FishZone fishZone = hit.collider.GetComponentInParent<FishZone>();
-            if (fishZone != null && fishZone.ZoneType == ZoneType.Ocean)
+            FishZone zone = col.GetComponentInParent<FishZone>();
+            if (zone != null && zone.ZoneType == ZoneType.Ocean)
             {
-                placePosition = hit.point;
-                return true;
+                insideOceanZone = true;
+                break;
             }
         }
 
-        return false;
+        if (!insideOceanZone)
+        {
+            Debug.Log("[FishTrapPlacer] Titik bukan bagian dari FishZone Ocean.");
+            return false;
+        }
+
+        placePosition = seaFloorHit.point + Vector3.up * trapBottomOffset;
+        return true;
     }
 }

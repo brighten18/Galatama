@@ -10,6 +10,7 @@ TagManager:
   - Fish
   - OceanZone
   - AquariumZone
+  - AquariumSlot
   layers:
   - Default
   - TransparentFX

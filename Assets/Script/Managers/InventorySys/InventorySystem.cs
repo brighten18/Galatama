@@ -22,6 +22,14 @@ public class InventorySystem : MonoBehaviour
     public Text PickupAlertName;
     public Image PickupAlertImage;
 
+    [Header("Fish Pickup Info UI")]
+    public GameObject FishThingsUI;
+    public Text FishName;
+    public Image FishImage;
+    public Text FishHunger;
+    public Text FishHealth;
+    public Text FishStatus;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -43,6 +51,11 @@ public class InventorySystem : MonoBehaviour
         CountSlotList();
         Cursor.visible = false;
         PickupAlertUI.SetActive(false);
+
+        if (FishThingsUI != null)
+        {
+            FishThingsUI.SetActive(false);
+        }
     }
 
     public void CountSlotList()
@@ -62,6 +75,8 @@ public class InventorySystem : MonoBehaviour
         }
 
         Debug.Log($"[Inventory] slotList populated: {slotList.Count} slots");
+
+        Debug.Log("Ikannya" + FishName);
     }
 
     void Update()
@@ -121,7 +136,89 @@ public class InventorySystem : MonoBehaviour
         CheckFull();
 
         Image itemImage = ObjToAdd.GetComponent<Image>();
+        FishImage.sprite = itemImage != null ? itemImage.sprite : null;
         TriggerPickupAlert(ItemName, itemImage != null ? itemImage.sprite : null);
+        return true;
+    }
+
+    public bool TryAddFishStateToInventory(FishInstanceState fishState)
+    {
+        if (fishState == null)
+            return false;
+
+        fishState = FishFactory.EnsureValid(fishState, fishState.itemName);
+        GameObject itemObject;
+        if (!TryCreateItemInNextSlot(fishState.itemName, out itemObject))
+            return false;
+
+        AttachFishState(itemObject, fishState);
+        Image itemImage = itemObject.GetComponent<Image>();
+        FishImage.sprite = itemImage != null ? itemImage.sprite : null;
+        // TriggerFishPickupAlert(fishState.itemName, itemImage != null ? itemImage.sprite : null, fishState);
+        return true;
+    }
+
+    public bool TryAddItemToInventorySlot(string ItemName, GameObject targetSlot)
+    {
+        if (targetSlot == null)
+            return TryAddItemToInventory(ItemName);
+
+        if (targetSlot.transform.childCount > 0)
+        {
+            Debug.Log("[Inventory] Slot tujuan sudah terisi.");
+            return false;
+        }
+
+        GameObject itemPrefab = Resources.Load<GameObject>(ItemName);
+        if (itemPrefab == null)
+        {
+            Debug.LogError("[Inventory] Prefab item tidak ditemukan di Resources: " + ItemName);
+            return false;
+        }
+
+        GameObject itemObject = Instantiate(itemPrefab, targetSlot.transform.position, targetSlot.transform.rotation);
+        itemObject.transform.SetParent(targetSlot.transform);
+        itemObject.transform.localPosition = Vector3.zero;
+
+        InventoryItemLogic itemLogic = itemObject.GetComponent<InventoryItemLogic>();
+        if (itemLogic != null)
+            itemLogic.IsNowInsideQcSlot = targetSlot.CompareTag("QuickSlot");
+
+        ReCalculeList();
+        CheckFull();
+
+        Image itemImage = itemObject.GetComponent<Image>();
+        FishImage.sprite = itemImage != null ? itemImage.sprite : null;
+        TriggerPickupAlert(ItemName, itemImage != null ? itemImage.sprite : null);
+        return true;
+    }
+
+    public bool TryAddFishStateToInventorySlot(FishInstanceState fishState, GameObject targetSlot)
+    {
+        if (fishState == null)
+            return false;
+
+        fishState = FishFactory.EnsureValid(fishState, fishState.itemName);
+        if (targetSlot == null)
+            return TryAddFishStateToInventory(fishState);
+
+        if (targetSlot.transform.childCount > 0)
+        {
+            Debug.Log("[Inventory] Slot tujuan sudah terisi.");
+            return false;
+        }
+
+        GameObject itemObject;
+        if (!TryCreateItemInSlot(fishState.itemName, targetSlot, out itemObject))
+            return false;
+
+        AttachFishState(itemObject, fishState);
+        ReCalculeList();
+        CheckFull();
+
+        Image itemImage = itemObject.GetComponent<Image>();
+        FishImage.sprite = itemImage != null ? itemImage.sprite : null;
+        TriggerFishPickupAlert(fishState.itemName, itemImage != null ? itemImage.sprite : null, fishState);
         return true;
     }
 
@@ -181,6 +278,39 @@ public class InventorySystem : MonoBehaviour
         StartCoroutine(HidePickupAlertAfterDelay(2f));
     }
 
+        public void TriggerFishPickupAlert(string fishName, Sprite icon, FishInstanceState state)
+    {
+        if (FishThingsUI == null) return;
+
+        FishName.text = fishName;
+        FishImage.sprite = icon;
+
+        if (state != null)
+        {
+            FishHunger.text = $"Lapar: {state.hunger:0}/{state.maxHunger:0}";
+            FishHealth.text = $"HP: {state.health:0}/{state.maxHealth:0}";
+
+            if (!state.isAlive)
+                FishStatus.text = "Mati";
+            else if (state.isStressed)
+                FishStatus.text = "Stress";
+            else if (state.HungerPercent >= 0.8f)
+                FishStatus.text = "Lapar";
+            else
+                FishStatus.text = "Sehat";
+        }
+
+        FishThingsUI.SetActive(true);
+        // StartCoroutine(HideFishAlertAfterDelay(3f));
+    }
+
+    // private IEnumerator HideFishAlertAfterDelay(float delay)
+    // {
+    //     yield return new WaitForSeconds(delay);
+    //     if (FishThingsUI != null)
+    //         FishThingsUI.SetActive(false);
+    // }
+
     private IEnumerator HidePickupAlertAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -197,6 +327,57 @@ public class InventorySystem : MonoBehaviour
 
         Debug.LogError("[Inventory] Tidak ada slot kosong ditemukan! slotList.Count: " + slotList.Count);
         return null;
+    }
+
+    private bool TryCreateItemInNextSlot(string itemName, out GameObject itemObject)
+    {
+        itemObject = null;
+        whatToEquipSlot = FindNewNextSlot();
+        if (whatToEquipSlot == null)
+        {
+            Debug.LogError("[Inventory] Tidak bisa menambah item - tidak ada slot valid!");
+            return false;
+        }
+
+        if (!TryCreateItemInSlot(itemName, whatToEquipSlot, out itemObject))
+            return false;
+
+        itemList.Add(itemName);
+        CheckFull();
+        return true;
+    }
+
+    private bool TryCreateItemInSlot(string itemName, GameObject targetSlot, out GameObject itemObject)
+    {
+        itemObject = null;
+        GameObject itemPrefab = Resources.Load<GameObject>(itemName);
+        if (itemPrefab == null)
+        {
+            Debug.LogError("[Inventory] Prefab item tidak ditemukan di Resources: " + itemName);
+            return false;
+        }
+
+        itemObject = Instantiate(itemPrefab, targetSlot.transform.position, targetSlot.transform.rotation);
+        itemObject.transform.SetParent(targetSlot.transform);
+        itemObject.transform.localPosition = Vector3.zero;
+
+        InventoryItemLogic itemLogic = itemObject.GetComponent<InventoryItemLogic>();
+        if (itemLogic != null)
+            itemLogic.IsNowInsideQcSlot = targetSlot.CompareTag("QuickSlot");
+
+        return true;
+    }
+
+    private void AttachFishState(GameObject itemObject, FishInstanceState fishState)
+    {
+        if (itemObject == null || fishState == null)
+            return;
+
+        FishRuntimeData runtimeData = itemObject.GetComponent<FishRuntimeData>();
+        if (runtimeData == null)
+            runtimeData = itemObject.AddComponent<FishRuntimeData>();
+
+        runtimeData.SetState(fishState);
     }
 
     public bool CheckFull()

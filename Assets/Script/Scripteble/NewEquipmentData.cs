@@ -8,6 +8,15 @@ public enum EquipmentType
     Trap
 }
 
+public enum AquariumEquipmentRole
+{
+    None,
+    Filter,
+    Aerator,
+    Heater,
+    Chiller
+}
+
 [CreateAssetMenu(fileName = "EquipmentData", menuName = "Equipment/EquipmentData")]
 public class EquipmentData : ScriptableObject
 {
@@ -18,4 +27,11 @@ public class EquipmentData : ScriptableObject
     public Vector3 localPosition;
     public Vector3 localRotation;
     public Vector3 localScale = Vector3.one;
+
+    [Header("Aquarium RAS Effect")]
+    public AquariumEquipmentRole aquariumRole = AquariumEquipmentRole.None;
+    public float ammoniaReductionPerTick;
+    public float oxygenIncreasePerTick;
+    public float temperatureChangePerTick;
+    public float targetTemperature = 26f;
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[DefaultExecutionOrder(-100)]
 public class InteractUIManager : MonoBehaviour
 {   
     public static InteractUIManager Instance { get; private set; }
@@ -67,39 +68,50 @@ public class InteractUIManager : MonoBehaviour
                 OnTargeted = false;
             }
 
-            InteractableObject interactable = hit.transform.GetComponent<InteractableObject>();
+            InteractableObject interactable = hit.transform.GetComponentInParent<InteractableObject>();
 
-            if (interactable != null)
+            if (interactable != null && OnTargeted)
             {
-                currentInteractable = interactable;
+                SetCurrentInteractable(interactable);
                 interactionText.text = interactable.GetItemName();
                 interactionInfoUI.SetActive(true);
-                interactable.SetLookingAt(true);
             }
             else
             {
-                if (currentInteractable != null)
-                    currentInteractable.SetLookingAt(false);
-
                 ClearInteraction();
             }
         }
         else
         {
             lastNonTriggerHit = default;
-
-            if (currentInteractable != null)
-                currentInteractable.SetLookingAt(false);
-
             ClearInteraction();
         }
     }
 
     private void ClearInteraction()
     {
+        if (currentInteractable != null)
+            currentInteractable.SetLookingAt(false);
+
         currentInteractable = null;
         interactionInfoUI.SetActive(false);
         OnTargeted = false;
         lastNonTriggerHit = default;
+    }
+
+    private void SetCurrentInteractable(InteractableObject interactable)
+    {
+        if (currentInteractable != null && currentInteractable != interactable)
+            currentInteractable.SetLookingAt(false);
+
+        currentInteractable = interactable;
+        currentInteractable.SetLookingAt(true);
+    }
+
+    public bool IsCurrentInteractable(InteractableObject interactable)
+    {
+        return interactable != null &&
+               currentInteractable == interactable &&
+               OnTargeted;
     }
 }

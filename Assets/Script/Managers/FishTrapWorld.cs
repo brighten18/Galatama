@@ -14,12 +14,28 @@ public class FishTrapWorld : InteractableObject
 
     private bool isActive;
     private bool hasCaughtFish;
+    private bool playerInPickupRange;
     private string capturedFishItemName;
     private Coroutine captureRoutine;
 
     void Awake()
     {
         itemName = "Perangkap";
+    }
+
+    protected override void Update()
+    {
+        if (playerInPickupRange &&
+            PlayerInputManager.Instance != null &&
+            PlayerInputManager.Instance.Interact &&
+            InventorySystem.Instance != null &&
+            !InventorySystem.Instance.isOpen)
+        {
+            HandleInteract();
+            return;
+        }
+
+        base.Update();
     }
 
     public void ActivateTrap()
@@ -33,9 +49,17 @@ public class FishTrapWorld : InteractableObject
         captureRoutine = StartCoroutine(CaptureLoop());
     }
 
+    public void SetPlayerInPickupRange(bool value)
+    {
+        playerInPickupRange = value;
+    }
+
     protected override void HandleInteract()
     {
-        PlayerInputManager.Instance.ResetInteractInput();
+        if (PlayerInputManager.Instance != null)
+        {
+            PlayerInputManager.Instance.ResetInteractInput();
+        }
 
         InventorySystem inventory = InventorySystem.Instance;
         if (inventory == null)

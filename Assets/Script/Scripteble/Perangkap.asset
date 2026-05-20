@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentData
   itemName: Perangkap
   itemType: 3
-  modelPrefab: {fileID: 0}
+  modelPrefab: {fileID: 9110158947458951673, guid: 10d82f8f0f744ea89a5ac05c30c7181b, type: 3}
   localPosition: {x: 0, y: 0, z: 0}
-  localRotation: {x: 0, y: 0, z: 0}
-  localScale: {x: 1, y: 1, z: 1}
+  localRotation: {x: 200, y: 0, z: 0}
+  localScale: {x: 8, y: 8, z: 8}

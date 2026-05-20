@@ -19,14 +19,15 @@ public class InteractableObject : MonoBehaviour
                PlayerInputManager.Instance != null &&
                PlayerInputManager.Instance.Interact &&
                InteractUIManager.Instance != null &&
-               InteractUIManager.Instance.OnTargeted;
+               InteractUIManager.Instance.IsCurrentInteractable(this);
     }
 
     protected virtual void HandleInteract()
     {
+        PlayerInputManager.Instance.ResetInteractInput();
+
         if (!InventorySystem.Instance.CheckFull())
         {
-            PlayerInputManager.Instance.ResetInteractInput();
             InventorySystem.Instance.AddItemToInventory(itemName);
             InteractObject();
             Destroy(gameObject);

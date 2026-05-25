@@ -258,6 +258,10 @@ MonoBehaviour:
   flockingWeight: 0.5
   wanderWeight: 0.4
   boundaryWeight: 0.8
+  disableFlockingInAquarium: 1
+  aquariumWanderWeight: 1
+  aquariumBoundaryWeight: 0.5
+  aquariumSpeedMultiplier: 0.65
 --- !u!114 &8195035464914912191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,11 +277,11 @@ MonoBehaviour:
   moveSpeed: 1
   rotationSpeed: 300
   modelForward: 3
-  boundaryPadding: 1
-  boundaryTurnDistance: 1.5
+  boundaryPadding: 0.1
+  boundaryTurnDistance: 0.2
   boundarySteerWeight: 2
   lockYPosition: 0
-  fixedYPosition: 1
+  fixedYPosition: 2
 --- !u!114 &3331736129109783396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -296,7 +300,7 @@ MonoBehaviour:
     m_Bits: 256
   cohesionWeight: 0.4
   separationWeight: 0.8
-  alignmentWeight: 1.5
+  alignmentWeight: 1.2
   minSeparationDistance: 0.4
 --- !u!114 &491823827345945958
 MonoBehaviour:
@@ -312,3 +316,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FishWanderBehavior
   wanderRadius: 6
   changeTargetInterval: 2
+  aquariumChangeIntervalMin: 1.5
+  aquariumChangeIntervalMax: 5
+  aquariumVerticalScale: 0.55
+  individualBiasStrength: 0.2
+  biasRefreshInterval: 8

@@ -62,10 +62,12 @@ public class FishMovement : MonoBehaviour
     {
         if (direction.sqrMagnitude <= 0.0001f) return;
 
-        direction.y = 0f;
-        if (direction.sqrMagnitude <= 0.0001f) return;
+        // Untuk rotasi yaw (kiri-kanan) gunakan komponen horizontal saja
+        // agar model tidak miring terlalu ekstrem
+        Vector3 horizontalDir = new Vector3(direction.x, 0f, direction.z);
+        if (horizontalDir.sqrMagnitude <= 0.0001f) return;
 
-        Quaternion targetRotation = GetRotationForDirection(direction.normalized);
+        Quaternion targetRotation = GetRotationForDirection(horizontalDir.normalized);
         Vector3 currentEuler = fishTransform.rotation.eulerAngles;
         Vector3 targetEuler = targetRotation.eulerAngles;
         float newYRotation = Mathf.LerpAngle(currentEuler.y, targetEuler.y, rotationSpeed * Time.deltaTime / 120f);

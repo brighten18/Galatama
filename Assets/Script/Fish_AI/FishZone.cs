@@ -59,6 +59,7 @@ public class FishZone : MonoBehaviour
         if (fish == null) return;
 
         UpdateBounds();
+        fish.SetZoneType(zoneType);
         fish.SetBoundary(zoneBounds);
 
         if (showDebugLog)

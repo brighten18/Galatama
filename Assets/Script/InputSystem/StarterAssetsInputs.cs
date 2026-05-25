@@ -21,6 +21,7 @@ namespace StarterAssets
 		public bool QuickSlot4;
 		public bool QuickSlot5;
 		public bool QuickSlot6;
+		public bool Pause;
 	
 
 		[Header("Movement Settings")]
@@ -67,6 +68,11 @@ namespace StarterAssets
 		public void OnInventory(InputValue value)
 		{
 			InventoryInput(value.isPressed);
+		}
+
+		public void OnPause(InputValue value)
+		{
+			Pause = value.isPressed;
 		}
 
 		// Quick Slot Input Handlers!!!!!!!
@@ -136,6 +142,11 @@ namespace StarterAssets
 		public void InteractOBJInput(bool newInteractOBJState)
 		{
 			InteractOBJ = newInteractOBJState;
+		}
+
+		public void PauseInput(bool newPauseState)
+		{
+			Pause = newPauseState;
 		}
 
 		// Quick Slot Input Handlers!!!!!!!

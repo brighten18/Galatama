@@ -1,0 +1,239 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &9027507078850362319
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -7.09
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5799998
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 9.004
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_Name
+      value: YellowTang_Fabs
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      propertyPath: m_TagString
+      value: Fish
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3653030172682583356}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2946216120140995502}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4271098766409603451}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6077623715364977247}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2084443811724268477}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5525550230837717536}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4487507387085075391}
+  m_SourcePrefab: {fileID: 100100000, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+--- !u!1 &8181153804570199710 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+  m_PrefabInstance: {fileID: 9027507078850362319}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &3653030172682583356
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8181153804570199710}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.06, y: 0.04, z: 0.02}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2946216120140995502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8181153804570199710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4eb70698cd23204ead355861528a91d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FishBase
+  fishData: {fileID: 11400000, guid: b7368ce944afa974b84ce1ccaad06e52, type: 2}
+--- !u!114 &4271098766409603451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8181153804570199710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6196f52651d48a489a34f2cbff9fe78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FishBrain
+  flockingWeight: 0.5
+  wanderWeight: 0.4
+  boundaryWeight: 0.8
+  disableFlockingInAquarium: 1
+  aquariumWanderWeight: 1
+  aquariumBoundaryWeight: 0.5
+  aquariumSpeedMultiplier: 0.65
+--- !u!95 &6077623715364977247
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8181153804570199710}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 54e3366d47385274f87473d39185310a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2084443811724268477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8181153804570199710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9801796e24e9d37458f06906610a5c5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FishMovement
+  moveSpeed: 1
+  rotationSpeed: 300
+  modelForward: 3
+  boundaryPadding: 0.1
+  boundaryTurnDistance: 0.2
+  boundarySteerWeight: 2
+  lockYPosition: 0
+  fixedYPosition: 2
+--- !u!114 &5525550230837717536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8181153804570199710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bea26af264d29f44aaed217c85ba01b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FishFlockingBehavior
+  detectionRadius: 0.5
+  fishLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  cohesionWeight: 0.4
+  separationWeight: 0.8
+  alignmentWeight: 1.2
+  minSeparationDistance: 0.4
+--- !u!114 &4487507387085075391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8181153804570199710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6485edeaedddc084b86be3108b25b242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FishWanderBehavior
+  wanderRadius: 6
+  changeTargetInterval: 2
+  aquariumChangeIntervalMin: 1.5
+  aquariumChangeIntervalMax: 5
+  aquariumVerticalScale: 0.55
+  individualBiasStrength: 0.2
+  biasRefreshInterval: 8

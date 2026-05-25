@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -149,6 +150,10 @@ public class AquariumSystem : MonoBehaviour
     private readonly HashSet<int> consumedInventoryItemIds = new HashSet<int>();
     private float simulationTimer;
 
+    // ─── RAS Galatama Subsystems ─────────────────────────────────────────────
+    private RasWaterSimulator rasSimulator;
+    private RasFishManager    rasFishManager;
+
     public static AquariumSystem CurrentOpen { get; private set; }
     public event Action<AquariumSystem> AquariumStateChanged;
     public event Action<AquariumSystem, WaterQualityState> WaterQualityChanged;
@@ -163,6 +168,10 @@ public class AquariumSystem : MonoBehaviour
     public bool IsFull => FishCount >= maxFish;
     public bool IsOpen => isOpen;
     public WaterQualityState WaterQuality => waterQuality;
+    public IReadOnlyList<AquariumFishSlotUI> FishSlots => fishSlots;
+    public Bounds SwimBounds => swimBounds != null
+        ? swimBounds.bounds
+        : new Bounds(fishContainer != null ? fishContainer.position : transform.position, Vector3.one * 4f);
 
     private void Awake()
     {
@@ -170,6 +179,21 @@ public class AquariumSystem : MonoBehaviour
             fishContainer = transform;
 
         EnsureFishSlots();
+        InitializeRasSubsystems();
+    }
+
+    private void InitializeRasSubsystems()
+    {
+        rasSimulator  = gameObject.AddComponent<RasWaterSimulator>();
+        rasFishManager = gameObject.AddComponent<RasFishManager>();
+
+        bool coolerInstalled = installedEquipment.Exists(
+            e => e != null && e.aquariumRole == AquariumEquipmentRole.Chiller);
+
+        rasSimulator.Initialize(waterQuality, coolerInstalled);
+        rasFishManager.Initialize(waterQuality, storedFish, rasSimulator);
+
+        rasFishManager.OnFishDied += HandleRasFishDeath;
     }
 
     private void Start()
@@ -183,7 +207,14 @@ public class AquariumSystem : MonoBehaviour
 
     private void Update()
     {
-        TickSimulation(Time.deltaTime);
+        // Simulasi kontinu berbasis Time.deltaTime (RAS Galatama real-time)
+        float dt = Time.deltaTime;
+        rasSimulator?.Tick(dt, CountLivingFish());
+        rasFishManager?.Tick(dt);
+        SyncCoolerState();
+
+        // Simulasi tick lama (equipment effects, UI refresh) tetap berjalan
+        TickSimulation(dt);
 
         if (!isOpen) return;
 
@@ -191,6 +222,37 @@ public class AquariumSystem : MonoBehaviour
         {
             CloseAquarium();
             PlayerInputManager.Instance.ResetInventoryInput();
+        }
+    }
+
+    /// <summary>
+    /// Sinkronisasi status cooler ke RasWaterSimulator saat equipment berubah.
+    /// </summary>
+    private void SyncCoolerState()
+    {
+        if (rasSimulator == null) return;
+
+        bool coolerInstalled = installedEquipment.Exists(
+            e => e != null && e.aquariumRole == AquariumEquipmentRole.Chiller);
+
+        rasSimulator.SetCoolerActive(coolerInstalled);
+    }
+
+    /// <summary>
+    /// Handler kematian ikan dari RasFishManager (DO rendah atau kelaparan).
+    /// </summary>
+    private void HandleRasFishDeath(string instanceId, string reason)
+    {
+        for (int i = 0; i < storedFish.Count; i++)
+        {
+            FishInstanceState fish = storedFish[i];
+            if (fish == null || fish.instanceId != instanceId) continue;
+
+            Debug.Log($"[Aquarium][RAS] Ikan '{fish.itemName}' mati karena {reason}.");
+            FishDied?.Invoke(this, fish);
+            FishStateChanged?.Invoke(this, fish);
+            RefreshWaterQualityUI();
+            break;
         }
     }
 
@@ -324,6 +386,7 @@ public class AquariumSystem : MonoBehaviour
         GameObject fishObject = SpawnFish(prefab);
         storedFish.Add(fishState);
         spawnedFish.Add(fishObject);
+        rasFishManager?.RegisterFish(fishState);
         RefreshUI();
         AquariumStateChanged?.Invoke(this);
         return true;
@@ -456,6 +519,154 @@ public class AquariumSystem : MonoBehaviour
         RefreshUI();
     }
 
+    public bool SetPh(float targetPh)
+    {
+        float before = waterQuality.ph;
+        waterQuality.ph = targetPh;
+        CommitWaterQualityChange();
+        Debug.Log($"[RAS][{name}] pH: {before:0.00} → {waterQuality.ph:0.00}");
+        return true;
+    }
+
+    public bool SetAmmonia(float targetAmmonia)
+    {
+        float before = waterQuality.ammonia;
+        waterQuality.ammonia = Mathf.Max(0f, targetAmmonia);
+        CommitWaterQualityChange();
+        Debug.Log($"[RAS][{name}] NH3: {before:0.00} → {waterQuality.ammonia:0.00}");
+        return true;
+    }
+
+    public bool ChangeSalinity(float amount)
+    {
+        float before = waterQuality.salinity;
+        waterQuality.salinity = Mathf.Max(0f, waterQuality.salinity + amount);
+        CommitWaterQualityChange();
+        Debug.Log($"[RAS][{name}] Salinitas: {before:0.00} → {waterQuality.salinity:0.00} (delta {amount:+0.00;-0.00})");
+        return true;
+    }
+
+    public bool IncreaseOxygen(float amount)
+    {
+        float before = waterQuality.oxygen;
+        waterQuality.oxygen = Mathf.Max(0f, waterQuality.oxygen + amount);
+        CommitWaterQualityChange();
+        Debug.Log($"[RAS][{name}] O2: {before:0.00} → {waterQuality.oxygen:0.00} (+{amount:0.00})");
+        return true;
+    }
+
+    public bool ChangeTemperature(float targetTemperature, float changePerTick)
+    {
+        float before = waterQuality.temperature;
+        float step = Mathf.Abs(changePerTick);
+        if (step <= 0f)
+            waterQuality.temperature = targetTemperature;
+        else
+            waterQuality.temperature = Mathf.MoveTowards(waterQuality.temperature, targetTemperature, step);
+
+        CommitWaterQualityChange();
+        Debug.Log($"[RAS][{name}] Suhu: {before:0.0} → {waterQuality.temperature:0.0} (target={targetTemperature:0.0}, step={changePerTick:0.0})");
+        return true;
+    }
+
+    public bool SpawnFoodPellet(GameObject pelletPrefab, float hungerReduction)
+    {
+        return SpawnFoodPellets(pelletPrefab, hungerReduction, 1);
+    }
+
+    public bool SpawnFoodPellets(GameObject pelletPrefab, float hungerReduction, int pelletCount)
+    {
+        GameObject prefab = pelletPrefab != null ? pelletPrefab : Resources.Load<GameObject>("Pelets_Fabs");
+        if (prefab == null)
+        {
+            Debug.LogError("[Aquarium] Prefab pelet tidak ditemukan. Assign prefab atau buat Resources/Pelets_Fabs.");
+            return false;
+        }
+
+        Bounds bounds = SwimBounds;
+        pelletCount = Mathf.Max(1, pelletCount);
+
+        // Diagram: Pakan (+) --> Ammonia (+) dan Pakan (+) --> pH (-)
+        // Setiap pellet yang di-spawn dihitung sebagai food load.
+        // Ikan yang makan akan menguranginya; sisanya membusuk secara alami.
+        rasSimulator?.AddFoodLoad(pelletCount);
+
+        for (int i = 0; i < pelletCount; i++)
+        {
+            Vector3 spawnPosition = new Vector3(
+                UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
+                bounds.max.y - 0.15f,
+                UnityEngine.Random.Range(bounds.min.z, bounds.max.z));
+
+            GameObject pellet = Instantiate(prefab, spawnPosition, Quaternion.identity);
+            AquariumFoodPellet food = pellet.GetComponent<AquariumFoodPellet>();
+            if (food == null)
+                food = pellet.AddComponent<AquariumFoodPellet>();
+
+            food.Initialize(this, hungerReduction);
+            NotifyFishAboutFood(food);
+        }
+
+        Debug.Log($"[Aquarium] {pelletCount} pelet ditebar ke aquarium. Food load: {rasSimulator?.FoodLoad:0.00}");
+        return true;
+    }
+
+    public void NotifyFishAboutFood(AquariumFoodPellet food)
+    {
+        if (food == null)
+            return;
+
+        for (int i = 0; i < storedFish.Count && i < spawnedFish.Count; i++)
+        {
+            FishInstanceState state = storedFish[i];
+            GameObject fishObject = spawnedFish[i];
+            if (state == null || fishObject == null || !state.isAlive)
+                continue;
+
+            float hungerValue = state.hunger;
+            float chaseChance = hungerValue < 40f ? 1f : 0.35f;
+            if (UnityEngine.Random.value > chaseChance)
+                continue;
+
+            FishBrain brain = fishObject.GetComponent<FishBrain>();
+            if (brain != null)
+                brain.SetFoodTarget(food.transform, 0.45f);
+        }
+    }
+
+    public bool TryConsumeFood(AquariumFoodPellet food, FishBrain eater)
+    {
+        if (food == null || eater == null)
+            return false;
+
+        int fishIndex = spawnedFish.IndexOf(eater.gameObject);
+        if (fishIndex < 0 || fishIndex >= storedFish.Count)
+            return false;
+
+        // Kurangi food load saat pellet dimakan ikan
+        // Diagram: saat Pakan dikonsumsi, efek NH3/pH dari pakan berkurang
+        rasSimulator?.ConsumeFoodLoad(1f);
+
+        // Terapkan efektivitas pakan dari kondisi air saat ini
+        float baseReduction = food.HungerReduction;
+        float efficiency    = rasSimulator != null ? rasSimulator.GetFeedEfficiency() : 1f;
+        FeedFish(fishIndex, baseReduction * efficiency);
+
+        for (int i = 0; i < spawnedFish.Count; i++)
+        {
+            GameObject fishObject = spawnedFish[i];
+            if (fishObject == null)
+                continue;
+
+            FishBrain brain = fishObject.GetComponent<FishBrain>();
+            if (brain != null)
+                brain.ClearFoodTarget(food.transform);
+        }
+
+        Destroy(food.gameObject);
+        return true;
+    }
+
     public bool InstallEquipment(EquipmentData equipment)
     {
         if (equipment == null || installedEquipment.Contains(equipment))
@@ -493,6 +704,15 @@ public class AquariumSystem : MonoBehaviour
         RefreshUI();
     }
 
+    private void CommitWaterQualityChange()
+    {
+        waterQuality.Clamp();
+        WaterQualityChanged?.Invoke(this, waterQuality);
+        // Hanya perbarui teks kualitas air, tidak re-spawn icon ikan
+        RefreshWaterQualityUI();
+        AquariumStateChanged?.Invoke(this);
+    }
+
     private GameObject SpawnFish(GameObject prefab)
     {
         Vector3 spawnPosition = GetRandomSwimPosition();
@@ -526,9 +746,14 @@ public class AquariumSystem : MonoBehaviour
     {
         if (fishObject == null || swimBounds == null) return;
 
+        Bounds bounds = swimBounds.bounds;
+
         FishBrain fishBrain = fishObject.GetComponent<FishBrain>();
         if (fishBrain != null)
-            fishBrain.SetBoundary(swimBounds.bounds);
+        {
+            fishBrain.SetBoundary(bounds);   // meneruskan bounds ke movement + wander
+            fishBrain.SetZoneType(ZoneType.Aquarium);
+        }
     }
 
     private void DisableAquariumCatchTags(GameObject fishObject)
@@ -581,10 +806,39 @@ public class AquariumSystem : MonoBehaviour
         return prefab.GetComponentInChildren<FishBase>(true) != null;
     }
 
+    /// <summary>
+    /// Tukar posisi dua ikan antar slot aquarium tanpa mengubah state ikan.
+    /// </summary>
+    public void SwapFish(int indexA, int indexB)
+    {
+        if (indexA == indexB) return;
+        if (indexA < 0 || indexA >= storedFish.Count) return;
+        if (indexB < 0 || indexB >= storedFish.Count) return;
+
+        // Swap storedFish
+        FishInstanceState temp = storedFish[indexA];
+        storedFish[indexA] = storedFish[indexB];
+        storedFish[indexB] = temp;
+
+        // Swap spawnedFish jika tersedia
+        if (indexA < spawnedFish.Count && indexB < spawnedFish.Count)
+        {
+            GameObject tempObj = spawnedFish[indexA];
+            spawnedFish[indexA] = spawnedFish[indexB];
+            spawnedFish[indexB] = tempObj;
+        }
+
+        RefreshUI();
+        Debug.Log($"[Aquarium] Ikan ditukar: slot {indexA} ↔ slot {indexB}");
+    }
+
     private void RemoveFishAt(int index)
     {
         if (index < 0 || index >= storedFish.Count)
             return;
+
+        FishInstanceState fish = storedFish[index];
+        rasFishManager?.UnregisterFish(fish);
 
         if (index < spawnedFish.Count && spawnedFish[index] != null)
             Destroy(spawnedFish[index]);
@@ -604,6 +858,9 @@ public class AquariumSystem : MonoBehaviour
 
         for (int i = 0; i < fishSlots.Count; i++)
         {
+            // Selalu pastikan setiap slot tahu pemilik AquariumSystem-nya
+            fishSlots[i].BindAquariumSystem(this);
+
             FishInstanceState fishState = i < storedFish.Count ? storedFish[i] : null;
             string itemName = fishState != null ? fishState.itemName : string.Empty;
             fishSlots[i].SetSlot(this, i, itemName, null, fishState);
@@ -621,8 +878,8 @@ public class AquariumSystem : MonoBehaviour
         if (warningText != null)
             warningText.text = BuildWarningText();
 
-        if (fishSlots.Count < maxFish)
-            Debug.LogWarning("[Aquarium] Jumlah slot UI lebih sedikit dari kapasitas aquarium. Slot: " + fishSlots.Count + ", kapasitas: " + maxFish);
+        if (fishSlots.Count < storedFish.Count)
+            Debug.LogWarning("[Aquarium] Jumlah slot UI (" + fishSlots.Count + ") lebih sedikit dari jumlah ikan (" + storedFish.Count + "). Beberapa ikan tidak tampil.");
     }
 
     private void EnsureFishSlots()
@@ -639,7 +896,8 @@ public class AquariumSystem : MonoBehaviour
                 fishSlots.Add(slot);
         }
 
-        fishSlots.Sort(CompareSlotsByHierarchy);
+        // Urutkan berdasarkan urutan hierarchy (sibling index) agar konsisten dengan nama Aqua_A_Slot_1..9
+        fishSlots.Sort(CompareSlotsByHierarchyOrder);
     }
 
     private bool IsSlotInsideAquariumUI(AquariumFishSlotUI slot)
@@ -654,13 +912,32 @@ public class AquariumSystem : MonoBehaviour
                slot.transform.IsChildOf(aquariumScreenUI.transform);
     }
 
-    private int CompareSlotsByHierarchy(AquariumFishSlotUI left, AquariumFishSlotUI right)
+    /// <summary>
+    /// Urutkan slot berdasarkan posisi dalam hierarchy (sibling index dari root ke bawah)
+    /// agar urutan slot konsisten dengan urutan visual Aqua_A_Slot_1..9.
+    /// </summary>
+    private int CompareSlotsByHierarchyOrder(AquariumFishSlotUI left, AquariumFishSlotUI right)
     {
         if (left == right) return 0;
         if (left == null) return 1;
         if (right == null) return -1;
 
-        return string.Compare(left.name, right.name, StringComparison.Ordinal);
+        // Hitung depth-first sibling path dari UI root ke slot
+        string leftPath = BuildHierarchyIndexPath(left.transform, aquariumScreenUI != null ? aquariumScreenUI.transform : null);
+        string rightPath = BuildHierarchyIndexPath(right.transform, aquariumScreenUI != null ? aquariumScreenUI.transform : null);
+
+        return string.Compare(leftPath, rightPath, System.StringComparison.Ordinal);
+    }
+
+    private static string BuildHierarchyIndexPath(Transform t, Transform root)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        while (t != null && t != root)
+        {
+            sb.Insert(0, t.GetSiblingIndex().ToString("D4") + "/");
+            t = t.parent;
+        }
+        return sb.ToString();
     }
 
     private void TickSimulation(float deltaTime)
@@ -685,8 +962,30 @@ public class AquariumSystem : MonoBehaviour
         SimulateFishNeeds();
         SimulateWaterQuality(livingFish);
         ApplyWaterStress();
-        RefreshUI();
+
+        // Hanya perbarui teks ringkasan air + warning — TIDAK re-spawn icon slot
+        RefreshWaterQualityUI();
         AquariumStateChanged?.Invoke(this);
+    }
+
+    /// <summary>
+    /// Perbarui hanya teks ringkasan kualitas air dan warning.
+    /// Dipanggil setiap simulation tick agar icon prefab ikan tidak dihapus/respawn ulang.
+    /// </summary>
+    private void RefreshWaterQualityUI()
+    {
+        if (fishCountText != null)
+            fishCountText.text = FishCount + " / " + maxFish;
+
+        if (waterQualityText != null)
+        {
+            waterQualityText.text =
+                $"NH3 {waterQuality.ammonia:0.00} | O2 {waterQuality.oxygen:0.0} | " +
+                $"Temp {waterQuality.temperature:0.0} | pH {waterQuality.ph:0.0} | Sal {waterQuality.salinity:0.0}";
+        }
+
+        if (warningText != null)
+            warningText.text = BuildWarningText();
     }
 
     private void SimulateFishNeeds()

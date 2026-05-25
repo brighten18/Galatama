@@ -18,3 +18,14 @@ MonoBehaviour:
   localPosition: {x: 0, y: 0, z: 0}
   localRotation: {x: -90, y: 0, z: 180}
   localScale: {x: 1, y: 1, z: 2.397091}
+  aquariumRole: 0
+  ammoniaReductionPerTick: 0
+  oxygenIncreasePerTick: 0
+  temperatureChangePerTick: 0
+  targetTemperature: 0
+  salinityChange: 0
+  cooldownSeconds: 0
+  targetPh: 0
+  targetAmmonia: 0
+  instantOxygenIncrease: 0
+  feedHungerReduction: 0

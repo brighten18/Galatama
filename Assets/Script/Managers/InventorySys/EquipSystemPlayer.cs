@@ -228,6 +228,18 @@ public class EquipSystem : MonoBehaviour
         return EquipmentType.Default;
     }
 
+    public EquipmentData GetEquippedData()
+    {
+        if (!isnowEquipped || SelectedItem == null)
+            return null;
+
+        string itemName = ItemNameUtility.CleanName(SelectedItem.name);
+        if (equipmentDataMap != null && equipmentDataMap.TryGetValue(itemName, out EquipmentData data))
+            return data;
+
+        return null;
+    }
+
     public string GetEquippedItemName()
     {
         if (!isnowEquipped || SelectedItem == null)

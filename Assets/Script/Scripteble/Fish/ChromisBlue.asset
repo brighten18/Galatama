@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a04d0c7c148a76f4b951381c65e32e49, type: 3}
   m_Name: ChromisBlue
   m_EditorClassIdentifier: Assembly-CSharp::FishData
-  itemName: Chorimis Blue
+  itemName: ChorimisBlue
   weight: 0.8
   swimSpeed: 1.3

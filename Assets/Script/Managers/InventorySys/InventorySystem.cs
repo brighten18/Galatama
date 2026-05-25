@@ -30,6 +30,21 @@ public class InventorySystem : MonoBehaviour
     public Text FishHealth;
     public Text FishStatus;
 
+    [Header("Pickup Alert Timing")]
+    [SerializeField] private float pickupAlertDuration = 2f;
+    [SerializeField] private float fishPickupAlertDuration = 3f;
+
+    private readonly Queue<PickupAlertEntry> pickupAlertQueue = new Queue<PickupAlertEntry>();
+    private Coroutine pickupAlertRoutine;
+
+    private struct PickupAlertEntry
+    {
+        public string itemName;
+        public Sprite icon;
+        public FishInstanceState fishState;
+        public bool isFish;
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -81,6 +96,9 @@ public class InventorySystem : MonoBehaviour
 
     void Update()
     {
+        if (PauseManager.Instance != null && PauseManager.Instance.IsPaused)
+            return;
+
         bool inventoryPressed = PlayerInputManager.Instance != null && PlayerInputManager.Instance.Inventory;
 
         if (inventoryPressed && !inventoryPressedLastFrame)
@@ -136,7 +154,6 @@ public class InventorySystem : MonoBehaviour
         CheckFull();
 
         Image itemImage = ObjToAdd.GetComponent<Image>();
-        FishImage.sprite = itemImage != null ? itemImage.sprite : null;
         TriggerPickupAlert(ItemName, itemImage != null ? itemImage.sprite : null);
         return true;
     }
@@ -153,8 +170,7 @@ public class InventorySystem : MonoBehaviour
 
         AttachFishState(itemObject, fishState);
         Image itemImage = itemObject.GetComponent<Image>();
-        FishImage.sprite = itemImage != null ? itemImage.sprite : null;
-        // TriggerFishPickupAlert(fishState.itemName, itemImage != null ? itemImage.sprite : null, fishState);
+        TriggerFishPickupAlert(fishState.itemName, itemImage != null ? itemImage.sprite : null, fishState);
         return true;
     }
 
@@ -188,7 +204,6 @@ public class InventorySystem : MonoBehaviour
         CheckFull();
 
         Image itemImage = itemObject.GetComponent<Image>();
-        FishImage.sprite = itemImage != null ? itemImage.sprite : null;
         TriggerPickupAlert(ItemName, itemImage != null ? itemImage.sprite : null);
         return true;
     }
@@ -217,7 +232,6 @@ public class InventorySystem : MonoBehaviour
         CheckFull();
 
         Image itemImage = itemObject.GetComponent<Image>();
-        FishImage.sprite = itemImage != null ? itemImage.sprite : null;
         TriggerFishPickupAlert(fishState.itemName, itemImage != null ? itemImage.sprite : null, fishState);
         return true;
     }
@@ -272,44 +286,135 @@ public class InventorySystem : MonoBehaviour
 
     public void TriggerPickupAlert(string itemName, Sprite itemSprite)
     {
-        PickupAlertName.text = itemName;
-        PickupAlertImage.sprite = itemSprite;
-        PickupAlertUI.SetActive(true);
-        StartCoroutine(HidePickupAlertAfterDelay(2f));
+        EnqueuePickupAlert(new PickupAlertEntry
+        {
+            itemName = itemName,
+            icon = itemSprite,
+            fishState = null,
+            isFish = false
+        });
     }
 
-        public void TriggerFishPickupAlert(string fishName, Sprite icon, FishInstanceState state)
+    public void TriggerFishPickupAlert(string fishName, Sprite icon, FishInstanceState state)
+    {
+        EnqueuePickupAlert(new PickupAlertEntry
+        {
+            itemName = fishName,
+            icon = icon,
+            fishState = state,
+            isFish = true
+        });
+    }
+
+    private void EnqueuePickupAlert(PickupAlertEntry entry)
+    {
+        pickupAlertQueue.Enqueue(entry);
+
+        if (pickupAlertRoutine == null)
+        {
+            pickupAlertRoutine = StartCoroutine(ProcessPickupAlertQueue());
+        }
+    }
+
+    private IEnumerator ProcessPickupAlertQueue()
+    {
+        while (pickupAlertQueue.Count > 0)
+        {
+            PickupAlertEntry entry = pickupAlertQueue.Dequeue();
+            if (entry.isFish)
+            {
+                ShowPickupAlert(entry.itemName, entry.icon);
+
+                if (FishThingsUI != null)
+                {
+                    ShowFishPickupAlert(entry.itemName, entry.icon, entry.fishState);
+                }
+
+                yield return new WaitForSeconds(fishPickupAlertDuration);
+
+                if (PickupAlertUI != null)
+                {
+                    PickupAlertUI.SetActive(false);
+                }
+
+                if (FishThingsUI != null)
+                {
+                    FishThingsUI.SetActive(false);
+                }
+            }
+            else
+            {
+                ShowPickupAlert(entry.itemName, entry.icon);
+                if (FishThingsUI != null)
+                {
+                    FishThingsUI.SetActive(false);
+                }
+
+                yield return new WaitForSeconds(pickupAlertDuration);
+
+                if (PickupAlertUI != null)
+                {
+                    PickupAlertUI.SetActive(false);
+                }
+            }
+        }
+
+        pickupAlertRoutine = null;
+    }
+
+    private void ShowPickupAlert(string itemName, Sprite itemSprite)
+    {
+        if (PickupAlertUI == null)
+        {
+            return;
+        }
+
+        if (PickupAlertName != null)
+        {
+            PickupAlertName.text = itemName;
+        }
+
+        if (PickupAlertImage != null)
+        {
+            PickupAlertImage.sprite = itemSprite;
+        }
+
+        PickupAlertUI.SetActive(true);
+    }
+
+    private void ShowFishPickupAlert(string fishName, Sprite icon, FishInstanceState state)
     {
         if (FishThingsUI == null) return;
 
-        FishName.text = fishName;
-        FishImage.sprite = icon;
+        if (FishName != null)
+            FishName.text = fishName;
+
+        if (FishImage != null)
+            FishImage.sprite = icon;
 
         if (state != null)
         {
-            FishHunger.text = $"Lapar: {state.hunger:0}/{state.maxHunger:0}";
-            FishHealth.text = $"HP: {state.health:0}/{state.maxHealth:0}";
+            if (FishHunger != null)
+                FishHunger.text = $"Lapar: {state.hunger:0}/{state.maxHunger:0}";
 
-            if (!state.isAlive)
-                FishStatus.text = "Mati";
-            else if (state.isStressed)
-                FishStatus.text = "Stress";
-            else if (state.HungerPercent >= 0.8f)
-                FishStatus.text = "Lapar";
-            else
-                FishStatus.text = "Sehat";
+            if (FishHealth != null)
+                FishHealth.text = $"HP: {state.health:0}/{state.maxHealth:0}";
+
+            if (FishStatus != null)
+            {
+                if (!state.isAlive)
+                    FishStatus.text = "Mati";
+                else if (state.isStressed)
+                    FishStatus.text = "Stress";
+                else if (state.HungerPercent >= 0.8f)
+                    FishStatus.text = "Lapar";
+                else
+                    FishStatus.text = "Sehat";
+            }
         }
 
         FishThingsUI.SetActive(true);
-        // StartCoroutine(HideFishAlertAfterDelay(3f));
     }
-
-    // private IEnumerator HideFishAlertAfterDelay(float delay)
-    // {
-    //     yield return new WaitForSeconds(delay);
-    //     if (FishThingsUI != null)
-    //         FishThingsUI.SetActive(false);
-    // }
 
     private IEnumerator HidePickupAlertAfterDelay(float delay)
     {

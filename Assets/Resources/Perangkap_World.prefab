@@ -82,6 +82,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6276154386484370802}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7120815545283643393}
   m_SourcePrefab: {fileID: 100100000, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
 --- !u!1 &9110158947458950593 stripped
 GameObject:
@@ -107,7 +110,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.06, y: 0.06, z: 0.06}
+  m_Size: {x: 0.03, y: 0.03, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &8263156001259002003
 Rigidbody:
@@ -149,6 +152,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishTrapWorld
   itemName: Perangkap
+  keepInWorldAfterInteract: 0
+  respawnAfterPickup: 0
+  respawnCooldownSeconds: 20
+  useHighlight: 1
+  autoAddOutlineIfMissing: 0
+  highlightMode: 1
+  highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  highlightWidth: 4
   lureRadius: 2
   captureRadius: 0.8
   minCaptureDelay: 1
@@ -170,6 +181,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
   itemName: Perangkap
+  keepInWorldAfterInteract: 0
+  respawnAfterPickup: 0
+  respawnCooldownSeconds: 20
+  useHighlight: 1
+  autoAddOutlineIfMissing: 0
+  highlightMode: 1
+  highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  highlightWidth: 4
 --- !u!135 &6276154386484370801
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -204,3 +223,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishTrapPickupTrigger
   trapWorld: {fileID: 8263156001259002004}
+--- !u!114 &7120815545283643393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9110158947458950593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Outline
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 1
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []

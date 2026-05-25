@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a04d0c7c148a76f4b951381c65e32e49, type: 3}
   m_Name: FireFish
   m_EditorClassIdentifier: Assembly-CSharp::FishData
-  itemName: Fire Fish
+  itemName: FireFish
   weight: 0.3
   swimSpeed: 0.2

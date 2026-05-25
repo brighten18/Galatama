@@ -5,7 +5,7 @@ using StarterAssets;
 public class PlayerInputManager : MonoBehaviour
 {
     public static PlayerInputManager Instance { get; private set; }
-    private MonoBehaviour playerController;
+    private StarterAssets.ThirdPersonController playerController;
 
     private StarterAssetsInputs _input;
 
@@ -17,6 +17,7 @@ public class PlayerInputManager : MonoBehaviour
     public bool Interact => _input != null && _input.Interact;
     public bool Inventory => _input != null && _input.Inventory;
     public bool InteractOBJ => _input != null && _input.InteractOBJ;
+    public bool Pause => _input != null && _input.Pause;
 
     // Quick Slot Inputs
     public bool QuickSlot1 => _input != null && _input.QuickSlot1;
@@ -91,6 +92,14 @@ public class PlayerInputManager : MonoBehaviour
         }
     }
 
+    public void ResetPauseInput()
+    {
+        if (_input != null)
+        {
+            _input.Pause = false;
+        }
+    }
+
     public void SetCursorAndLook(bool locked, bool enableLook)
     {
         if (_input != null)
@@ -112,7 +121,7 @@ public class PlayerInputManager : MonoBehaviour
         }
 
         if (playerController != null)
-            playerController.enabled = enabled;
+            playerController.SetMovementBlocked(!enabled);
     }
     public int GetPressedQuickSlot()
     {

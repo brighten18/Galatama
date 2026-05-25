@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -91,12 +91,17 @@ namespace StarterAssets
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
 
+        // Jeda setelah lompat agar GroundedCheck tidak langsung memutus jump
+        private float _jumpGroundCooldown = 0f;
+        private const float JumpGroundCooldownDuration = 0.15f;
+
         // animation IDs
         private int _animIDSpeed;
         private int _animIDGrounded;
         private int _animIDJump;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
+        private int _animIDPickUp;
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
@@ -109,6 +114,7 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
+        private bool _movementBlocked;
 
         private bool IsCurrentDeviceMouse
         {
@@ -154,8 +160,6 @@ namespace StarterAssets
 
         private void Update()
         {
-            _hasAnimator = TryGetComponent(out _animator);
-
             JumpAndGravity();
             GroundedCheck();
             Move();
@@ -173,10 +177,21 @@ namespace StarterAssets
             _animIDJump = Animator.StringToHash("Jump");
             _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+            _animIDPickUp = Animator.StringToHash("PickUp");
         }
 
         private void GroundedCheck()
         {
+            // Saat cooldown post-jump aktif, anggap tidak grounded agar velocity tidak di-reset
+            if (_jumpGroundCooldown > 0f)
+            {
+                _jumpGroundCooldown -= Time.deltaTime;
+                Grounded = false;
+                if (_hasAnimator)
+                    _animator.SetBool(_animIDGrounded, false);
+                return;
+            }
+
             // set sphere position, with offset
             Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
                 transform.position.z);
@@ -213,6 +228,12 @@ namespace StarterAssets
 
         private void Move()
         {
+            if (_movementBlocked)
+            {
+                _input.move = Vector2.zero;
+                _input.sprint = false;
+            }
+
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
@@ -245,7 +266,10 @@ namespace StarterAssets
                 _speed = targetSpeed;
             }
 
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+            // Normalize animationBlend to 0-1 range to match the blend tree thresholds (0 = Idle, 1 = Walk/Run)
+            float maxSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            float normalizedTarget = (maxSpeed > 0f && targetSpeed > 0f) ? 1f : 0f;
+            _animationBlend = Mathf.Lerp(_animationBlend, normalizedTarget, Time.deltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             // normalise input direction
@@ -281,6 +305,11 @@ namespace StarterAssets
 
         private void JumpAndGravity()
         {
+            if (_movementBlocked)
+            {
+                _input.jump = false;
+            }
+
             if (Grounded)
             {
                 // reset the fall timeout timer
@@ -299,11 +328,17 @@ namespace StarterAssets
                     _verticalVelocity = -2f;
                 }
 
-                // Jump
+                // Jump — only allowed when grounded AND jump timeout has elapsed
                 if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+
+                    // Aktifkan cooldown agar GroundedCheck tidak langsung menghentikan lompatan
+                    _jumpGroundCooldown = JumpGroundCooldownDuration;
+
+                    // Reset jump timeout so the player cannot jump again immediately
+                    _jumpTimeoutDelta = JumpTimeout;
 
                     // update animator if using character
                     if (_hasAnimator)
@@ -312,17 +347,17 @@ namespace StarterAssets
                     }
                 }
 
-                // jump timeout
+                // Count down jump timeout only while grounded (so it doesn't reset in air)
                 if (_jumpTimeoutDelta >= 0.0f)
                 {
                     _jumpTimeoutDelta -= Time.deltaTime;
                 }
+
+                // Consume jump input so it doesn't carry over
+                _input.jump = false;
             }
             else
             {
-                // reset the jump timeout timer
-                _jumpTimeoutDelta = JumpTimeout;
-
                 // fall timeout
                 if (_fallTimeoutDelta >= 0.0f)
                 {
@@ -367,6 +402,28 @@ namespace StarterAssets
             Gizmos.DrawSphere(
                 new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
                 GroundedRadius);
+        }
+
+        /// <summary>
+        /// Trigger animasi PickUp pada Animator player. Dipanggil dari InteractableObject saat item diambil.
+        /// </summary>
+        public void TriggerPickUpAnimation()
+        {
+            if (_hasAnimator)
+            {
+                _animator.SetTrigger(_animIDPickUp);
+            }
+        }
+
+        public void SetMovementBlocked(bool blocked)
+        {
+            _movementBlocked = blocked;
+            if (blocked)
+            {
+                _input.move = Vector2.zero;
+                _input.sprint = false;
+                _input.jump = false;
+            }
         }
 
         private void OnFootstep(AnimationEvent animationEvent)

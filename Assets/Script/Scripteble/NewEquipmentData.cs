@@ -5,16 +5,21 @@ public enum EquipmentType
     Default,
     FishingNet,
     Tool,
-    Trap
+    Trap,
+    FishFood,
+    PhControl,
+    AmoniaControl,
+    SaltControl,
 }
 
 public enum AquariumEquipmentRole
 {
     None,
-    Filter,
+    WaterPump,
     Aerator,
     Heater,
-    Chiller
+    Chiller,
+
 }
 
 [CreateAssetMenu(fileName = "EquipmentData", menuName = "Equipment/EquipmentData")]
@@ -34,4 +39,13 @@ public class EquipmentData : ScriptableObject
     public float oxygenIncreasePerTick;
     public float temperatureChangePerTick;
     public float targetTemperature = 26f;
+    public float salinityChange;
+
+    [Header("Direct Aquarium Action")]
+    public float cooldownSeconds = 3f;
+    public float targetPh = 8f;
+    public float targetAmmonia = 0f;
+    public float instantOxygenIncrease = 1.5f;
+    public float feedHungerReduction = 35f;
+    public int pelletSpawnCount = 8;
 }

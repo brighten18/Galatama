@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fe16c7cbae058a41880fadc69130eb3, type: 3}
+  m_Name: WaveQuiz3
+  m_EditorClassIdentifier: Assembly-CSharp::QuizWaveSO
+  waveNumber: 2
+  questionCountToAsk: 5
+  questionPool:
+  - {fileID: 11400000, guid: 3dd9ee74b7e475b4ab7566d542937a79, type: 2}
+  - {fileID: 11400000, guid: 4df7b477a6b7144409eefc83f45eb2a1, type: 2}
+  - {fileID: 11400000, guid: eafdc665f7d4b44409198f9345875d75, type: 2}
+  - {fileID: 11400000, guid: bacc91660ba6ff64bbcc7bdb18e67b03, type: 2}
+  - {fileID: 11400000, guid: 3e64532aec6e76e42a6d7d1135a311d6, type: 2}

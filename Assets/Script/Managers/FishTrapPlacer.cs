@@ -17,6 +17,13 @@ public class FishTrapPlacer : MonoBehaviour
 
     void Update()
     {
+        if (QuizSessionLock.IsLocked)
+        {
+            if (PlayerInputManager.Instance != null)
+                PlayerInputManager.Instance.ResetInteractOBJInput();
+            return;
+        }
+
         if (!IsEquippedTrap() || isPlacing)
         {
             return;

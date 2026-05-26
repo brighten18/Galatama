@@ -25,6 +25,13 @@ public class FishTrapWorld : InteractableObject
 
     protected override void Update()
     {
+        if (QuizSessionLock.IsLocked)
+        {
+            if (PlayerInputManager.Instance != null)
+                PlayerInputManager.Instance.ResetInteractInput();
+            return;
+        }
+
         if (playerInPickupRange &&
             PlayerInputManager.Instance != null &&
             PlayerInputManager.Instance.Interact &&

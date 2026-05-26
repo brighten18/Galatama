@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e98f76bf364bf84994f145b6a0efa3f, type: 3}
+  m_Name: 2W_Quiz 4
+  m_EditorClassIdentifier: Assembly-CSharp::QuizQuestionSO
+  question: Apa kegunaan alat lidi pengusir dalam teknik penangkapan ikan ramah lingkungan?
+  options:
+  - Untuk memancing ikan agar memakan umpan
+  - Mengeluarkan ikan dari celah karang tanpa merusaknya
+  - Sebagai tiang penahan jaring pukat
+  - Untuk menusuk ikan target
+  correctIndex: 1

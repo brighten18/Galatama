@@ -24,6 +24,13 @@ public class Equiptable_Items : MonoBehaviour
 
     void Update()
     {
+        if (QuizSessionLock.IsLocked)
+        {
+            if (PlayerInputManager.Instance != null)
+                PlayerInputManager.Instance.ResetInteractOBJInput();
+            return;
+        }
+
         if (!IsEquipped())
         {
             return;            

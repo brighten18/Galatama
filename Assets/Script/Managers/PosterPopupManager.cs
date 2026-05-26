@@ -36,15 +36,6 @@ public class PosterPopupManager : MonoBehaviour
             popupRoot.SetActive(false);
     }
 
-    private void Update()
-    {
-        if (!isOpen)
-            return;
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-            ClosePoster();
-    }
-
     public void OpenPoster(PosterData data)
     {
         if (data == null)
@@ -101,6 +92,11 @@ public class PosterPopupManager : MonoBehaviour
         }
 
         Cursor.visible = false;
+    }
+
+    public void OnCloseButtonPressed()
+    {
+        ClosePoster();
     }
 
     private void PlayOpenSfx()

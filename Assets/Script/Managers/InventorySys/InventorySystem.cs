@@ -96,6 +96,13 @@ public class InventorySystem : MonoBehaviour
 
     void Update()
     {
+        if (QuizSessionLock.IsLocked)
+        {
+            if (PlayerInputManager.Instance != null)
+                PlayerInputManager.Instance.ResetInventoryInput();
+            return;
+        }
+
         if (PauseManager.Instance != null && PauseManager.Instance.IsPaused)
             return;
 
@@ -103,6 +110,11 @@ public class InventorySystem : MonoBehaviour
 
         if (inventoryPressed && !inventoryPressedLastFrame)
         {
+            if (PosterPopupManager.Instance != null && PosterPopupManager.Instance.IsOpen)
+            {
+                PosterPopupManager.Instance.ClosePoster();
+            }
+
             if (!isOpen)
             {
                 inventoryScreenUI.SetActive(true);

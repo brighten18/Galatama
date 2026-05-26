@@ -49,6 +49,9 @@ public class InteractableObject : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (QuizSessionLock.IsLocked)
+            return;
+
         if (CanInteract())
         {
             HandleInteract();

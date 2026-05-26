@@ -32,7 +32,29 @@ public class PauseManager : MonoBehaviour
 
     private void Update()
     {
+        if (QuizSessionLock.IsLocked)
+        {
+            if (PlayerInputManager.Instance != null)
+                PlayerInputManager.Instance.ResetPauseInput();
+
+            pausePressedLastFrame = false;
+            return;
+        }
+
         bool pausePressed = PlayerInputManager.Instance != null && PlayerInputManager.Instance.Pause;
+
+        if (PosterPopupManager.Instance != null && PosterPopupManager.Instance.IsOpen)
+        {
+            if (pausePressed && !pausePressedLastFrame)
+            {
+                PosterPopupManager.Instance.ClosePoster();
+                PlayerInputManager.Instance.ResetPauseInput();
+            }
+
+            pausePressedLastFrame = pausePressed;
+            return;
+        }
+
         if (pausePressed && !pausePressedLastFrame)
         {
             TogglePause();

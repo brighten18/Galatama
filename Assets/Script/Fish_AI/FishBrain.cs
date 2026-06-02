@@ -30,6 +30,11 @@ public class FishBrain : MonoBehaviour
     [Tooltip("Pengali kecepatan di aquarium")]
     [SerializeField] private float aquariumSpeedMultiplier = 0.65f;
 
+    [Header("Terrain Avoidance")]
+    [Range(0f, 5f)]
+    [Tooltip("Seberapa kuat ikan menghindari permukaan terrain")]
+    [SerializeField] private float terrainAvoidanceWeight = 3f;
+
     private FishMovement movement;
     private FishFlockingBehavior flocking;
     private FishWanderBehavior wander;
@@ -78,6 +83,7 @@ public class FishBrain : MonoBehaviour
         Vector3 wanderForce    = wander.CalculateWanderForce();
         Vector3 boundaryForce  = movement.GetBoundarySteering();
         Vector3 flockingForce  = ShouldUseFlocking() ? flocking.CalculateFlockingForce() : Vector3.zero;
+        Vector3 terrainForce   = movement.GetTerrainAvoidanceSteering();
 
         float activeWanderWeight   = currentZoneType == ZoneType.Aquarium ? aquariumWanderWeight   : wanderWeight;
         float activeBoundaryWeight = currentZoneType == ZoneType.Aquarium ? aquariumBoundaryWeight  : boundaryWeight;
@@ -86,7 +92,8 @@ public class FishBrain : MonoBehaviour
         Vector3 finalDirection =
             flockingForce  * activeFlockingWeight  +
             wanderForce    * activeWanderWeight    +
-            boundaryForce  * activeBoundaryWeight;
+            boundaryForce  * activeBoundaryWeight  +
+            terrainForce   * terrainAvoidanceWeight;
 
         if (finalDirection.sqrMagnitude > 0.0001f)
         {

@@ -16,6 +16,12 @@ public class FishMovement : MonoBehaviour
     [SerializeField] private bool lockYPosition = false;
     [SerializeField] private float fixedYPosition = 5f;
 
+    [Header("Terrain Avoidance")]
+    [Tooltip("Jarak minimum ikan dari permukaan terrain")]
+    [SerializeField] private float terrainOffset = 0.5f;
+    [Tooltip("Jarak mulai menghindari terrain (steering mulai aktif)")]
+    [SerializeField] private float terrainAvoidanceDistance = 2f;
+
     private Transform fishTransform;
     private Bounds zoneBounds;
     private Collider boundaryCollider;
@@ -56,6 +62,7 @@ public class FishMovement : MonoBehaviour
             newPosition.y = fixedYPosition;
         }
 
+        newPosition = ClampAboveTerrain(newPosition);
         fishTransform.position = hasBounds ? ClampToBounds(newPosition) : newPosition;
     }
 
@@ -253,4 +260,43 @@ public class FishMovement : MonoBehaviour
     public Vector3 GetPosition() => fishTransform.position;
     public Vector3 GetForward() => fishTransform.forward;
     public float GetSpeed() => moveSpeed;
+
+    // ─── Terrain Avoidance ──────────────────────────────────────────────────
+
+    /// <summary>
+    /// Kembalikan gaya steering ke atas saat ikan terlalu dekat dengan terrain.
+    /// Dipanggil oleh FishBrain dan digabungkan ke final direction.
+    /// </summary>
+    public Vector3 GetTerrainAvoidanceSteering()
+    {
+        Terrain terrain = Terrain.activeTerrain;
+        if (terrain == null) return Vector3.zero;
+
+        Vector3 pos = fishTransform.position;
+        float terrainWorldY = terrain.SampleHeight(pos) + terrain.transform.position.y;
+        float distanceAboveTerrain = pos.y - terrainWorldY;
+
+        if (distanceAboveTerrain >= terrainAvoidanceDistance) return Vector3.zero;
+
+        float strength = 1f - Mathf.Clamp01(distanceAboveTerrain / Mathf.Max(0.01f, terrainAvoidanceDistance));
+        return Vector3.up * strength;
+    }
+
+    /// <summary>
+    /// Pastikan posisi tidak berada di bawah permukaan terrain.
+    /// Hard clamp sebagai failsafe terakhir.
+    /// </summary>
+    private Vector3 ClampAboveTerrain(Vector3 position)
+    {
+        Terrain terrain = Terrain.activeTerrain;
+        if (terrain == null) return position;
+
+        float terrainWorldY = terrain.SampleHeight(position) + terrain.transform.position.y;
+        float minY = terrainWorldY + terrainOffset;
+
+        if (position.y < minY)
+            position.y = minY;
+
+        return position;
+    }
 }

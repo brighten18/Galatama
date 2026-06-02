@@ -18,6 +18,7 @@ public class FishMovement : MonoBehaviour
 
     private Transform fishTransform;
     private Bounds zoneBounds;
+    private Collider boundaryCollider;
     private bool hasBounds = false;
 
     void Awake()
@@ -102,6 +103,7 @@ public class FishMovement : MonoBehaviour
     public void SetBoundary(Bounds bounds)
     {
         zoneBounds = bounds;
+        boundaryCollider = null;
         hasBounds = true;
 
         if (lockYPosition)
@@ -112,9 +114,25 @@ public class FishMovement : MonoBehaviour
         fishTransform.position = ClampToBounds(fishTransform.position);
     }
 
+    public void SetBoundary(Collider colliderBoundary)
+    {
+        if (colliderBoundary == null) return;
+
+        boundaryCollider = colliderBoundary;
+        zoneBounds = colliderBoundary.bounds;
+        hasBounds = true;
+
+        if (lockYPosition)
+            fixedYPosition = colliderBoundary.bounds.center.y;
+
+        fishTransform.position = ClampToBounds(fishTransform.position);
+    }
+
     public Vector3 GetBoundarySteering()
     {
         if (!hasBounds) return Vector3.zero;
+        if (boundaryCollider != null && boundaryCollider.enabled)
+            return GetColliderBoundarySteering();
 
         Vector3 pos = fishTransform.position;
         Vector3 min = GetSafeMin();
@@ -130,6 +148,25 @@ public class FishMovement : MonoBehaviour
         }
 
         return steer;
+    }
+
+    private Vector3 GetColliderBoundarySteering()
+    {
+        Vector3 pos = fishTransform.position;
+        Vector3 closest = boundaryCollider.ClosestPoint(pos);
+        Vector3 toClosest = closest - pos;
+
+        if (toClosest.sqrMagnitude > 0.0001f)
+            return toClosest.normalized * 2f;
+
+        Vector3 ahead = pos + fishTransform.forward * Mathf.Max(0.05f, boundaryTurnDistance);
+        Vector3 closestAhead = boundaryCollider.ClosestPoint(ahead);
+        Vector3 pullBack = closestAhead - ahead;
+
+        if (lockYPosition)
+            pullBack.y = 0f;
+
+        return pullBack;
     }
 
     private void AddAxisSteering(float value, float min, float max, Vector3 axis, ref Vector3 steer)
@@ -163,6 +200,9 @@ public class FishMovement : MonoBehaviour
 
     private Vector3 ClampToBounds(Vector3 position)
     {
+        if (boundaryCollider != null && boundaryCollider.enabled)
+            return ClampToCollider(position);
+
         Vector3 min = GetSafeMin();
         Vector3 max = GetSafeMax();
 
@@ -171,6 +211,20 @@ public class FishMovement : MonoBehaviour
         position.y = lockYPosition ? fixedYPosition : Mathf.Clamp(position.y, min.y, max.y);
 
         return position;
+    }
+
+    private Vector3 ClampToCollider(Vector3 position)
+    {
+        Vector3 closest = boundaryCollider.ClosestPoint(position);
+        Vector3 result = position;
+
+        if ((closest - position).sqrMagnitude > 0.0001f)
+            result = closest;
+
+        if (lockYPosition)
+            result.y = fixedYPosition;
+
+        return result;
     }
 
     private Vector3 GetSafeMin()

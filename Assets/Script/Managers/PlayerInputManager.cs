@@ -150,7 +150,7 @@ public class PlayerInputManager : MonoBehaviour
         }
     }
 
-    // ✏️ DITAMBAH: Reset semua QuickSlot sekaligus
+    // âœï¸ DITAMBAH: Reset semua QuickSlot sekaligus
     public void ResetAllQuickSlotInputs()
     {
         if (_input == null) return;

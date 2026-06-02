@@ -163,6 +163,7 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+            HandlePickUpInput();
         }
 
         private void LateUpdate()
@@ -237,9 +238,9 @@ namespace StarterAssets
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
-            // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
+            // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iter...
 
-            // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+            // note: Vector2's == operator uses approximation so is not floating point error prone, and i...
             // if there is no input, set the target speed to 0
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
@@ -266,7 +267,7 @@ namespace StarterAssets
                 _speed = targetSpeed;
             }
 
-            // Normalize animationBlend to 0-1 range to match the blend tree thresholds (0 = Idle, 1 = Walk/Run)
+            // Normalize animationBlend to 0-1 range to match the blend tree thresholds (0 = Idle, 1 = Wa...
             float maxSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
             float normalizedTarget = (maxSpeed > 0f && targetSpeed > 0f) ? 1f : 0f;
             _animationBlend = Mathf.Lerp(_animationBlend, normalizedTarget, Time.deltaTime * SpeedChangeRate);
@@ -275,7 +276,7 @@ namespace StarterAssets
             // normalise input direction
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
-            // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+            // note: Vector2's != operator uses approximation so is not floating point error prone, and i...
             // if there is a move input rotate player when the player is moving
             if (_input.move != Vector2.zero)
             {
@@ -328,7 +329,7 @@ namespace StarterAssets
                     _verticalVelocity = -2f;
                 }
 
-                // Jump — only allowed when grounded AND jump timeout has elapsed
+                // Jump â€” only allowed when grounded AND jump timeout has elapsed
                 if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
@@ -376,7 +377,7 @@ namespace StarterAssets
                 _input.jump = false;
             }
 
-            // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
+            // apply gravity over time if under terminal (multiply by delta time twice to linearly speed...
             if (_verticalVelocity < _terminalVelocity)
             {
                 _verticalVelocity += Gravity * Time.deltaTime;
@@ -398,18 +399,30 @@ namespace StarterAssets
             if (Grounded) Gizmos.color = transparentGreen;
             else Gizmos.color = transparentRed;
 
-            // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
+            // when selected, draw a gizmo in the position of, and matching radius of, the grounded colli...
             Gizmos.DrawSphere(
                 new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
                 GroundedRadius);
         }
 
         /// <summary>
-        /// Trigger animasi PickUp pada Animator player. Dipanggil dari InteractableObject saat item diambil.
+        /// Trigger animasi PickUp pada Animator player.
         /// </summary>
         public void TriggerPickUpAnimation()
         {
             if (_hasAnimator)
+            {
+                _animator.SetTrigger(_animIDPickUp);
+            }
+        }
+
+        /// <summary>
+        /// Mendeteksi input Interact dan InteractOBJ setiap frame dan memicu animasi PickUp bila play...
+        /// </summary>
+        private void HandlePickUpInput()
+        {
+            if (!_hasAnimator || _movementBlocked || !Grounded) return;
+            if (_input.Interact || _input.InteractOBJ)
             {
                 _animator.SetTrigger(_animIDPickUp);
             }

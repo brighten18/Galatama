@@ -28,9 +28,7 @@ public enum DOStatus
 /// </summary>
 public class RasWaterSimulator : MonoBehaviour
 {
-    // =========================================================================
     // KONSTANTA LAJU PER-DETIK (5x Slower System)
-    // =========================================================================
 
     // --- Temperature ---
     // +1 derajat per 5 menit jika Cooler mati
@@ -100,9 +98,7 @@ public class RasWaterSimulator : MonoBehaviour
     private const float DO_DANGER_THRESHOLD            = 5f;
     private const float DO_CRITICAL_THRESHOLD          = 4f;
 
-    // =========================================================================
     // STATE
-    // =========================================================================
 
     private WaterQualityState water;
     private bool              coolerActive;
@@ -113,9 +109,7 @@ public class RasWaterSimulator : MonoBehaviour
     /// </summary>
     private float foodLoad;
 
-    // =========================================================================
     // INISIALISASI
-    // =========================================================================
 
     /// <summary>
     /// Inisialisasi simulator. Harus dipanggil sekali dari AquariumSystem.Awake().
@@ -132,9 +126,7 @@ public class RasWaterSimulator : MonoBehaviour
     /// </summary>
     public void SetCoolerActive(bool active) => coolerActive = active;
 
-    // =========================================================================
     // FOOD LOAD API
-    // =========================================================================
 
     /// <summary>
     /// Tambahkan beban pakan saat pellet di-spawn (sebelum dimakan ikan).
@@ -160,9 +152,7 @@ public class RasWaterSimulator : MonoBehaviour
     /// <summary>Kembalikan beban pakan saat ini (untuk debugging/UI).</summary>
     public float FoodLoad => foodLoad;
 
-    // =========================================================================
     // TICK UTAMA
-    // =========================================================================
 
     /// <summary>
     /// Dipanggil tiap frame dari AquariumSystem.Update().
@@ -191,9 +181,7 @@ public class RasWaterSimulator : MonoBehaviour
         water.Clamp();
     }
 
-    // =========================================================================
     // QUERY API
-    // =========================================================================
 
     /// <summary>Kembalikan status DO saat ini sebagai enum.</summary>
     public DOStatus GetDOStatus()
@@ -226,9 +214,7 @@ public class RasWaterSimulator : MonoBehaviour
     /// </summary>
     public bool IsNH3ToxicityDoubled() => water != null && water.ph > PH_NH3_TOXIC_THRESHOLD;
 
-    // =========================================================================
     // SUB-SIMULASI PRIVAT
-    // =========================================================================
 
     // --- Temperature ---
 
@@ -242,11 +228,11 @@ public class RasWaterSimulator : MonoBehaviour
 
     private void TickDOFromTemperature(float dt)
     {
-        // DO turun saat suhu melewati 31°C (efek dinamis)
+        // DO turun saat suhu melewati 31Â°C (efek dinamis)
         if (water.temperature > TEMP_THRESHOLD_HIGH)
             water.oxygen -= DO_LOSS_HIGH_TEMP_PER_SEC * dt;
 
-        // Efek statis: setiap +1 derajat di atas 27°C mengurangi DO secara permanen
+        // Efek statis: setiap +1 derajat di atas 27Â°C mengurangi DO secara permanen
         float excessDeg = Mathf.Max(0f, water.temperature - TEMP_STATIC_DO_BASELINE);
         if (excessDeg > 0f)
             water.oxygen -= DO_STATIC_PER_DEG_PER_SEC * excessDeg * dt;

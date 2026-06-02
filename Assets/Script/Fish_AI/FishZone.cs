@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(Collider))]
 public class FishZone : MonoBehaviour
 {
     [Header("Zone Settings")]
@@ -9,16 +9,16 @@ public class FishZone : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool showDebugLog = false;
 
-    private BoxCollider zoneCollider;
+    private Collider zoneCollider;
     private Bounds zoneBounds;
 
     void Awake()
     {
-        zoneCollider = GetComponent<BoxCollider>();
+        zoneCollider = GetComponent<Collider>();
 
         if (!zoneCollider.isTrigger)
         {
-            Debug.LogWarning($"[FishZone] BoxCollider pada {gameObject.name} diubah menjadi trigger.");
+            Debug.LogWarning($"[FishZone] Collider pada {gameObject.name} diubah menjadi trigger.");
             zoneCollider.isTrigger = true;
         }
 
@@ -34,13 +34,11 @@ public class FishZone : MonoBehaviour
     {
         if (zoneCollider == null)
         {
-            zoneCollider = GetComponent<BoxCollider>();
+            zoneCollider = GetComponent<Collider>();
         }
 
-        zoneBounds = new Bounds(
-            transform.TransformPoint(zoneCollider.center),
-            Vector3.Scale(zoneCollider.size, transform.lossyScale)
-        );
+        if (zoneCollider != null)
+            zoneBounds = zoneCollider.bounds;
     }
 
     void OnTriggerEnter(Collider other)
@@ -60,7 +58,7 @@ public class FishZone : MonoBehaviour
 
         UpdateBounds();
         fish.SetZoneType(zoneType);
-        fish.SetBoundary(zoneBounds);
+        fish.SetBoundary(zoneCollider);
 
         if (showDebugLog)
         {
@@ -83,47 +81,66 @@ public class FishZone : MonoBehaviour
         return zoneBounds;
     }
 
+    public Collider GetCollider()
+    {
+        if (zoneCollider == null)
+            zoneCollider = GetComponent<Collider>();
+
+        return zoneCollider;
+    }
+
     public ZoneType ZoneType => zoneType;
 
     public bool ContainsPoint(Vector3 point)
     {
         UpdateBounds();
-        return zoneBounds.Contains(point);
+        if (zoneCollider == null || !zoneCollider.enabled) return false;
+
+        Vector3 closest = zoneCollider.ClosestPoint(point);
+        return (closest - point).sqrMagnitude <= 0.0001f;
     }
 
     public Vector3 GetRandomPointInZone(float padding = 2f)
     {
         UpdateBounds();
+        if (zoneCollider == null || !zoneCollider.enabled)
+            return transform.position;
 
+        Vector3 ext = zoneBounds.extents;
         Vector3 safePadding = new Vector3(
-            Mathf.Min(padding, Mathf.Max(0f, zoneBounds.extents.x - 0.01f)),
-            Mathf.Min(padding, Mathf.Max(0f, zoneBounds.extents.y - 0.01f)),
-            Mathf.Min(padding, Mathf.Max(0f, zoneBounds.extents.z - 0.01f))
+            Mathf.Min(padding, Mathf.Max(0f, ext.x - 0.01f)),
+            Mathf.Min(padding, Mathf.Max(0f, ext.y - 0.01f)),
+            Mathf.Min(padding, Mathf.Max(0f, ext.z - 0.01f))
         );
-
         Vector3 min = zoneBounds.min + safePadding;
         Vector3 max = zoneBounds.max - safePadding;
 
-        return new Vector3(
-            Random.Range(min.x, max.x),
-            Random.Range(min.y, max.y),
-            Random.Range(min.z, max.z)
-        );
+        const int maxAttempts = 32;
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            Vector3 candidate = new Vector3(
+                Random.Range(min.x, max.x),
+                Random.Range(min.y, max.y),
+                Random.Range(min.z, max.z)
+            );
+
+            if (ContainsPoint(candidate))
+                return candidate;
+        }
+
+        return zoneCollider.ClosestPoint(zoneBounds.center);
     }
 
     void OnDrawGizmos()
     {
         if (zoneCollider == null)
         {
-            zoneCollider = GetComponent<BoxCollider>();
+            zoneCollider = GetComponent<Collider>();
         }
 
         if (zoneCollider == null) return;
 
-        zoneBounds = new Bounds(
-            transform.TransformPoint(zoneCollider.center),
-            Vector3.Scale(zoneCollider.size, transform.lossyScale)
-        );
+        zoneBounds = zoneCollider.bounds;
 
         Gizmos.color = zoneType == ZoneType.Ocean
             ? new Color(0f, 0.5f, 1f, 0.25f)

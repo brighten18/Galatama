@@ -8,6 +8,7 @@ public class QuizInteractable : InteractableObject
 
     private void Awake()
     {
+        base.Awake();
         itemName = displayName;
     }
 

@@ -7,6 +7,7 @@ public class PosterInteractable : InteractableObject
 
     private void Awake()
     {
+        base.Awake();
         itemName = posterData != null && !string.IsNullOrEmpty(posterData.PosterName)
             ? posterData.PosterName
             : fallbackPosterName;

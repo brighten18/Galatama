@@ -7,10 +7,10 @@ using UnityEngine;
 ///
 /// RESOLUSI AQUARIUM:
 ///   1. Field aquariumSystem di Inspector (paling prioritas)
-///   2. GetComponentInParent — jika mesin adalah child dari AquariumSystem
-///   3. AquariumSystem.CurrentOpen — aquarium yang sedang dibuka player
+///   2. GetComponentInParent â€” jika mesin adalah child dari AquariumSystem
+///   3. AquariumSystem.CurrentOpen â€” aquarium yang sedang dibuka player
 ///   4. AquariumSystem terdekat dalam radius searchRadius
-///   5. FindFirstObjectByType — fallback terakhir
+///   5. FindFirstObjectByType â€” fallback terakhir
 /// </summary>
 public class AquariumMachineInteractable : InteractableObject
 {
@@ -39,7 +39,7 @@ public class AquariumMachineInteractable : InteractableObject
 
     private AquariumActionCooldowns cooldowns;
 
-    // ─── Unity lifecycle ────────────────────────────────────────────────────────
+    // â”€â”€â”€ Unity lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â...
 
     private void Awake()
     {
@@ -47,7 +47,7 @@ public class AquariumMachineInteractable : InteractableObject
         // Outline.enabled = false pada Awake, sehingga tidak aktif sebelum interaksi.
         InitializeBase();
 
-        // Coba resolusi awal — jangan simpan hasil CurrentOpen karena bisa berubah
+        // Coba resolusi awal â€” jangan simpan hasil CurrentOpen karena bisa berubah
         TryResolveFromHierarchy();
 
         cooldowns = GetComponent<AquariumActionCooldowns>();
@@ -57,7 +57,7 @@ public class AquariumMachineInteractable : InteractableObject
         itemName = machineRole.ToString();
     }
 
-    // ─── Interact ───────────────────────────────────────────────────────────────
+    // â”€â”€â”€ Interact â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”...
 
     /// <summary>
     /// Override HandleInteract: terapkan efek RAS dan trigger animasi PickUp player.
@@ -94,7 +94,7 @@ public class AquariumMachineInteractable : InteractableObject
 
     public override string GetItemName() => machineRole.ToString();
 
-    // ─── Private ────────────────────────────────────────────────────────────────
+    // â”€â”€â”€ Private â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€...
 
     /// <summary>
     /// Memicu animasi PickUp pada ThirdPersonController player.
@@ -121,7 +121,7 @@ public class AquariumMachineInteractable : InteractableObject
             {
                 float before = wq.oxygen;
                 bool ok = target.IncreaseOxygen(oxygenIncrease);
-                Debug.Log($"[RAS][Aerator] O2: {before:0.00} → {wq.oxygen:0.00} (+" + oxygenIncrease + $") | Aquarium: {target.name}");
+                Debug.Log($"[RAS][Aerator] O2: {before:0.00} â†’ {wq.oxygen:0.00} (+" + oxygenIncrease + $") | Aquarium: {target.name}");
                 return ok;
             }
 
@@ -129,7 +129,7 @@ public class AquariumMachineInteractable : InteractableObject
             {
                 float before = wq.salinity;
                 bool ok = target.ChangeSalinity(salinityChange);
-                Debug.Log($"[RAS][WaterPump] Salinitas: {before:0.00} → {wq.salinity:0.00} ({salinityChange:+0.00;-0.00}) | Aquarium: {target.name}");
+                Debug.Log($"[RAS][WaterPump] Salinitas: {before:0.00} â†’ {wq.salinity:0.00} ({salinityChange:+0.00;-0.00}) | Aquarium: {target.name}");
                 return ok;
             }
 
@@ -137,7 +137,7 @@ public class AquariumMachineInteractable : InteractableObject
             {
                 float before = wq.temperature;
                 bool ok = target.ChangeTemperature(targetTemperature, temperatureChangePerUse);
-                Debug.Log($"[RAS][Heater] Suhu: {before:0.0} → {wq.temperature:0.0} (target={targetTemperature}, step={temperatureChangePerUse}) | Aquarium: {target.name}");
+                Debug.Log($"[RAS][Heater] Suhu: {before:0.0} â†’ {wq.temperature:0.0} (target={targetTemperature}, step={temperatureChangePerUse}) | Aquarium: {target.name}");
                 return ok;
             }
 
@@ -145,7 +145,7 @@ public class AquariumMachineInteractable : InteractableObject
             {
                 float before = wq.temperature;
                 bool ok = target.ChangeTemperature(targetTemperature, temperatureChangePerUse);
-                Debug.Log($"[RAS][Chiller] Suhu: {before:0.0} → {wq.temperature:0.0} (target={targetTemperature}, step={temperatureChangePerUse}) | Aquarium: {target.name}");
+                Debug.Log($"[RAS][Chiller] Suhu: {before:0.0} â†’ {wq.temperature:0.0} (target={targetTemperature}, step={temperatureChangePerUse}) | Aquarium: {target.name}");
                 return ok;
             }
 
@@ -157,7 +157,7 @@ public class AquariumMachineInteractable : InteractableObject
 
     /// <summary>
     /// Resolusi final AquariumSystem setiap kali HandleInteract dipanggil.
-    /// Urutan prioritas: Inspector field → parent hierarchy → CurrentOpen → proximity → FindFirst.
+    /// Urutan prioritas: Inspector field â†’ parent hierarchy â†’ CurrentOpen â†’ proximity â†’ F...
     /// </summary>
     private AquariumSystem ResolveAquariumSystem()
     {
@@ -189,7 +189,7 @@ public class AquariumMachineInteractable : InteractableObject
             return aquariumSystem;
         }
 
-        // 5. Fallback — ambil yang pertama di scene
+        // 5. Fallback â€” ambil yang pertama di scene
         aquariumSystem = FindFirstObjectByType<AquariumSystem>();
         if (aquariumSystem != null)
             Debug.LogWarning($"[AquariumMachine:{machineRole}] Fallback FindFirstObjectByType: {aquariumSystem.name}");
@@ -198,7 +198,7 @@ public class AquariumMachineInteractable : InteractableObject
     }
 
     /// <summary>
-    /// Resolusi dari hierarchy saja — dipanggil di Awake untuk pre-warm referensi.
+    /// Resolusi dari hierarchy saja â€” dipanggil di Awake untuk pre-warm referensi.
     /// </summary>
     private void TryResolveFromHierarchy()
     {

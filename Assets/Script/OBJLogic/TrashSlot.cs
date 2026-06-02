@@ -12,7 +12,7 @@ public class TrashSlot : MonoBehaviour, IDropHandler
     {
         if (draggedItem != null && draggedItem.GetComponent<InventoryItemLogic>().isTrashable == true)
         {
-            // ✏️ DIPERBAIKI: Ganti DestroyImmediate dengan Destroy
+            // âœï¸ DIPERBAIKI: Ganti DestroyImmediate dengan Destroy
             //               DestroyImmediate saat event berjalan menyebabkan error di OnEndDrag
             Destroy(draggedItem.gameObject);
             InventorySystem.Instance.ReCalculeList();

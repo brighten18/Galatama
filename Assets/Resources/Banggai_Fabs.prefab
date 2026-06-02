@@ -66,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 1a1c27a3721becd42b98696c46b7f5ed, type: 3}
       propertyPath: m_Name
-      value: Bangai_Fabs
+      value: Banggai_Fabs
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 1a1c27a3721becd42b98696c46b7f5ed, type: 3}
       propertyPath: m_Layer
@@ -101,6 +101,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1a1c27a3721becd42b98696c46b7f5ed, type: 3}
       insertIndex: -1
       addedObject: {fileID: 449182542305361940}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1a1c27a3721becd42b98696c46b7f5ed, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3455957692724435295}
   m_SourcePrefab: {fileID: 100100000, guid: 1a1c27a3721becd42b98696c46b7f5ed, type: 3}
 --- !u!1 &4310994126230103519 stripped
 GameObject:
@@ -241,3 +244,17 @@ MonoBehaviour:
   aquariumVerticalScale: 0.55
   individualBiasStrength: 0.2
   biasRefreshInterval: 8
+--- !u!114 &3455957692724435295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4310994126230103519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e6c8e41aa6e5c4449c4e4e9139136e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FishPushResponse
+  drag: 6
+  maxPushSpeed: 10

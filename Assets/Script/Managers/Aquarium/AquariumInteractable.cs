@@ -17,6 +17,7 @@ public class AquariumInteractable : InteractableObject
 
     private void Awake()
     {
+        base.Awake();
         itemName = "Aquarium";
 
         if (aquariumSystem == null)

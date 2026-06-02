@@ -21,7 +21,7 @@ public class FishWanderBehavior : MonoBehaviour
 
     private Vector3 wanderTarget;
 
-    // Bias individu — diperbarui secara berkala agar tiap ikan punya arah favorit yang berbeda
+    // Bias individu â€” diperbarui secara berkala agar tiap ikan punya arah favorit yang berbeda
     private Vector3 individualBias;
     private float biasRefreshTimer;
 
@@ -76,7 +76,7 @@ public class FishWanderBehavior : MonoBehaviour
         return wanderTarget.normalized;
     }
 
-    /// <summary>Aktifkan/nonaktifkan mode aquarium dan opsional berikan bounds untuk target generation.</summary>
+    /// <summary>Aktifkan/nonaktifkan mode aquarium dan opsional berikan bounds untuk target gener...
     public void SetAquariumMode(bool enabled)
     {
         if (aquariumMode == enabled) return;
@@ -86,14 +86,14 @@ public class FishWanderBehavior : MonoBehaviour
         changeTimer = GetNextChangeInterval();
     }
 
-    /// <summary>Berikan bounds aquarium agar target wander dihasilkan di dalam batas yang benar.</summary>
+    /// <summary>Berikan bounds aquarium agar target wander dihasilkan di dalam batas yang benar.<...
     public void SetBounds(Bounds bounds)
     {
         cachedBounds = bounds;
         hasBounds = true;
     }
 
-    // ─── Private helpers ───────────────────────────────────────────────────────
+    // â”€â”€â”€ Private helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â...
 
     private float GetNextChangeInterval()
     {
@@ -146,7 +146,7 @@ public class FishWanderBehavior : MonoBehaviour
         }
         else
         {
-            // Tidak ada bounds info — hasilkan arah sphere acak
+            // Tidak ada bounds info â€” hasilkan arah sphere acak
             Vector3 random = Random.insideUnitSphere;
             random.y *= aquariumVerticalScale;
             wanderTarget = random + individualBias * individualBiasStrength;

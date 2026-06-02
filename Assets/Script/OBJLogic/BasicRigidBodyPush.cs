@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class BasicRigidBodyPush : MonoBehaviour
 {
@@ -13,20 +13,33 @@ public class BasicRigidBodyPush : MonoBehaviour
 
 	private void PushRigidBodies(ControllerColliderHit hit)
 	{
-		Rigidbody body = hit.collider.attachedRigidbody;
-		if (body == null || body.isKinematic) return;
-
-		// make sure we only push desired layer(s)
-		var bodyLayerMask = 1 << body.gameObject.layer;
-		if ((bodyLayerMask & pushLayers.value) == 0) return;
-
 		// We dont want to push objects below us
 		if (hit.moveDirection.y < -0.3f) return;
 
 		// Calculate push direction from move direction, horizontal motion only
 		Vector3 pushDir = new Vector3(hit.moveDirection.x, 0.0f, hit.moveDirection.z);
 
-		// Apply the push and take strength into account
-		body.AddForce(pushDir * strength, ForceMode.Impulse);
+		// Try standard Rigidbody push first
+		Rigidbody body = hit.collider.attachedRigidbody;
+		if (body != null && !body.isKinematic)
+		{
+			var bodyLayerMask = 1 << body.gameObject.layer;
+			if ((bodyLayerMask & pushLayers.value) != 0)
+			{
+				body.AddForce(pushDir * strength, ForceMode.Impulse);
+			}
+			return;
+		}
+
+		// Fallback: push fish or other Transform-based objects via FishPushResponse
+		var fishPush = hit.collider.GetComponent<FishPushResponse>();
+		if (fishPush != null)
+		{
+			var layerMask = 1 << hit.collider.gameObject.layer;
+			if ((layerMask & pushLayers.value) != 0)
+			{
+				fishPush.ApplyPush(pushDir * strength);
+			}
+		}
 	}
 }

@@ -20,6 +20,7 @@ public class FishTrapWorld : InteractableObject
 
     void Awake()
     {
+        base.Awake();
         itemName = "Perangkap";
     }
 

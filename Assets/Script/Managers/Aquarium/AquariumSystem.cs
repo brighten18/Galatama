@@ -115,7 +115,7 @@ public class AquariumSystem : MonoBehaviour
     [SerializeField] private List<AI_Fish_Data> aiFishDataCatalog = new List<AI_Fish_Data>();
 
     [Header("World Display")]
-    [SerializeField] private BoxCollider swimBounds;
+    [SerializeField] private Collider swimBounds;
     [SerializeField] private Transform fishContainer;
     [SerializeField] private bool parentSpawnedFishToContainer = false;
     [SerializeField] private List<FishPrefabEntry> fishPrefabs = new List<FishPrefabEntry>();
@@ -150,7 +150,7 @@ public class AquariumSystem : MonoBehaviour
     private readonly HashSet<int> consumedInventoryItemIds = new HashSet<int>();
     private float simulationTimer;
 
-    // ─── RAS Galatama Subsystems ─────────────────────────────────────────────
+    // â”€â”€â”€ RAS Galatama Subsystems â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”...
     private RasWaterSimulator rasSimulator;
     private RasFishManager    rasFishManager;
 
@@ -524,7 +524,7 @@ public class AquariumSystem : MonoBehaviour
         float before = waterQuality.ph;
         waterQuality.ph = targetPh;
         CommitWaterQualityChange();
-        Debug.Log($"[RAS][{name}] pH: {before:0.00} → {waterQuality.ph:0.00}");
+        Debug.Log($"[RAS][{name}] pH: {before:0.00} â†’ {waterQuality.ph:0.00}");
         return true;
     }
 
@@ -533,7 +533,7 @@ public class AquariumSystem : MonoBehaviour
         float before = waterQuality.ammonia;
         waterQuality.ammonia = Mathf.Max(0f, targetAmmonia);
         CommitWaterQualityChange();
-        Debug.Log($"[RAS][{name}] NH3: {before:0.00} → {waterQuality.ammonia:0.00}");
+        Debug.Log($"[RAS][{name}] NH3: {before:0.00} â†’ {waterQuality.ammonia:0.00}");
         return true;
     }
 
@@ -542,7 +542,7 @@ public class AquariumSystem : MonoBehaviour
         float before = waterQuality.salinity;
         waterQuality.salinity = Mathf.Max(0f, waterQuality.salinity + amount);
         CommitWaterQualityChange();
-        Debug.Log($"[RAS][{name}] Salinitas: {before:0.00} → {waterQuality.salinity:0.00} (delta {amount:+0.00;-0.00})");
+        Debug.Log($"[RAS][{name}] Salinitas: {before:0.00} â†’ {waterQuality.salinity:0.00} (delta {amount:+0.00;-0.00})");
         return true;
     }
 
@@ -551,7 +551,7 @@ public class AquariumSystem : MonoBehaviour
         float before = waterQuality.oxygen;
         waterQuality.oxygen = Mathf.Max(0f, waterQuality.oxygen + amount);
         CommitWaterQualityChange();
-        Debug.Log($"[RAS][{name}] O2: {before:0.00} → {waterQuality.oxygen:0.00} (+{amount:0.00})");
+        Debug.Log($"[RAS][{name}] O2: {before:0.00} â†’ {waterQuality.oxygen:0.00} (+{amount:0.00})");
         return true;
     }
 
@@ -565,7 +565,7 @@ public class AquariumSystem : MonoBehaviour
             waterQuality.temperature = Mathf.MoveTowards(waterQuality.temperature, targetTemperature, step);
 
         CommitWaterQualityChange();
-        Debug.Log($"[RAS][{name}] Suhu: {before:0.0} → {waterQuality.temperature:0.0} (target={targetTemperature:0.0}, step={changePerTick:0.0})");
+        Debug.Log($"[RAS][{name}] Suhu: {before:0.0} â†’ {waterQuality.temperature:0.0} (target={targetTemperature:0.0}, step={changePerTick:0.0})");
         return true;
     }
 
@@ -735,25 +735,42 @@ public class AquariumSystem : MonoBehaviour
             return fishContainer != null ? fishContainer.position : transform.position;
 
         Bounds bounds = swimBounds.bounds;
-        return new Vector3(
-            UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
-            UnityEngine.Random.Range(bounds.min.y, bounds.max.y),
-            UnityEngine.Random.Range(bounds.min.z, bounds.max.z)
-        );
+        const int maxAttempts = 24;
+
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            Vector3 candidate = new Vector3(
+                UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
+                UnityEngine.Random.Range(bounds.min.y, bounds.max.y),
+                UnityEngine.Random.Range(bounds.min.z, bounds.max.z)
+            );
+
+            if (IsPointInsideSwimCollider(candidate))
+                return candidate;
+        }
+
+        return swimBounds.ClosestPoint(bounds.center);
     }
 
     private void ApplySwimBounds(GameObject fishObject)
     {
         if (fishObject == null || swimBounds == null) return;
 
-        Bounds bounds = swimBounds.bounds;
-
         FishBrain fishBrain = fishObject.GetComponent<FishBrain>();
         if (fishBrain != null)
         {
-            fishBrain.SetBoundary(bounds);   // meneruskan bounds ke movement + wander
+            fishBrain.SetBoundary(swimBounds);
             fishBrain.SetZoneType(ZoneType.Aquarium);
         }
+    }
+
+    private bool IsPointInsideSwimCollider(Vector3 point)
+    {
+        if (swimBounds == null || !swimBounds.enabled)
+            return false;
+
+        Vector3 closestPoint = swimBounds.ClosestPoint(point);
+        return (closestPoint - point).sqrMagnitude <= 0.0001f;
     }
 
     private void DisableAquariumCatchTags(GameObject fishObject)
@@ -829,7 +846,7 @@ public class AquariumSystem : MonoBehaviour
         }
 
         RefreshUI();
-        Debug.Log($"[Aquarium] Ikan ditukar: slot {indexA} ↔ slot {indexB}");
+        Debug.Log($"[Aquarium] Ikan ditukar: slot {indexA} â†” slot {indexB}");
     }
 
     private void RemoveFishAt(int index)
@@ -896,7 +913,7 @@ public class AquariumSystem : MonoBehaviour
                 fishSlots.Add(slot);
         }
 
-        // Urutkan berdasarkan urutan hierarchy (sibling index) agar konsisten dengan nama Aqua_A_Slot_1..9
+        // Urutkan berdasarkan urutan hierarchy (sibling index) agar konsisten dengan nama Aqua_A_Slo...
         fishSlots.Sort(CompareSlotsByHierarchyOrder);
     }
 
@@ -963,7 +980,7 @@ public class AquariumSystem : MonoBehaviour
         SimulateWaterQuality(livingFish);
         ApplyWaterStress();
 
-        // Hanya perbarui teks ringkasan air + warning — TIDAK re-spawn icon slot
+        // Hanya perbarui teks ringkasan air + warning â€” TIDAK re-spawn icon slot
         RefreshWaterQualityUI();
         AquariumStateChanged?.Invoke(this);
     }

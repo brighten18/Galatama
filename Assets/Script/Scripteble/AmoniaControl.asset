@@ -15,9 +15,9 @@ MonoBehaviour:
   itemName: AmoniaRemover
   itemType: 6
   modelPrefab: {fileID: 6009641224748337212, guid: 5deb3045d1221f14a8bd4098c5374708, type: 3}
-  localPosition: {x: 0, y: 0, z: 0}
-  localRotation: {x: 0, y: 0, z: 0}
-  localScale: {x: 16, y: 16, z: 4.601719}
+  localPosition: {x: 0.074, y: 0.169, z: 0.058}
+  localRotation: {x: 95, y: 0, z: -130}
+  localScale: {x: 13, y: 4.604167, z: 13}
   aquariumRole: 0
   ammoniaReductionPerTick: 3
   oxygenIncreasePerTick: 0

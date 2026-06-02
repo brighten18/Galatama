@@ -9,7 +9,7 @@ using System.Collections.Generic;
 /// DESAIN:
 ///   - Field fishNameText / hungerText / healthText / statusText di sini mengarah ke
 ///     Pop_Up-FishStatus yang merupakan panel SHARED. Panel itu HANYA diisi saat hover
-///     (OnPointerEnter) — TIDAK boleh ditulis saat RefreshUI/SetSlot supaya slot lain
+///     (OnPointerEnter) â€” TIDAK boleh ditulis saat RefreshUI/SetSlot supaya slot lain
 ///     tidak menimpa tulisan slot sebelumnya.
 ///   - Icon ikan ditampilkan melalui prefab yang di-spawn sebagai child slot.
 ///   - filledState / emptyState adalah child GameObject opsional untuk mengubah tampilan
@@ -20,7 +20,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
     IDropHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     // Field ini dipertahankan di Inspector untuk kompatibilitas, tapi TIDAK digunakan
-    // saat RefreshUI — hanya dipakai saat hover (OnPointerEnter).
+    // saat RefreshUI â€” hanya dipakai saat hover (OnPointerEnter).
     [SerializeField] private Image fishIcon;
     [SerializeField] private Text fishNameText;
     [SerializeField] private Text hungerText;
@@ -32,7 +32,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
     [Tooltip("Aktifkan saat slot kosong (opsional)")]
     [SerializeField] private GameObject emptyState;
 
-    // ─── Runtime state ──────────────────────────────────────────────────────────
+    // â”€â”€â”€ Runtime state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€...
     private AquariumSystem aquariumSystem;
     private int fishIndex = -1;
     private bool hasFish;
@@ -43,7 +43,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
 
     // Icon visual prefab yang di-spawn sebagai child
     private GameObject spawnedIconItem;
-    // Nama prefab yang sedang ditampilkan — untuk menghindari Destroy+Instantiate berulang
+    // Nama prefab yang sedang ditampilkan â€” untuk menghindari Destroy+Instantiate berulang
     private string spawnedPrefabName;
 
     private Canvas parentCanvas;
@@ -51,7 +51,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
     private bool isDragging;
     private bool suppressNextClick;
 
-    // ─── Unity lifecycle ────────────────────────────────────────────────────────
+    // â”€â”€â”€ Unity lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â...
 
     private void Reset()
     {
@@ -64,7 +64,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
         parentCanvas = GetComponentInParent<Canvas>();
     }
 
-    // ─── Public API ─────────────────────────────────────────────────────────────
+    // â”€â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€...
 
     /// <summary>
     /// Ikat slot ke AquariumSystem tertentu tanpa mereset data ikan.
@@ -112,16 +112,16 @@ public class AquariumFishSlotUI : MonoBehaviour,
         if (emptyState != null)  emptyState.SetActive(!hasFish);
     }
 
-    // ─── Pointer events ─────────────────────────────────────────────────────────
+    // â”€â”€â”€ Pointer events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”...
 
     /// <summary>
-    /// Tampilkan Pop_Up-FishStatus saat hover — satu-satunya tempat panel shared diisi.
+    /// Tampilkan Pop_Up-FishStatus saat hover â€” satu-satunya tempat panel shared diisi.
     /// </summary>
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (!hasFish) return;
 
-        // Panel info item — isi nama, deskripsi status, dan fungsi berdasarkan state ikan
+        // Panel info item â€” isi nama, deskripsi status, dan fungsi berdasarkan state ikan
         GameObject itemInfoUI = InventorySystem.Instance?.ItemInfoUI;
         if (itemInfoUI != null)
         {
@@ -172,7 +172,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
         InventoryItemLogic.HideFishStatusUI();
     }
 
-    /// <summary>Klik kiri → kembalikan ikan ke inventory.</summary>
+    /// <summary>Klik kiri â†’ kembalikan ikan ke inventory.</summary>
     public void OnPointerClick(PointerEventData eventData)
     {
         if (suppressNextClick)
@@ -196,15 +196,15 @@ public class AquariumFishSlotUI : MonoBehaviour,
         AquariumSystem target = ResolveAquarium();
         if (!hasFish || target == null)
         {
-            Debug.Log($"[AquariumSlot] Klik diabaikan — hasFish:{hasFish}, aquarium:{target != null}");
+            Debug.Log($"[AquariumSlot] Klik diabaikan â€” hasFish:{hasFish}, aquarium:{target != null}");
             return;
         }
 
-        Debug.Log($"[AquariumSlot] Mengambil ikan dari slot index {fishIndex}…");
+        Debug.Log($"[AquariumSlot] Mengambil ikan dari slot index {fishIndex}â€¦");
         target.TryMoveFishToInventory(this);
     }
 
-    /// <summary>Drop item inventory ke slot aquarium ini, atau tukar antar slot aquarium.</summary>
+    /// <summary>Drop item inventory ke slot aquarium ini, atau tukar antar slot aquarium.</summar...
     public void OnDrop(PointerEventData eventData)
     {
         AquariumSystem target = ResolveAquarium();
@@ -228,7 +228,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
                 if (sourceIndex >= 0 && destIndex >= 0)
                 {
                     target.SwapFish(sourceIndex, destIndex);
-                    Debug.Log($"[AquariumSlot] Swap ikan: slot {sourceIndex} ↔ slot {destIndex}");
+                    Debug.Log($"[AquariumSlot] Swap ikan: slot {sourceIndex} â†” slot {destIndex}");
                     return;
                 }
             }
@@ -300,7 +300,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
         target.TryMoveFishToInventory(this, targetSlot.gameObject);
     }
 
-    // ─── Private helpers ────────────────────────────────────────────────────────
+    // â”€â”€â”€ Private helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â...
 
     private AquariumSystem ResolveAquarium()
     {
@@ -326,7 +326,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
     {
         if (!hasFish)
         {
-            // Slot kosong — hapus icon jika masih ada
+            // Slot kosong â€” hapus icon jika masih ada
             if (spawnedIconItem != null)
             {
                 Destroy(spawnedIconItem);
@@ -336,11 +336,11 @@ public class AquariumFishSlotUI : MonoBehaviour,
             return;
         }
 
-        // Slot berisi ikan — jika prefab sudah benar, tidak perlu re-spawn
+        // Slot berisi ikan â€” jika prefab sudah benar, tidak perlu re-spawn
         if (spawnedIconItem != null && spawnedPrefabName == itemName)
             return;
 
-        // Prefab berbeda atau belum ada — hapus yang lama
+        // Prefab berbeda atau belum ada â€” hapus yang lama
         if (spawnedIconItem != null)
         {
             Destroy(spawnedIconItem);
@@ -361,7 +361,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
         spawnedPrefabName = itemName;
 
         DisableIconItemComponents(spawnedIconItem);
-        Debug.Log($"[AquariumSlot] Slot {fishIndex} — icon '{itemName}' di-spawn.");
+        Debug.Log($"[AquariumSlot] Slot {fishIndex} â€” icon '{itemName}' di-spawn.");
     }
 
     private void DisableIconItemComponents(GameObject iconItem)

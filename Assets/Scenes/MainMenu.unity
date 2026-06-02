@@ -2336,7 +2336,7 @@ GameObject:
   - component: {fileID: 557804059}
   - component: {fileID: 557804060}
   m_Layer: 5
-  m_Name: Slider_Musik
+  m_Name: Slider_SFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2414,7 +2414,19 @@ MonoBehaviour:
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 764106735}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &576548236
 GameObject:
   m_ObjectHideFlags: 0
@@ -2999,7 +3011,7 @@ MonoBehaviour:
   lodToggle: {fileID: 292327800}
   masterMixer: {fileID: 24100000, guid: cbff2b0bf0388394b93a55b257dbdc93, type: 2}
   musicVolumeParameter: MusicVolume
-  sfxVolumeParameter: SfxVolume
+  sfxVolumeParameter: SFXVolume
   musicSlider: {fileID: 1915306009}
   sfxSlider: {fileID: 557804060}
   settingsPanel: {fileID: 1394207326}
@@ -3653,6 +3665,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 988247379}
   m_CullTransparentMesh: 1
+--- !u!1 &1003558142
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1003558144}
+  - component: {fileID: 1003558143}
+  m_Layer: 0
+  m_Name: SettingsRunTime
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1003558143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1003558142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24cec16f1d80cdc45b337fa2b0bc0f7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GALATAMA.MainMenu.SettingsRuntimeApplier
+  masterMixer: {fileID: 24100000, guid: cbff2b0bf0388394b93a55b257dbdc93, type: 2}
+  musicVolumeParameter: MusicVolume
+  sfxVolumeParameter: SfxVolume
+  applyOnAwake: 1
+--- !u!4 &1003558144
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1003558142}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -38.22157, y: 23.44982, z: 39.90689}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1008921424
 GameObject:
   m_ObjectHideFlags: 0
@@ -6336,7 +6396,19 @@ MonoBehaviour:
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 764106735}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1936060140
 GameObject:
   m_ObjectHideFlags: 0
@@ -7094,3 +7166,4 @@ SceneRoots:
   - {fileID: 861789726}
   - {fileID: 545195786}
   - {fileID: 764106737}
+  - {fileID: 1003558144}

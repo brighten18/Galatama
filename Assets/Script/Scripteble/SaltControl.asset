@@ -15,9 +15,9 @@ MonoBehaviour:
   itemName: Garam
   itemType: 7
   modelPrefab: {fileID: 7524748484481283375, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
-  localPosition: {x: 0, y: 0, z: 0}
-  localRotation: {x: 0, y: 0, z: 0}
-  localScale: {x: 4, y: 4, z: 4}
+  localPosition: {x: 0.076, y: 0.086, z: 0}
+  localRotation: {x: 66, y: -90, z: 90}
+  localScale: {x: 6.06036, y: 3.333198, z: 10.1006}
   aquariumRole: 0
   ammoniaReductionPerTick: 0
   oxygenIncreasePerTick: 0

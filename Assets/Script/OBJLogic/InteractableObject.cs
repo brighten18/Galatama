@@ -31,7 +31,7 @@ public class InteractableObject : MonoBehaviour
 
     /// <summary>
     /// Inisialisasi semua state base class (position cache, renderer, collider, outline).
-    /// Dipanggil dari Awake(). Sub-class yang menggantikan Awake() HARUS memanggil InitializeBase()
+    /// Dipanggil dari Awake().
     /// atau memanggil base.Awake() agar outline berfungsi.
     /// </summary>
     protected void InitializeBase()
@@ -200,7 +200,7 @@ public class InteractableObject : MonoBehaviour
         quickOutline.OutlineColor = highlightColor;
         quickOutline.OutlineWidth = highlightWidth;
 
-        // Selalu matikan outline di awal — termasuk jika sudah aktif di Inspector
+        // Selalu matikan outline di awal â€” termasuk jika sudah aktif di Inspector
         quickOutline.enabled = false;
     }
 

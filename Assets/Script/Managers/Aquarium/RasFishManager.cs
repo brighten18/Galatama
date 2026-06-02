@@ -11,8 +11,8 @@ using UnityEngine;
 public class RasFishManager : MonoBehaviour
 {
     private const float HUNGER_CYCLE_SECONDS  = 300f;  // ikan lapar tiap 5 menit
-    private const float HUNGER_FILL_PER_SEC   = 100f / HUNGER_CYCLE_SECONDS; // 0.333/s → penuh dalam 5 menit
-    private const float DEATH_BY_HUNGER_SECS  = 300f;  // 5 menit setelah lapar penuh → mati
+    private const float HUNGER_FILL_PER_SEC   = 100f / HUNGER_CYCLE_SECONDS; // 0.333/s â†’ penuh dalam 5 menit
+    private const float DEATH_BY_HUNGER_SECS  = 300f;  // 5 menit setelah lapar penuh â†’ mati
 
     private WaterQualityState     water;
     private RasWaterSimulator     simulator;
@@ -22,7 +22,7 @@ public class RasFishManager : MonoBehaviour
     private readonly Dictionary<string, FishDeathCountdown> doCountdowns
         = new Dictionary<string, FishDeathCountdown>();
 
-    // Timer kelaparan (keyed by instanceId) — dimulai saat hunger = maxHunger
+    // Timer kelaparan (keyed by instanceId) â€” dimulai saat hunger = maxHunger
     private readonly Dictionary<string, float> starvationTimers
         = new Dictionary<string, float>();
 
@@ -32,7 +32,7 @@ public class RasFishManager : MonoBehaviour
     /// <summary>Event: update countdown (instanceId, sisa detik, fase).</summary>
     public event Action<string, float, DOStatus> OnCountdownUpdated;
 
-    // ─── Inisialisasi ────────────────────────────────────────────────────────
+    // â”€â”€â”€ Inisialisasi â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â...
 
     /// <summary>
     /// Inisialisasi dengan referensi ke state bersama dari AquariumSystem.
@@ -47,7 +47,7 @@ public class RasFishManager : MonoBehaviour
         simulator = rasSimulator;
     }
 
-    // ─── Tick Utama ──────────────────────────────────────────────────────────
+    // â”€â”€â”€ Tick Utama â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€...
 
     /// <summary>
     /// Dipanggil tiap frame dari AquariumSystem.Update() dengan Time.deltaTime.
@@ -92,7 +92,7 @@ public class RasFishManager : MonoBehaviour
         starvationTimers.Remove(fish.instanceId);
     }
 
-    // ─── Hunger ──────────────────────────────────────────────────────────────
+    // â”€â”€â”€ Hunger â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â...
 
     private void TickHunger(FishInstanceState fish, float dt, float feedEfficiency)
     {
@@ -121,7 +121,7 @@ public class RasFishManager : MonoBehaviour
         }
     }
 
-    // ─── DO Countdown ────────────────────────────────────────────────────────
+    // â”€â”€â”€ DO Countdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â...
 
     private void TickDOCountdown(
         FishInstanceState fish, float dt, DOStatus doStatus, bool nh3Toxic)
@@ -138,7 +138,7 @@ public class RasFishManager : MonoBehaviour
             doCountdowns[fish.instanceId] = countdown;
         }
 
-        // NH3 toksik (pH>8.5) → percepat countdown 2x
+        // NH3 toksik (pH>8.5) â†’ percepat countdown 2x
         float effectiveDt = nh3Toxic ? dt * 2f : dt;
         countdown.Tick(doStatus, effectiveDt);
 
@@ -147,7 +147,7 @@ public class RasFishManager : MonoBehaviour
             doCountdowns.Remove(fish.instanceId);
     }
 
-    // ─── Stres ───────────────────────────────────────────────────────────────
+    // â”€â”€â”€ Stres â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”...
 
     private void TickStress(FishInstanceState fish)
     {
@@ -156,7 +156,7 @@ public class RasFishManager : MonoBehaviour
         fish.isStressed = salinityStress;
     }
 
-    // ─── Kematian ────────────────────────────────────────────────────────────
+    // â”€â”€â”€ Kematian â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”...
 
     private void KillFish(FishInstanceState fish, string reason)
     {
@@ -187,7 +187,7 @@ public class RasFishManager : MonoBehaviour
         }
     }
 
-    // ─── Utilitas ────────────────────────────────────────────────────────────
+    // â”€â”€â”€ Utilitas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”...
 
     private void CleanupStaleCountdowns()
     {

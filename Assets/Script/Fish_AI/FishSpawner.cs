@@ -164,7 +164,7 @@ public class FishSpawner : MonoBehaviour
         if (fishBrain != null)
         {
             fishBrain.SetSpawner(this);
-            fishBrain.SetBoundary(spawnZone.GetBounds());
+            fishBrain.SetBoundary(spawnZone.GetCollider());
         }
         else
         {

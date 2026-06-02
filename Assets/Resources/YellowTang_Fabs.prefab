@@ -97,6 +97,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4487507387085075391}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7621251573936665603}
   m_SourcePrefab: {fileID: 100100000, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
 --- !u!1 &8181153804570199710 stripped
 GameObject:
@@ -237,3 +240,17 @@ MonoBehaviour:
   aquariumVerticalScale: 0.55
   individualBiasStrength: 0.2
   biasRefreshInterval: 8
+--- !u!114 &7621251573936665603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8181153804570199710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e6c8e41aa6e5c4449c4e4e9139136e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FishPushResponse
+  drag: 6
+  maxPushSpeed: 10

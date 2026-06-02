@@ -15,9 +15,9 @@ MonoBehaviour:
   itemName: PhBuffer
   itemType: 5
   modelPrefab: {fileID: 8087463658417668756, guid: 324266391f7409149a694b2186be2308, type: 3}
-  localPosition: {x: 0, y: 0, z: 0}
-  localRotation: {x: 0, y: 0, z: 0}
-  localScale: {x: 16, y: 16, z: 4.601719}
+  localPosition: {x: 0, y: 0.21, z: 0}
+  localRotation: {x: -266, y: 0, z: 180}
+  localScale: {x: 8.5, y: 8.5, z: 9.916666}
   aquariumRole: 0
   ammoniaReductionPerTick: 0
   oxygenIncreasePerTick: 0

@@ -17,7 +17,7 @@ public class InteractUIManager : MonoBehaviour
     public bool HasNonTriggerHit => lastNonTriggerHit.collider != null;
 
     private InteractableObject currentInteractable;
-    // ✏️ DIHAPUS: public StarterAssetsInputs _Input;
+    // âœï¸ DIHAPUS: public StarterAssetsInputs _Input;
 
     private Camera mainCamera;
     private bool isReady = false;
@@ -36,14 +36,14 @@ public class InteractUIManager : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        // ✏️ DIHAPUS: FindGameObjectWithTag dan GetComponent StarterAssetsInputs
+        // âœï¸ DIHAPUS: FindGameObjectWithTag dan GetComponent StarterAssetsInputs
 
         if (interactionInfoUI != null)
             interactionText = interactionInfoUI.GetComponent<Text>();
         else
             Debug.LogError("interactionInfoUI belum diassign di Inspector!");
 
-        // ✏️ DIUBAH: Hapus _Input != null dari pengecekan isReady
+        // âœï¸ DIUBAH: Hapus _Input != null dari pengecekan isReady
         isReady = mainCamera != null && interactionText != null;
     }
 

@@ -3,12 +3,12 @@ using UnityEngine;
 
 /// <summary>
 /// Mengelola countdown kematian ikan akibat DO rendah.
-/// Menangani transisi Danger (240 detik) → Critical (60 detik) tanpa timer overlap.
+/// Menangani transisi Danger (240 detik) â†’ Critical (60 detik) tanpa timer overlap.
 ///
 /// Aturan:
-///   DO < 5  → Danger  : countdown mulai dari 240 detik.
-///   DO < 4  → Critical: countdown dipercepat — sisa waktu dibatasi menjadi 60 detik.
-///   DO ≥ 5  → Safe    : countdown dibatalkan.
+///   DO < 5  â†’ Danger  : countdown mulai dari 240 detik.
+///   DO < 4  â†’ Critical: countdown dipercepat â€” sisa waktu dibatasi menjadi 60 detik.
+///   DO â‰¥ 5  â†’ Safe    : countdown dibatalkan.
 /// </summary>
 public class FishDeathCountdown
 {
@@ -36,7 +36,7 @@ public class FishDeathCountdown
         fishInstanceId = instanceId;
     }
 
-    // ─── API Publik ──────────────────────────────────────────────────────────
+    // â”€â”€â”€ API Publik â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€...
 
     /// <summary>
     /// Dipanggil tiap frame dengan DO status terkini dan Time.deltaTime.
@@ -69,10 +69,10 @@ public class FishDeathCountdown
 
         isActive = false;
         remainingSeconds = 0f;
-        Debug.Log($"[DeathCountdown] {fishInstanceId}: Countdown dibatalkan — DO kembali normal.");
+        Debug.Log($"[DeathCountdown] {fishInstanceId}: Countdown dibatalkan â€” DO kembali normal.");
     }
 
-    // ─── Handler State ───────────────────────────────────────────────────────
+    // â”€â”€â”€ Handler State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€...
 
     private void HandleDangerTick(float dt)
     {
@@ -82,14 +82,14 @@ public class FishDeathCountdown
             isActive = true;
             remainingSeconds = DANGER_DURATION;
             currentPhase = DOStatus.Danger;
-            Debug.Log($"[DeathCountdown] {fishInstanceId}: Danger dimulai — {DANGER_DURATION}s tersisa.");
+            Debug.Log($"[DeathCountdown] {fishInstanceId}: Danger dimulai â€” {DANGER_DURATION}s tersisa.");
         }
         else if (currentPhase == DOStatus.Critical)
         {
-            // DO naik dari Critical ke Danger → biarkan timer lanjut, jangan reset
+            // DO naik dari Critical ke Danger â†’ biarkan timer lanjut, jangan reset
             // Tapi set ulang batas atas agar tidak melebihi DANGER_DURATION
             currentPhase = DOStatus.Danger;
-            Debug.Log($"[DeathCountdown] {fishInstanceId}: DO naik ke Danger — timer lanjut {remainingSeconds:0}s.");
+            Debug.Log($"[DeathCountdown] {fishInstanceId}: DO naik ke Danger â€” timer lanjut {remainingSeconds:0}s.");
         }
 
         TickDown(dt);
@@ -103,14 +103,14 @@ public class FishDeathCountdown
             isActive = true;
             remainingSeconds = CRITICAL_DURATION;
             currentPhase = DOStatus.Critical;
-            Debug.Log($"[DeathCountdown] {fishInstanceId}: Critical langsung dimulai — {CRITICAL_DURATION}s tersisa.");
+            Debug.Log($"[DeathCountdown] {fishInstanceId}: Critical langsung dimulai â€” {CRITICAL_DURATION}s tersisa.");
         }
         else if (currentPhase == DOStatus.Danger)
         {
             // Transisi dari Danger ke Critical: batasi sisa waktu ke maximum Critical
             currentPhase = DOStatus.Critical;
             remainingSeconds = Mathf.Min(remainingSeconds, CRITICAL_DURATION);
-            Debug.Log($"[DeathCountdown] {fishInstanceId}: Transisi Danger→Critical — sisa {remainingSeconds:0}s.");
+            Debug.Log($"[DeathCountdown] {fishInstanceId}: Transisi Dangerâ†’Critical â€” sisa {remainingSeconds:0}s.");
         }
 
         TickDown(dt);
@@ -125,7 +125,7 @@ public class FishDeathCountdown
         {
             isActive = false;
             remainingSeconds = 0f;
-            Debug.Log($"[DeathCountdown] {fishInstanceId}: Countdown habis — kematian dipicu!");
+            Debug.Log($"[DeathCountdown] {fishInstanceId}: Countdown habis â€” kematian dipicu!");
             OnDeathTriggered?.Invoke(fishInstanceId);
         }
     }

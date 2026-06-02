@@ -20,11 +20,11 @@ public class FishBrain : MonoBehaviour
     [SerializeField] private bool disableFlockingInAquarium = true;
 
     [Range(0f, 1f)]
-    [Tooltip("Bobot wander di aquarium — lebih tinggi = ikan lebih aktif menjelajah")]
+    [Tooltip("Bobot wander di aquarium â€” lebih tinggi = ikan lebih aktif menjelajah")]
     [SerializeField] private float aquariumWanderWeight = 1f;
 
     [Range(0f, 1f)]
-    [Tooltip("Bobot boundary di aquarium — jaga agar ikan tidak keluar")]
+    [Tooltip("Bobot boundary di aquarium â€” jaga agar ikan tidak keluar")]
     [SerializeField] private float aquariumBoundaryWeight = 0.9f;
 
     [Tooltip("Pengali kecepatan di aquarium")]
@@ -95,13 +95,22 @@ public class FishBrain : MonoBehaviour
         }
     }
 
-    // ─── Public API ────────────────────────────────────────────────────────────
+    // â”€â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€...
 
-    /// <summary>Terapkan batas ruang gerak dan teruskan ke wander agar target dibuat di dalam bounds.</summary>
+    /// <summary>Terapkan batas ruang gerak dan teruskan ke wander agar target dibuat di dalam bou...
     public void SetBoundary(Bounds bounds)
     {
         movement.SetBoundary(bounds);
         wander.SetBounds(bounds);
+    }
+
+    /// <summary>Terapkan batas ruang gerak berdasarkan collider (mendukung cylinder/mesh).</summa...
+    public void SetBoundary(Collider boundaryCollider)
+    {
+        if (boundaryCollider == null) return;
+
+        movement.SetBoundary(boundaryCollider);
+        wander.SetBounds(boundaryCollider.bounds);
     }
 
     /// <summary>Ubah tipe zona (Ocean / Aquarium).</summary>
@@ -159,7 +168,7 @@ public class FishBrain : MonoBehaviour
 
     public bool IsCaptured => isCaptured;
 
-    // ─── Private helpers ───────────────────────────────────────────────────────
+    // â”€â”€â”€ Private helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â...
 
     private bool ShouldUseFlocking()
     {

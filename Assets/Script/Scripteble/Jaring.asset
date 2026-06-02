@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentData
   itemName: Jaring
   itemType: 1
-  modelPrefab: {fileID: 4156090874929137086, guid: 82594d8af87ee534ea82518af33aac0f, type: 3}
+  modelPrefab: {fileID: 5473098057441776473, guid: dabbcf8dea2b4e14db8514048cd020f0, type: 3}
   localPosition: {x: 0, y: 0, z: 0}
-  localRotation: {x: -90, y: 0, z: 180}
-  localScale: {x: 1, y: 1, z: 2.397091}
+  localRotation: {x: -100, y: 0, z: 0}
+  localScale: {x: 1, y: 1, z: 1}
   aquariumRole: 0
   ammoniaReductionPerTick: 0
   oxygenIncreasePerTick: 0
@@ -29,3 +29,4 @@ MonoBehaviour:
   targetAmmonia: 0
   instantOxygenIncrease: 0
   feedHungerReduction: 0
+  pelletSpawnCount: 8

@@ -28,8 +28,8 @@ namespace StarterAssets
 		public bool analogMovement;
 
 		[Header("Mouse Cursor Settings")]
-		public bool cursorLocked = true;
-		public bool cursorInputForLook = true;
+		public bool cursorLocked = false;
+		public bool cursorInputForLook = false;
 
 #if ENABLE_INPUT_SYSTEM
 		public void OnMove(InputValue value)
@@ -182,14 +182,27 @@ namespace StarterAssets
 		}
 		// END OF INPUT SYSTEM HANDLERS
 
-		private void OnApplicationFocus(bool hasFocus)
+		/// <summary>
+		/// Mengatur status kunci kursor secara eksplisit dari luar (misal: dari ThirdPersonController).
+		/// </summary>
+		public void SetCursorLocked(bool locked)
 		{
-			SetCursorState(cursorLocked);
+			cursorLocked = locked;
+			cursorInputForLook = locked;
+			if (!locked)
+				look = Vector2.zero;
+			ApplyCursorState(locked);
 		}
 
-		private void SetCursorState(bool newState)
+		private void OnApplicationFocus(bool hasFocus)
 		{
-			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+			ApplyCursorState(cursorLocked);
+		}
+
+		private void ApplyCursorState(bool locked)
+		{
+			Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
+			Cursor.visible = !locked;
 		}
 	}
 	

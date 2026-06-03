@@ -116,6 +116,12 @@ namespace StarterAssets
         private bool _hasAnimator;
         private bool _movementBlocked;
 
+        // Apakah Ctrl sedang ditekan (mode kursor terkunci)
+        private bool _ctrlHeld;
+
+        // Apakah klik kanan sedang ditahan (rotasi kamera sementara)
+        private bool _rightClickHeld;
+
         private bool IsCurrentDeviceMouse
         {
             get
@@ -156,6 +162,9 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+
+            // Mulai dengan kursor bebas (mode normal)
+            _input.SetCursorLocked(false);
         }
 
         private void Update()
@@ -164,6 +173,8 @@ namespace StarterAssets
             GroundedCheck();
             Move();
             HandlePickUpInput();
+            HandleCtrlCameraMode();
+            HandleRightClickCamera();
         }
 
         private void LateUpdate()
@@ -278,7 +289,15 @@ namespace StarterAssets
 
             // note: Vector2's != operator uses approximation so is not floating point error prone, and i...
             // if there is a move input rotate player when the player is moving
-            if (_input.move != Vector2.zero)
+            if (_ctrlHeld)
+            {
+                // Mode Ctrl: karakter selalu menghadap ke arah kamera
+                _targetRotation = _mainCamera.transform.eulerAngles.y;
+                float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+                    RotationSmoothTime);
+                transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+            }
+            else if (_input.move != Vector2.zero)
             {
                 _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                                   _mainCamera.transform.eulerAngles.y;
@@ -290,7 +309,19 @@ namespace StarterAssets
             }
 
 
-            Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+            Vector3 targetDirection;
+            if (_ctrlHeld)
+            {
+                // Mode strafe: arah gerak dipetakan langsung ke ruang kamera
+                // W/S = camera forward/back, A/D = camera left/right
+                Vector3 camForward = Vector3.ProjectOnPlane(_mainCamera.transform.forward, Vector3.up).normalized;
+                Vector3 camRight   = Vector3.ProjectOnPlane(_mainCamera.transform.right,   Vector3.up).normalized;
+                targetDirection = camForward * _input.move.y + camRight * _input.move.x;
+            }
+            else
+            {
+                targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+            }
 
             // move the player
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
@@ -437,6 +468,54 @@ namespace StarterAssets
                 _input.sprint = false;
                 _input.jump = false;
             }
+        }
+
+        /// <summary>
+        /// Memantau tombol Ctrl dan mengubah mode kamera/kursor:
+        /// - Ctrl ditekan  : kursor terkunci, kamera + karakter berputar bersama.
+        /// - Ctrl dilepas  : kursor bebas, rotasi kamera independen dari karakter.
+        /// </summary>
+        private void HandleCtrlCameraMode()
+        {
+#if ENABLE_INPUT_SYSTEM
+            if (Keyboard.current == null) return;
+
+            // Toggle hanya saat Ctrl baru ditekan (bukan ditahan)
+            if (!Keyboard.current.ctrlKey.wasPressedThisFrame) return;
+
+            _ctrlHeld = !_ctrlHeld;
+            _input.SetCursorLocked(_ctrlHeld);
+#endif
+        }
+
+        /// <summary>
+        /// Saat cursor unlocked, tahan klik kanan untuk menggeser kamera.
+        /// Kursor akan dikunci sementara selama klik kanan ditahan, lalu bebas kembali saat dilepas.
+        /// Tidak aktif jika Ctrl mode sedang menyala.
+        /// </summary>
+        private void HandleRightClickCamera()
+        {
+#if ENABLE_INPUT_SYSTEM
+            if (Mouse.current == null || _ctrlHeld) return;
+
+            bool rightPressed = Mouse.current.rightButton.isPressed;
+            if (rightPressed == _rightClickHeld) return;
+
+            _rightClickHeld = rightPressed;
+            _input.cursorInputForLook = _rightClickHeld;
+
+            if (_rightClickHeld)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            else
+            {
+                _input.look = Vector2.zero;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+#endif
         }
 
         private void OnFootstep(AnimationEvent animationEvent)

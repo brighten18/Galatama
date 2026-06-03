@@ -29,7 +29,7 @@ namespace StarterAssets
 
 		[Header("Mouse Cursor Settings")]
 		public bool cursorLocked = false;
-		public bool cursorInputForLook = false;
+		public bool cursorInputForLook = true;
 
 #if ENABLE_INPUT_SYSTEM
 		public void OnMove(InputValue value)
@@ -196,13 +196,13 @@ namespace StarterAssets
 
 		private void OnApplicationFocus(bool hasFocus)
 		{
-			ApplyCursorState(cursorLocked);
+			// Cursor state dikelola oleh ThirdPersonController
 		}
 
 		private void ApplyCursorState(bool locked)
 		{
-			Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
-			Cursor.visible = !locked;
+			Cursor.lockState = CursorLockMode.None;
+			Cursor.visible = true;
 		}
 	}
 	

@@ -284,6 +284,14 @@ public class EquipSystem : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Memilih quick slot berdasarkan index (1-6). Dapat dipanggil dari klik UI maupun input keyboard.
+    /// </summary>
+    public void SelectSlot(int slotIndex)
+    {
+        SelectedQuickSlot(slotIndex);
+    }
+
     bool CheckIsQcSlotFull(int slotIndex)
     {
         return quickSlotsList[slotIndex - 1].transform.childCount > 0;

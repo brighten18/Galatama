@@ -146,6 +146,25 @@ public class InventorySystem : MonoBehaviour
 
     public bool TryAddItemToInventory(string ItemName)
     {
+        // Prioritas 1: Isi hotbar (QuickSlot 1-6) terlebih dahulu dari kiri ke kanan
+        GameObject hotbarSlot = FindNextEmptyHotbarSlot();
+        if (hotbarSlot != null)
+        {
+            GameObject hotbarItem;
+            if (!TryCreateItemInSlot(ItemName, hotbarSlot, out hotbarItem))
+                return false;
+
+            if (EquipSystem.Instance != null)
+                EquipSystem.Instance.itemList.Add(ItemNameUtility.CleanName(ItemName));
+
+            CheckFull();
+            Image hotbarImage = hotbarItem.GetComponent<Image>();
+            TriggerPickupAlert(ItemName, hotbarImage != null ? hotbarImage.sprite : null);
+            Debug.Log($"[Inventory] '{ItemName}' masuk ke hotbar slot: {hotbarSlot.name}");
+            return true;
+        }
+
+        // Prioritas 2: Hotbar penuh, alihkan ke inventaris utama
         whatToEquipSlot = FindNewNextSlot();
         if (whatToEquipSlot == null)
         {
@@ -153,20 +172,16 @@ public class InventorySystem : MonoBehaviour
             return false;
         }
 
-        GameObject itemPrefab = Resources.Load<GameObject>(ItemName);
-        if (itemPrefab == null)
-        {
-            Debug.LogError("[Inventory] Prefab item tidak ditemukan di Resources: " + ItemName);
+        GameObject inventoryItem;
+        if (!TryCreateItemInSlot(ItemName, whatToEquipSlot, out inventoryItem))
             return false;
-        }
 
-        ObjToAdd = Instantiate(itemPrefab, whatToEquipSlot.transform.position, whatToEquipSlot.transform.rotation);
-        ObjToAdd.transform.SetParent(whatToEquipSlot.transform);
         itemList.Add(ItemName);
         CheckFull();
 
-        Image itemImage = ObjToAdd.GetComponent<Image>();
+        Image itemImage = inventoryItem.GetComponent<Image>();
         TriggerPickupAlert(ItemName, itemImage != null ? itemImage.sprite : null);
+        Debug.Log($"[Inventory] '{ItemName}' masuk ke inventaris utama: {whatToEquipSlot.name}");
         return true;
     }
 
@@ -176,13 +191,36 @@ public class InventorySystem : MonoBehaviour
             return false;
 
         fishState = FishFactory.EnsureValid(fishState, fishState.itemName);
-        GameObject itemObject;
-        if (!TryCreateItemInNextSlot(fishState.itemName, out itemObject))
+
+        // Prioritas 1: Isi hotbar terlebih dahulu
+        GameObject hotbarSlot = FindNextEmptyHotbarSlot();
+        if (hotbarSlot != null)
+        {
+            GameObject hotbarItem;
+            if (!TryCreateItemInSlot(fishState.itemName, hotbarSlot, out hotbarItem))
+                return false;
+
+            AttachFishState(hotbarItem, fishState);
+
+            if (EquipSystem.Instance != null)
+                EquipSystem.Instance.itemList.Add(ItemNameUtility.CleanName(fishState.itemName));
+
+            CheckFull();
+            Image hotbarImage = hotbarItem.GetComponent<Image>();
+            TriggerFishPickupAlert(fishState.itemName, hotbarImage != null ? hotbarImage.sprite : null, fishState);
+            Debug.Log($"[Inventory] Ikan '{fishState.itemName}' masuk ke hotbar slot: {hotbarSlot.name}");
+            return true;
+        }
+
+        // Prioritas 2: Hotbar penuh, alihkan ke inventaris utama
+        GameObject inventoryItem;
+        if (!TryCreateItemInNextSlot(fishState.itemName, out inventoryItem))
             return false;
 
-        AttachFishState(itemObject, fishState);
-        Image itemImage = itemObject.GetComponent<Image>();
+        AttachFishState(inventoryItem, fishState);
+        Image itemImage = inventoryItem.GetComponent<Image>();
         TriggerFishPickupAlert(fishState.itemName, itemImage != null ? itemImage.sprite : null, fishState);
+        Debug.Log($"[Inventory] Ikan '{fishState.itemName}' masuk ke inventaris utama.");
         return true;
     }
 
@@ -251,16 +289,22 @@ public class InventorySystem : MonoBehaviour
     public int GetEmptySlotCount()
     {
         if (slotList.Count == 0)
-        {
             CountSlotList();
-        }
 
         int emptySlots = 0;
         foreach (GameObject slot in slotList)
         {
             if (slot.transform.childCount == 0)
-            {
                 emptySlots++;
+        }
+
+        // Hitung juga slot hotbar yang kosong
+        if (EquipSystem.Instance != null)
+        {
+            foreach (GameObject slot in EquipSystem.Instance.quickSlotsList)
+            {
+                if (slot.transform.childCount == 0)
+                    emptySlots++;
             }
         }
 
@@ -446,6 +490,21 @@ public class InventorySystem : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// Mencari slot hotbar (QuickSlot) kosong pertama dari kiri ke kanan.
+    /// Mengembalikan null jika semua slot hotbar sudah penuh.
+    /// </summary>
+    private GameObject FindNextEmptyHotbarSlot()
+    {
+        if (EquipSystem.Instance == null) return null;
+        foreach (GameObject slot in EquipSystem.Instance.quickSlotsList)
+        {
+            if (slot.transform.childCount == 0)
+                return slot;
+        }
+        return null;
+    }
+
     private bool TryCreateItemInNextSlot(string itemName, out GameObject itemObject)
     {
         itemObject = null;
@@ -499,25 +558,31 @@ public class InventorySystem : MonoBehaviour
 
     public bool CheckFull()
     {
-        int couter = 0;
+        // Cek inventaris utama
         foreach (GameObject slot in slotList)
         {
-            if (slot.transform.childCount > 0)
+            if (slot.transform.childCount == 0)
             {
-                couter += 1;
+                isFull = false;
+                return false;
             }
         }
 
-        if (couter == slotList.Count)
+        // Cek hotbar
+        if (EquipSystem.Instance != null)
         {
-            isFull = true;
-            return true;
+            foreach (GameObject slot in EquipSystem.Instance.quickSlotsList)
+            {
+                if (slot.transform.childCount == 0)
+                {
+                    isFull = false;
+                    return false;
+                }
+            }
         }
-        else
-        {
-            isFull = false;
-            return false;
-        }
+
+        isFull = true;
+        return true;
     }
 
     public void ReCalculeList()

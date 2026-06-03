@@ -5190,6 +5190,7 @@ GameObject:
   - component: {fileID: 193341092}
   - component: {fileID: 193341091}
   - component: {fileID: 193341090}
+  - component: {fileID: 193341093}
   m_Layer: 5
   m_Name: QuickSlot_4
   m_TagString: QuickSlot
@@ -5266,6 +5267,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 193341088}
   m_CullTransparentMesh: 1
+--- !u!114 &193341093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193341088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9d18a935bba926468c02ed7f1668791, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuickSlotClickHandler
+  slotIndex: 4
 --- !u!1 &194402122
 GameObject:
   m_ObjectHideFlags: 0
@@ -15565,6 +15579,7 @@ GameObject:
   - component: {fileID: 541583746}
   - component: {fileID: 541583745}
   - component: {fileID: 541583744}
+  - component: {fileID: 541583747}
   m_Layer: 5
   m_Name: QuickSlot_5
   m_TagString: QuickSlot
@@ -15641,6 +15656,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 541583742}
   m_CullTransparentMesh: 1
+--- !u!114 &541583747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541583742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9d18a935bba926468c02ed7f1668791, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuickSlotClickHandler
+  slotIndex: 5
 --- !u!4 &541959935 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 160855052535258357, guid: c95d21674fd8e09499c43dcfbfda46e3, type: 3}
@@ -33572,6 +33600,7 @@ GameObject:
   - component: {fileID: 1216176788}
   - component: {fileID: 1216176787}
   - component: {fileID: 1216176786}
+  - component: {fileID: 1216176789}
   m_Layer: 5
   m_Name: QuickSlot_1
   m_TagString: QuickSlot
@@ -33648,6 +33677,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1216176784}
   m_CullTransparentMesh: 1
+--- !u!114 &1216176789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216176784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9d18a935bba926468c02ed7f1668791, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuickSlotClickHandler
+  slotIndex: 1
 --- !u!1 &1220393119
 GameObject:
   m_ObjectHideFlags: 0
@@ -36584,6 +36626,7 @@ GameObject:
   - component: {fileID: 1316776561}
   - component: {fileID: 1316776560}
   - component: {fileID: 1316776559}
+  - component: {fileID: 1316776562}
   m_Layer: 5
   m_Name: QuickSlot_6
   m_TagString: QuickSlot
@@ -36660,6 +36703,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1316776557}
   m_CullTransparentMesh: 1
+--- !u!114 &1316776562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316776557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9d18a935bba926468c02ed7f1668791, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuickSlotClickHandler
+  slotIndex: 6
 --- !u!1 &1316961334
 GameObject:
   m_ObjectHideFlags: 0
@@ -42009,6 +42065,7 @@ GameObject:
   - component: {fileID: 1466854686}
   - component: {fileID: 1466854685}
   - component: {fileID: 1466854684}
+  - component: {fileID: 1466854687}
   m_Layer: 5
   m_Name: QuickSlot_2
   m_TagString: QuickSlot
@@ -42085,6 +42142,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1466854682}
   m_CullTransparentMesh: 1
+--- !u!114 &1466854687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1466854682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9d18a935bba926468c02ed7f1668791, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuickSlotClickHandler
+  slotIndex: 2
 --- !u!1001 &1474320037
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -56481,6 +56551,7 @@ GameObject:
   - component: {fileID: 2053922620}
   - component: {fileID: 2053922619}
   - component: {fileID: 2053922618}
+  - component: {fileID: 2053922621}
   m_Layer: 5
   m_Name: QuickSlot_3
   m_TagString: QuickSlot
@@ -56557,6 +56628,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2053922616}
   m_CullTransparentMesh: 1
+--- !u!114 &2053922621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2053922616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9d18a935bba926468c02ed7f1668791, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuickSlotClickHandler
+  slotIndex: 3
 --- !u!1001 &2055030179
 PrefabInstance:
   m_ObjectHideFlags: 0

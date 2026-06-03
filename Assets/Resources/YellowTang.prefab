@@ -118,6 +118,6 @@ MonoBehaviour:
   thisName: YellowTang
   thisDescription: Yellow Tang Cuy
   thisFunctionality: Yellow Tang ni
-  isEquippable: 0
-  IsNowInsideQcSlot: 1
+  isEquippable: 1
+  IsNowInsideQcSlot: 0
   isSelected: 0

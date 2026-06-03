@@ -9,6 +9,7 @@ public class FishInstanceState
 {
     public string instanceId;
     public string itemName;
+    public GameObject holdPrefab;
     public float hunger;
     public float maxHunger;
     public float health;
@@ -30,6 +31,7 @@ public static class FishFactory
         {
             instanceId = Guid.NewGuid().ToString("N"),
             itemName = itemName,
+            holdPrefab = speciesData != null ? speciesData.holdPrefab : null,
             hunger = 0f,
             maxHunger = 100f,
             health = maxHealth,

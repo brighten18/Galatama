@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Banggai
   m_EditorClassIdentifier: Assembly-CSharp::AI_Fish_Data
   ItemName: Banggai
+  holdPrefab: {fileID: 919132149155446097, guid: 8ac57d04e93755446bff018bab4910a7, type: 3}
   baseSwimSpeed: 1
   fleeSpeed: 2
   aquariumIdleSpeed: 0.2
@@ -25,3 +26,11 @@ MonoBehaviour:
   changeDirectionInterval: 3
   baseHealth: 100
   weight: 5
+  minOxygen: 4
+  maxAmmonia: 1
+  minTemperature: 23
+  maxTemperature: 30
+  minPh: 7.8
+  maxPh: 8.5
+  minSalinity: 30
+  maxSalinity: 38

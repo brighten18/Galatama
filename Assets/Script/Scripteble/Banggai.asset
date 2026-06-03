@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7851d30ef237a64a870cffb13f5ac8f, type: 3}
+  m_Name: Banggai
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentData
+  itemName: Banggai
+  itemType: 1
+  modelPrefab: {fileID: 4310994126230103519, guid: c211b26d825192743b569baf361b0240, type: 3}
+  localPosition: {x: 0, y: 0, z: 0}
+  localRotation: {x: 0, y: 0, z: 0}
+  localScale: {x: 3, y: 3, z: 3}
+  aquariumRole: 0
+  ammoniaReductionPerTick: 0
+  oxygenIncreasePerTick: 0
+  temperatureChangePerTick: 0
+  targetTemperature: 0
+  salinityChange: 0
+  cooldownSeconds: 0
+  targetPh: 0
+  targetAmmonia: 0
+  instantOxygenIncrease: 0
+  feedHungerReduction: 0
+  pelletSpawnCount: 8

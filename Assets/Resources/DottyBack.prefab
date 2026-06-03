@@ -118,6 +118,6 @@ MonoBehaviour:
   thisName: DottyBack
   thisDescription: DottyBack
   thisFunctionality: DottyBack Ni
-  isEquippable: 0
+  isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

@@ -118,6 +118,6 @@ MonoBehaviour:
   thisName: Blenny
   thisDescription: Blenny
   thisFunctionality: Blenny Cuy
-  isEquippable: 0
+  isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

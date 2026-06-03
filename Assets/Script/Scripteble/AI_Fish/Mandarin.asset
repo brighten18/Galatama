@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Mandarin
   m_EditorClassIdentifier: Assembly-CSharp::AI_Fish_Data
   ItemName: Mandarin
+  holdPrefab: {fileID: 919132149155446097, guid: 08801e8880fa3de45855cabe222d011c, type: 3}
   baseSwimSpeed: 3
   fleeSpeed: 6
   aquariumIdleSpeed: 1.5
@@ -25,3 +26,11 @@ MonoBehaviour:
   changeDirectionInterval: 3
   baseHealth: 100
   weight: 5
+  minOxygen: 4
+  maxAmmonia: 1
+  minTemperature: 23
+  maxTemperature: 30
+  minPh: 7.8
+  maxPh: 8.5
+  minSalinity: 30
+  maxSalinity: 38

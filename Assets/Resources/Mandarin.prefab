@@ -118,6 +118,6 @@ MonoBehaviour:
   thisName: Mandarin
   thisDescription: Mandarin Fish
   thisFunctionality: Fih Mandarin
-  isEquippable: 0
-  IsNowInsideQcSlot: 1
+  isEquippable: 1
+  IsNowInsideQcSlot: 0
   isSelected: 0

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BlueTang
   m_EditorClassIdentifier: Assembly-CSharp::AI_Fish_Data
   ItemName: BlueTang
+  holdPrefab: {fileID: 919132149155446097, guid: 49af9033ddc1f4342b1097b69e32c0bf, type: 3}
   baseSwimSpeed: 1
   fleeSpeed: 2
   aquariumIdleSpeed: 1.5

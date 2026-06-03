@@ -118,6 +118,6 @@ MonoBehaviour:
   thisName: RoyyalGamma
   thisDescription: Royyal Gamma
   thisFunctionality: Royyal Gamma Coy
-  isEquippable: 0
-  IsNowInsideQcSlot: 1
+  isEquippable: 1
+  IsNowInsideQcSlot: 0
   isSelected: 0

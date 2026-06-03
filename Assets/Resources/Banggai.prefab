@@ -119,5 +119,5 @@ MonoBehaviour:
   thisDescription: Banggai Cardinal
   thisFunctionality: Banggai Coy
   isEquippable: 1
-  IsNowInsideQcSlot: 1
+  IsNowInsideQcSlot: 0
   isSelected: 0

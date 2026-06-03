@@ -7,6 +7,7 @@ public class AI_Fish_Data : ScriptableObject
 {
     [Header("Species Info")]
     public string ItemName = "Tuna";
+    public GameObject holdPrefab;
     
     [Header("Movement Parameters")]
     [Tooltip("Normal swim speed")]

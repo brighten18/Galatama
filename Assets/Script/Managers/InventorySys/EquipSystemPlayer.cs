@@ -26,6 +26,11 @@ public class EquipSystem : MonoBehaviour
     public List<EquipmentData> equipmentDataList = new List<EquipmentData>();
     private Dictionary<string, EquipmentData> equipmentDataMap;
 
+    [Header("Fish Hold Fallback")]
+    [SerializeField] private Vector3 fallbackFishLocalPosition = Vector3.zero;
+    [SerializeField] private Vector3 fallbackFishLocalRotation = Vector3.zero;
+    [SerializeField] private Vector3 fallbackFishLocalScale = new Vector3(3f, 3f, 3f);
+
 
  
     private void Awake()
@@ -187,27 +192,74 @@ public class EquipSystem : MonoBehaviour
 
         ClearToolsHolder();
 
-        if (!equipmentDataMap.TryGetValue(itemName, out EquipmentData data))
+        if (TrySpawnEquipmentModel(itemEquipped, itemName))
         {
-            Debug.LogError($"[EquipSystem] '{itemName}' tidak ditemukan di map.");
-            isnowEquipped = false;
+            isnowEquipped = true;
+            Debug.Log($"[EquipSystem] Model equipped: '{itemName}'");
             return;
         }
 
-        if (data.modelPrefab == null)
+        Debug.LogError($"[EquipSystem] '{itemName}' tidak ditemukan di map dan fallback model gagal.");
+        isnowEquipped = false;
+    }
+
+    private bool TrySpawnEquipmentModel(GameObject itemEquipped, string itemName)
+    {
+        if (equipmentDataMap != null && equipmentDataMap.TryGetValue(itemName, out EquipmentData data))
         {
-            Debug.LogError($"[EquipSystem] modelPrefab null pada '{itemName}'.");
-            isnowEquipped = false;
-            return;
+            if (data.modelPrefab == null)
+            {
+                Debug.LogError($"[EquipSystem] modelPrefab null pada '{itemName}'.");
+                return false;
+            }
+
+            SpawnModel(data.modelPrefab, data.localPosition, data.localRotation, data.localScale);
+            return true;
         }
 
-        GameObject spawnedModel = Instantiate(data.modelPrefab, ToolsHolder.transform);
-        spawnedModel.transform.localPosition = data.localPosition;
-        spawnedModel.transform.localRotation = Quaternion.Euler(data.localRotation);
-        spawnedModel.transform.localScale = data.localScale;
+        FishRuntimeData fishRuntime = itemEquipped.GetComponent<FishRuntimeData>();
+        if (fishRuntime == null)
+            return false;
 
-        isnowEquipped = true;
-        Debug.Log($"[EquipSystem] Model equipped: '{itemName}'");
+        GameObject fishPrefab = ResolveFishHoldPrefab(itemName, fishRuntime);
+        if (fishPrefab == null)
+        {
+            Debug.LogError($"[EquipSystem] Fallback prefab ikan tidak ditemukan untuk '{itemName}'.");
+            return false;
+        }
+
+        SpawnModel(fishPrefab, fallbackFishLocalPosition, fallbackFishLocalRotation, fallbackFishLocalScale);
+        return true;
+    }
+
+    private GameObject ResolveFishHoldPrefab(string itemName, FishRuntimeData fishRuntime)
+    {
+        if (fishRuntime != null && fishRuntime.State != null && fishRuntime.State.holdPrefab != null)
+            return fishRuntime.State.holdPrefab;
+
+        string[] candidatePaths =
+        {
+            itemName + "_Fabs",
+            itemName + "Fish_Fabs",
+            itemName
+        };
+
+        foreach (string candidatePath in candidatePaths)
+        {
+            GameObject prefab = Resources.Load<GameObject>(candidatePath);
+            if (prefab != null)
+                return prefab;
+        }
+
+        return null;
+    }
+
+    private void SpawnModel(GameObject prefab, Vector3 localPosition, Vector3 localRotation, Vector3 localScale)
+    {
+        GameObject spawnedModel = Instantiate(prefab, ToolsHolder.transform);
+        spawnedModel.transform.localPosition = localPosition;
+        spawnedModel.transform.localRotation = Quaternion.Euler(localRotation);
+        spawnedModel.transform.localScale = localScale;
     }
 
     GameObject getSelectedItem(int slotIndex)

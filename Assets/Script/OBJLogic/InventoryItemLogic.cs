@@ -20,6 +20,11 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
     public bool IsNowInsideQcSlot;
     public bool isSelected;
 
+    public bool CanMoveToQuickSlot()
+    {
+        return isEquippable || GetComponent<FishRuntimeData>() != null;
+    }
+
     private void Start()
     {
         dragDrop = GetComponent<DragDrop>();
@@ -116,7 +121,7 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
     {
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            if (isEquippable && !IsNowInsideQcSlot && EquipSystem.Instance.CheckIsfFull() == false)
+            if (CanMoveToQuickSlot() && !IsNowInsideQcSlot && EquipSystem.Instance.CheckIsfFull() == false)
             {
                 EquipSystem.Instance.AddToQuickSlots(gameObject);
                 IsNowInsideQcSlot = true;

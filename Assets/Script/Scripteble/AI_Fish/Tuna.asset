@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Tuna
   m_EditorClassIdentifier: Assembly-CSharp::AI_Fish_Data
   ItemName: Tuna
+  holdPrefab: {fileID: 100100000, guid: 938708116acf11642b1a56bc0cf2bb8a, type: 3}
   baseSwimSpeed: 1
   fleeSpeed: 2
   aquariumIdleSpeed: 1.5

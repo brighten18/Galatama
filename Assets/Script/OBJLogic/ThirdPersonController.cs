@@ -116,10 +116,10 @@ namespace StarterAssets
         private bool _hasAnimator;
         private bool _movementBlocked;
 
-        // Apakah Ctrl sedang ditekan (mode kursor terkunci)
-        private bool _ctrlHeld;
+        // Apakah cursor sedang ditampilkan (toggle dengan Ctrl)
+        private bool _cursorVisible;
 
-        // Apakah klik kanan sedang ditahan (rotasi kamera sementara)
+        // Apakah klik kanan sedang ditahan untuk rotasi kamera (hanya aktif saat cursor visible)
         private bool _rightClickHeld;
 
         private bool IsCurrentDeviceMouse
@@ -163,8 +163,10 @@ namespace StarterAssets
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
 
-            // Mulai dengan kursor bebas (mode normal)
-            _input.SetCursorLocked(false);
+            // Mulai dengan kursor tersembunyi dan terkurung dalam window; rotasi kamera aktif langsung
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = false;
+            _input.cursorInputForLook = true;
         }
 
         private void Update()
@@ -289,15 +291,7 @@ namespace StarterAssets
 
             // note: Vector2's != operator uses approximation so is not floating point error prone, and i...
             // if there is a move input rotate player when the player is moving
-            if (_ctrlHeld)
-            {
-                // Mode Ctrl: karakter selalu menghadap ke arah kamera
-                _targetRotation = _mainCamera.transform.eulerAngles.y;
-                float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
-                    RotationSmoothTime);
-                transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-            }
-            else if (_input.move != Vector2.zero)
+            if (_input.move != Vector2.zero)
             {
                 _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                                   _mainCamera.transform.eulerAngles.y;
@@ -309,19 +303,7 @@ namespace StarterAssets
             }
 
 
-            Vector3 targetDirection;
-            if (_ctrlHeld)
-            {
-                // Mode strafe: arah gerak dipetakan langsung ke ruang kamera
-                // W/S = camera forward/back, A/D = camera left/right
-                Vector3 camForward = Vector3.ProjectOnPlane(_mainCamera.transform.forward, Vector3.up).normalized;
-                Vector3 camRight   = Vector3.ProjectOnPlane(_mainCamera.transform.right,   Vector3.up).normalized;
-                targetDirection = camForward * _input.move.y + camRight * _input.move.x;
-            }
-            else
-            {
-                targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
-            }
+            Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
             // move the player
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
@@ -471,51 +453,70 @@ namespace StarterAssets
         }
 
         /// <summary>
-        /// Memantau tombol Ctrl dan mengubah mode kamera/kursor:
-        /// - Ctrl ditekan  : kursor terkunci, kamera + karakter berputar bersama.
-        /// - Ctrl dilepas  : kursor bebas, rotasi kamera independen dari karakter.
+        /// Memantau tombol Ctrl untuk toggle visibilitas kursor:
+        /// - Ctrl ditekan       : tampilkan cursor (None), nonaktifkan rotasi kamera bebas.
+        /// - Ctrl ditekan lagi  : sembunyikan cursor (Confined), aktifkan kembali rotasi kamera bebas.
         /// </summary>
         private void HandleCtrlCameraMode()
         {
 #if ENABLE_INPUT_SYSTEM
             if (Keyboard.current == null) return;
-
-            // Toggle hanya saat Ctrl baru ditekan (bukan ditahan)
             if (!Keyboard.current.ctrlKey.wasPressedThisFrame) return;
 
-            _ctrlHeld = !_ctrlHeld;
-            _input.SetCursorLocked(_ctrlHeld);
+            _cursorVisible = !_cursorVisible;
+            Cursor.visible = _cursorVisible;
+            Cursor.lockState = _cursorVisible ? CursorLockMode.None : CursorLockMode.Confined;
+
+            // Reset look agar tidak ada seretan kamera saat mode berganti
+            _input.look = Vector2.zero;
+
+            if (!_cursorVisible)
+                _rightClickHeld = false;
+
+            _input.cursorInputForLook = !_cursorVisible;
 #endif
         }
 
         /// <summary>
-        /// Saat cursor unlocked, tahan klik kanan untuk menggeser kamera.
-        /// Kursor akan dikunci sementara selama klik kanan ditahan, lalu bebas kembali saat dilepas.
-        /// Tidak aktif jika Ctrl mode sedang menyala.
+        /// Saat cursor visible, tahan klik kanan untuk merotasi kamera.
+        /// Cursor disembunyikan sementara (Confined) selama klik kanan ditahan.
         /// </summary>
         private void HandleRightClickCamera()
         {
 #if ENABLE_INPUT_SYSTEM
-            if (Mouse.current == null || _ctrlHeld) return;
+            if (Mouse.current == null || !_cursorVisible) return;
 
             bool rightPressed = Mouse.current.rightButton.isPressed;
             if (rightPressed == _rightClickHeld) return;
 
             _rightClickHeld = rightPressed;
-            _input.cursorInputForLook = _rightClickHeld;
 
             if (_rightClickHeld)
             {
-                Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Confined;
+                _input.cursorInputForLook = true;
             }
             else
             {
                 _input.look = Vector2.zero;
-                Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+                _input.cursorInputForLook = false;
             }
 #endif
+        }
+
+        /// <summary>
+        /// Pulihkan state cursor saat window mendapat fokus kembali.
+        /// </summary>
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus) return;
+
+            bool shouldHide = !_cursorVisible || _rightClickHeld;
+            Cursor.visible = !shouldHide;
+            Cursor.lockState = shouldHide ? CursorLockMode.Confined : CursorLockMode.None;
         }
 
         private void OnFootstep(AnimationEvent animationEvent)

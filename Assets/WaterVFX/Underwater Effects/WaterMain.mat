@@ -59,16 +59,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Depth: 3.34
+    - _Depth: 0.3
     - _Displacement: 0.002
-    - _NormalStrength: 0.2
+    - _FoamThickness: 0.5
+    - _NormalStrength: 0.512
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _SmoothNess: 0.21
-    - _Strength: 0.09
+    - _SmoothNess: 0.701
+    - _Strength: 0.07
     m_Colors:
     - _WaterColor: {r: 0.26576707, g: 0.8007829, b: 0.8641509, a: 1}
-    - _WaterColorDP: {r: 0, g: 0.7647059, b: 0.72118354, a: 0.5294118}
+    - _WaterColorDP: {r: 0, g: 0.7647059, b: 0.72118354, a: 0.7254902}
     - _WaterColorSH: {r: 0.36037734, g: 0.98853606, b: 1, a: 0.3529412}
+    - _White: {r: 0.740655, g: 0.8168355, b: 0.8264151, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

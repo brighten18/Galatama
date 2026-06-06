@@ -52,21 +52,14 @@ public class InteractUIManager : MonoBehaviour
         if (!isReady) return;
 
         Ray ray = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit[] hits = Physics.RaycastAll(ray, maxInteractionDistance, Physics.AllLayers, QueryTriggerInteraction.Collide);
+        System.Array.Sort(hits, (left, right) => left.distance.CompareTo(right.distance));
+
         RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, maxInteractionDistance, Physics.AllLayers, QueryTriggerInteraction.Collide))
+        if (TryGetFirstValidHit(hits, out hit))
         {
-            if (!hit.collider.isTrigger)
-            {
-                lastNonTriggerHit = hit;
-                OnTargeted = true;
-
-            }
-            else
-            {
-                lastNonTriggerHit = default;
-                OnTargeted = false;
-            }
+            lastNonTriggerHit = hit;
+            OnTargeted = true;
 
             InteractableObject interactable = hit.transform.GetComponentInParent<InteractableObject>();
 
@@ -86,6 +79,36 @@ public class InteractUIManager : MonoBehaviour
             lastNonTriggerHit = default;
             ClearInteraction();
         }
+    }
+
+    private bool TryGetFirstValidHit(RaycastHit[] hits, out RaycastHit validHit)
+    {
+        if (hits != null)
+        {
+            for (int i = 0; i < hits.Length; i++)
+            {
+                RaycastHit hit = hits[i];
+                if (hit.collider == null || hit.collider.isTrigger)
+                    continue;
+
+                if (IsHeldItemHit(hit))
+                    continue;
+
+                validHit = hit;
+                return true;
+            }
+        }
+
+        validHit = default;
+        return false;
+    }
+
+    private bool IsHeldItemHit(RaycastHit hit)
+    {
+        if (hit.transform == null)
+            return false;
+
+        return hit.transform.GetComponentInParent<HeldItemVisual>() != null;
     }
 
     private void ClearInteraction()

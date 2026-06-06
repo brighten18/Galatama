@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: YellowTang
   m_EditorClassIdentifier: Assembly-CSharp::AI_Fish_Data
   ItemName: YellowTang
-  holdPrefab: {fileID: 919132149155446097, guid: da6127c4cbd411349ae6fe2a9241dc2b, type: 3}
+  holdPrefab: {fileID: 919132149155446097, guid: 226a0c34f7f2db043b94186f1b5f0246, type: 3}
+  holdLocalPosition: {x: 0.1, y: 0, z: 0}
+  holdLocalRotation: {x: 0, y: 0, z: 0}
+  holdLocalScale: {x: 3, y: 3, z: 3}
   baseSwimSpeed: 3
   fleeSpeed: 6
   aquariumIdleSpeed: 1.5

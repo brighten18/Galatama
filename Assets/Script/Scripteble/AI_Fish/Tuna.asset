@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AI_Fish_Data
   ItemName: Tuna
   holdPrefab: {fileID: 100100000, guid: 938708116acf11642b1a56bc0cf2bb8a, type: 3}
+  holdLocalPosition: {x: 0.1, y: 0, z: 0}
+  holdLocalRotation: {x: 0, y: 0, z: 0}
+  holdLocalScale: {x: 3, y: 3, z: 3}
   baseSwimSpeed: 1
   fleeSpeed: 2
   aquariumIdleSpeed: 1.5
@@ -26,3 +29,11 @@ MonoBehaviour:
   changeDirectionInterval: 1
   baseHealth: 100
   weight: 5
+  minOxygen: 4
+  maxAmmonia: 1
+  minTemperature: 23
+  maxTemperature: 30
+  minPh: 7.8
+  maxPh: 8.5
+  minSalinity: 30
+  maxSalinity: 38

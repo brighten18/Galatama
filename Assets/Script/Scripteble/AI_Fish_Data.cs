@@ -8,6 +8,9 @@ public class AI_Fish_Data : ScriptableObject
     [Header("Species Info")]
     public string ItemName = "Tuna";
     public GameObject holdPrefab;
+    public Vector3 holdLocalPosition = Vector3.zero;
+    public Vector3 holdLocalRotation = Vector3.zero;
+    public Vector3 holdLocalScale = Vector3.one;
     
     [Header("Movement Parameters")]
     [Tooltip("Normal swim speed")]

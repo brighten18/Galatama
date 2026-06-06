@@ -31,6 +31,11 @@ namespace StarterAssets
 		public bool cursorLocked = false;
 		public bool cursorInputForLook = true;
 
+		[Header("Interaction Cooldown")]
+		[SerializeField] private float interactOBJCooldown = 1f;
+
+		private float nextInteractOBJAllowedTime;
+
 #if ENABLE_INPUT_SYSTEM
 		public void OnMove(InputValue value)
 		{
@@ -62,7 +67,7 @@ namespace StarterAssets
 
 		public void OnInteractOBJ(InputValue value)
 		{
-			InteractOBJ = value.isPressed;
+			SetInteractOBJState(value.isPressed);
 		}
 
 		public void OnInventory(InputValue value)
@@ -141,7 +146,25 @@ namespace StarterAssets
 
 		public void InteractOBJInput(bool newInteractOBJState)
 		{
-			InteractOBJ = newInteractOBJState;
+			SetInteractOBJState(newInteractOBJState);
+		}
+
+		private void SetInteractOBJState(bool isPressed)
+		{
+			if (!isPressed)
+			{
+				InteractOBJ = false;
+				return;
+			}
+
+			if (Time.time < nextInteractOBJAllowedTime)
+			{
+				InteractOBJ = false;
+				return;
+			}
+
+			InteractOBJ = true;
+			nextInteractOBJAllowedTime = Time.time + interactOBJCooldown;
 		}
 
 		public void PauseInput(bool newPauseState)

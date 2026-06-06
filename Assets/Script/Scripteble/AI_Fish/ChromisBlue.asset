@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c0df88d639ad7c42884cc0720867018, type: 3}
   m_Name: ChromisBlue
   m_EditorClassIdentifier: Assembly-CSharp::AI_Fish_Data
-  ItemName: ChormisBlue
+  ItemName: ChromisBlue
+  holdPrefab: {fileID: 919132149155446097, guid: 4a672d00a2ade0846ae7330515b778bc, type: 3}
+  holdLocalPosition: {x: 0.1, y: 0, z: 0}
+  holdLocalRotation: {x: 0, y: 0, z: 0}
+  holdLocalScale: {x: 4, y: 4, z: 4}
   baseSwimSpeed: 3
   fleeSpeed: 6
   aquariumIdleSpeed: 1.5
@@ -25,3 +29,11 @@ MonoBehaviour:
   changeDirectionInterval: 3
   baseHealth: 100
   weight: 5
+  minOxygen: 4
+  maxAmmonia: 1
+  minTemperature: 23
+  maxTemperature: 30
+  minPh: 7.8
+  maxPh: 8.5
+  minSalinity: 30
+  maxSalinity: 38

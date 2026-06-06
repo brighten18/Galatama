@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5757519630347842894
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5505935908508167926}
+  - component: {fileID: 549741110614050271}
+  m_Layer: 0
+  m_Name: ParentClown
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5505935908508167926
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5757519630347842894}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 16.97181, y: -0.95884, z: 6.9265}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4768560310200336259}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &549741110614050271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5757519630347842894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ed1d7ba7d7351845aad11dc3b1c104d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleMenuFish
+  baseSpeed: 3
+  speedVariation: 6
+  rotationSpeed: 400
+  waypointReachThreshold: 4
+  changeWaypointInterval: 3
+  forwardAxis: 3
+  swimAreaCenter: {x: 18, y: 3.5, z: 11}
+  swimAreaSize: {x: 25, y: 2, z: 21}
+--- !u!1001 &2106067680018109348
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5505935908508167926}
+    m_Modifications:
+    - target: {fileID: 6078950885031753373, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+      propertyPath: m_Name
+      value: CLOWNFISH animation
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851968670477675559, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851968670477675559, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851968670477675559, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851968670477675559, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851968670477675559, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851968670477675559, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851968670477675559, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851968670477675559, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851968670477675559, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851968670477675559, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+--- !u!4 &4768560310200336259 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6851968670477675559, guid: ae459231c7368bb49b14fdad63cfa872, type: 3}
+  m_PrefabInstance: {fileID: 2106067680018109348}
+  m_PrefabAsset: {fileID: 0}

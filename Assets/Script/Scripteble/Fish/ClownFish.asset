@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ClownFish
   m_EditorClassIdentifier: Assembly-CSharp::FishData
   itemName: ClownFish
-  weight: 0.1
-  swimSpeed: 2
+  weight: 0.3
+  swimSpeed: 1

@@ -10,6 +10,9 @@ public class FishInstanceState
     public string instanceId;
     public string itemName;
     public GameObject holdPrefab;
+    public Vector3 holdLocalPosition;
+    public Vector3 holdLocalRotation;
+    public Vector3 holdLocalScale = Vector3.one;
     public float hunger;
     public float maxHunger;
     public float health;
@@ -32,6 +35,9 @@ public static class FishFactory
             instanceId = Guid.NewGuid().ToString("N"),
             itemName = itemName,
             holdPrefab = speciesData != null ? speciesData.holdPrefab : null,
+            holdLocalPosition = speciesData != null ? speciesData.holdLocalPosition : Vector3.zero,
+            holdLocalRotation = speciesData != null ? speciesData.holdLocalRotation : Vector3.zero,
+            holdLocalScale = speciesData != null ? speciesData.holdLocalScale : Vector3.one,
             hunger = 0f,
             maxHunger = 100f,
             health = maxHealth,
@@ -52,12 +58,21 @@ public static class FishFactory
 
         state.maxHunger = Mathf.Max(1f, state.maxHunger);
         state.maxHealth = Mathf.Max(1f, state.maxHealth);
+        if (ApproximatelyZero(state.holdLocalScale))
+            state.holdLocalScale = Vector3.one;
         state.hunger = Mathf.Clamp(state.hunger, 0f, state.maxHunger);
         if (state.health <= 0f && state.isAlive)
             state.health = state.maxHealth;
         state.health = Mathf.Clamp(state.health, 0f, state.maxHealth);
         state.isAlive = state.isAlive && state.health > 0f;
         return state;
+    }
+
+    private static bool ApproximatelyZero(Vector3 value)
+    {
+        return Mathf.Approximately(value.x, 0f) &&
+               Mathf.Approximately(value.y, 0f) &&
+               Mathf.Approximately(value.z, 0f);
     }
 }
 

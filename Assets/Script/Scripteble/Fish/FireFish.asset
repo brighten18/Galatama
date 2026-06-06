@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FishData
   itemName: FireFish
   weight: 0.3
-  swimSpeed: 0.2
+  swimSpeed: 0.6

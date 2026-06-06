@@ -213,7 +213,7 @@ public class EquipSystem : MonoBehaviour
                 return false;
             }
 
-            SpawnModel(data.modelPrefab, data.localPosition, data.localRotation, data.localScale);
+            SpawnModel(data.modelPrefab, data.localPosition, data.localRotation, data.localScale, false);
             return true;
         }
 
@@ -228,7 +228,20 @@ public class EquipSystem : MonoBehaviour
             return false;
         }
 
-        SpawnModel(fishPrefab, fallbackFishLocalPosition, fallbackFishLocalRotation, fallbackFishLocalScale);
+        Vector3 holdPosition = fallbackFishLocalPosition;
+        Vector3 holdRotation = fallbackFishLocalRotation;
+        Vector3 holdScale = fallbackFishLocalScale;
+
+        if (fishRuntime.State != null)
+        {
+            holdPosition = fishRuntime.State.holdLocalPosition;
+            holdRotation = fishRuntime.State.holdLocalRotation;
+
+            if (!IsZeroVector(fishRuntime.State.holdLocalScale))
+                holdScale = fishRuntime.State.holdLocalScale;
+        }
+
+        SpawnModel(fishPrefab, holdPosition, holdRotation, holdScale, true);
         return true;
     }
 
@@ -254,12 +267,71 @@ public class EquipSystem : MonoBehaviour
         return null;
     }
 
-    private void SpawnModel(GameObject prefab, Vector3 localPosition, Vector3 localRotation, Vector3 localScale)
+    private void SpawnModel(GameObject prefab, Vector3 localPosition, Vector3 localRotation, Vector3 localScale, bool sanitizeAsHeldFish)
     {
         GameObject spawnedModel = Instantiate(prefab, ToolsHolder.transform);
         spawnedModel.transform.localPosition = localPosition;
         spawnedModel.transform.localRotation = Quaternion.Euler(localRotation);
         spawnedModel.transform.localScale = localScale;
+        EnsureHeldItemMarker(spawnedModel);
+
+        if (sanitizeAsHeldFish)
+            PrepareHeldFishVisual(spawnedModel);
+    }
+
+    private bool IsZeroVector(Vector3 value)
+    {
+        return Mathf.Approximately(value.x, 0f) &&
+               Mathf.Approximately(value.y, 0f) &&
+               Mathf.Approximately(value.z, 0f);
+    }
+
+    private void PrepareHeldFishVisual(GameObject heldFish)
+    {
+        if (heldFish == null)
+            return;
+
+        SetLayerRecursively(heldFish.transform, LayerMask.NameToLayer("Ignore Raycast"));
+
+        foreach (Collider collider in heldFish.GetComponentsInChildren<Collider>(true))
+        {
+            collider.enabled = false;
+        }
+
+        foreach (Rigidbody body in heldFish.GetComponentsInChildren<Rigidbody>(true))
+        {
+            body.isKinematic = true;
+            body.useGravity = false;
+        }
+
+        foreach (InteractableObject interactable in heldFish.GetComponentsInChildren<InteractableObject>(true))
+        {
+            interactable.enabled = false;
+        }
+
+        foreach (Outline outline in heldFish.GetComponentsInChildren<Outline>(true))
+        {
+            outline.enabled = false;
+        }
+    }
+
+    private void SetLayerRecursively(Transform root, int layer)
+    {
+        if (root == null || layer < 0)
+            return;
+
+        root.gameObject.layer = layer;
+        for (int i = 0; i < root.childCount; i++)
+            SetLayerRecursively(root.GetChild(i), layer);
+    }
+
+    private void EnsureHeldItemMarker(GameObject heldVisual)
+    {
+        if (heldVisual == null)
+            return;
+
+        if (heldVisual.GetComponent<HeldItemVisual>() == null)
+            heldVisual.AddComponent<HeldItemVisual>();
     }
 
     GameObject getSelectedItem(int slotIndex)
@@ -378,4 +450,8 @@ public class EquipSystem : MonoBehaviour
         }
         return counter == 6;
     }
+}
+
+public class HeldItemVisual : MonoBehaviour
+{
 }

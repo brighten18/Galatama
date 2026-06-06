@@ -15,6 +15,7 @@ public class FishMovement : MonoBehaviour
     [SerializeField] private float boundarySteerWeight = 4f;
     [SerializeField] private bool lockYPosition = false;
     [SerializeField] private float fixedYPosition = 5f;
+    [SerializeField] private float directionSmoothing = 8f;
 
     [Header("Terrain Avoidance")]
     [Tooltip("Jarak minimum ikan dari permukaan terrain")]
@@ -26,10 +27,12 @@ public class FishMovement : MonoBehaviour
     private Bounds zoneBounds;
     private Collider boundaryCollider;
     private bool hasBounds = false;
+    private Vector3 currentMoveDirection = Vector3.forward;
 
     void Awake()
     {
         fishTransform = transform;
+        currentMoveDirection = GetModelForwardWorldDirection();
     }
 
     public void Move(Vector3 direction, float speedMultiplier = 1f)
@@ -54,9 +57,10 @@ public class FishMovement : MonoBehaviour
             }
         }
 
-        RotateTowards(direction);
+        Vector3 smoothedDirection = GetSmoothedDirection(direction);
+        RotateTowards(smoothedDirection);
 
-        Vector3 newPosition = fishTransform.position + direction * moveSpeed * speedMultiplier * Time.deltaTime;
+        Vector3 newPosition = fishTransform.position + smoothedDirection * moveSpeed * speedMultiplier * Time.deltaTime;
         if (lockYPosition)
         {
             newPosition.y = fixedYPosition;
@@ -64,6 +68,33 @@ public class FishMovement : MonoBehaviour
 
         newPosition = ClampAboveTerrain(newPosition);
         fishTransform.position = hasBounds ? ClampToBounds(newPosition) : newPosition;
+    }
+
+    private Vector3 GetSmoothedDirection(Vector3 desiredDirection)
+    {
+        if (desiredDirection.sqrMagnitude <= 0.0001f)
+            return currentMoveDirection;
+
+        Vector3 fromDirection = currentMoveDirection.sqrMagnitude > 0.0001f
+            ? currentMoveDirection.normalized
+            : GetModelForwardWorldDirection();
+
+        float rotateStep = Mathf.Max(0.01f, rotationSpeed) * Mathf.Deg2Rad * Time.deltaTime;
+        Vector3 rotatedDirection = Vector3.RotateTowards(fromDirection, desiredDirection.normalized, rotateStep, 0f);
+
+        float blendFactor = 1f - Mathf.Exp(-Mathf.Max(0.01f, directionSmoothing) * Time.deltaTime);
+        currentMoveDirection = Vector3.Slerp(fromDirection, rotatedDirection.normalized, blendFactor).normalized;
+
+        if (lockYPosition)
+        {
+            currentMoveDirection.y = 0f;
+            if (currentMoveDirection.sqrMagnitude > 0.0001f)
+                currentMoveDirection.Normalize();
+            else
+                currentMoveDirection = GetModelForwardWorldDirection();
+        }
+
+        return currentMoveDirection;
     }
 
     private void RotateTowards(Vector3 direction)
@@ -105,6 +136,24 @@ public class FishMovement : MonoBehaviour
             case ForwardDirection.Y_Negative: return Vector3.down;
             default: return Vector3.forward;
         }
+    }
+
+    private Vector3 GetModelForwardWorldDirection()
+    {
+        Vector3 worldForward = fishTransform != null
+            ? fishTransform.TransformDirection(GetModelForwardVector())
+            : GetModelForwardVector();
+
+        if (lockYPosition)
+        {
+            worldForward.y = 0f;
+            if (worldForward.sqrMagnitude > 0.0001f)
+                worldForward.Normalize();
+            else
+                worldForward = Vector3.forward;
+        }
+
+        return worldForward.sqrMagnitude > 0.0001f ? worldForward.normalized : Vector3.forward;
     }
 
     public void SetBoundary(Bounds bounds)

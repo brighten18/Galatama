@@ -8,7 +8,7 @@ public class AquariumFoodPellet : MonoBehaviour
     [SerializeField] private float bottomOffset = 0.1f;
 
     private AquariumSystem aquarium;
-    private float hungerReduction = 35f;
+    private float hungerReduction = 100f;
     private Bounds swimBounds;
     private bool initialized;
 

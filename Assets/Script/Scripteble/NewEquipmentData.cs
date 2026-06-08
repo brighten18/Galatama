@@ -46,6 +46,6 @@ public class EquipmentData : ScriptableObject
     public float targetPh = 8f;
     public float targetAmmonia = 0f;
     public float instantOxygenIncrease = 1.5f;
-    public float feedHungerReduction = 35f;
+    public float feedHungerReduction = 100f;
     public int pelletSpawnCount = 8;
 }

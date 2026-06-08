@@ -121,6 +121,9 @@ namespace StarterAssets
 
         // Apakah klik kanan sedang ditahan untuk rotasi kamera (hanya aktif saat cursor visible)
         private bool _rightClickHeld;
+        private bool _externalCameraOverrideActive;
+        private float _externalCameraYaw;
+        private float _externalCameraPitch;
 
         private bool IsCurrentDeviceMouse
         {
@@ -221,8 +224,13 @@ namespace StarterAssets
 
         private void CameraRotation()
         {
+            if (_externalCameraOverrideActive)
+            {
+                _cinemachineTargetYaw = ClampAngle(_externalCameraYaw, float.MinValue, float.MaxValue);
+                _cinemachineTargetPitch = ClampAngle(_externalCameraPitch, BottomClamp, TopClamp);
+            }
             // if there is an input and camera position is not fixed
-            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            else if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
@@ -450,6 +458,48 @@ namespace StarterAssets
                 _input.sprint = false;
                 _input.jump = false;
             }
+        }
+
+        public float GetCameraYaw()
+        {
+            return _cinemachineTargetYaw;
+        }
+
+        public float GetCameraPitch()
+        {
+            return _cinemachineTargetPitch;
+        }
+
+        public void SetExternalCameraAngles(float yaw, float pitch)
+        {
+            _externalCameraOverrideActive = true;
+            _externalCameraYaw = yaw;
+            _externalCameraPitch = pitch;
+        }
+
+        public void SetExternalCameraLookAt(Vector3 worldTarget)
+        {
+            if (CinemachineCameraTarget == null)
+            {
+                return;
+            }
+
+            Vector3 origin = CinemachineCameraTarget.transform.position;
+            Vector3 direction = worldTarget - origin;
+            if (direction.sqrMagnitude <= 0.0001f)
+            {
+                return;
+            }
+
+            float flatDistance = Mathf.Sqrt(direction.x * direction.x + direction.z * direction.z);
+            float yaw = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+            float pitch = Mathf.Atan2(direction.y, flatDistance) * Mathf.Rad2Deg - CameraAngleOverride;
+            SetExternalCameraAngles(yaw, pitch);
+        }
+
+        public void ClearExternalCameraOverride()
+        {
+            _externalCameraOverrideActive = false;
         }
 
         /// <summary>

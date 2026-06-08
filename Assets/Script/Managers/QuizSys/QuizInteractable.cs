@@ -18,6 +18,25 @@ public class QuizInteractable : InteractableObject
         base.Update();
     }
 
+    /// <summary>
+    /// Menyembunyikan prompt interaksi jika wave sebelumnya belum diselesaikan.
+    /// Ini mencegah player melihat prompt untuk Wave 2/3 yang belum terbuka.
+    /// </summary>
+    public override void SetLookingAt(bool value)
+    {
+        if (value && !IsAccessible()) return;
+        base.SetLookingAt(value);
+    }
+
+    /// <summary>
+    /// Mengembalikan nama kosong saat wave belum bisa diakses sehingga
+    /// InteractUIManager tidak menampilkan panel interaksi.
+    /// </summary>
+    public override string GetItemName()
+    {
+        return IsAccessible() ? displayName : string.Empty;
+    }
+
     protected override void HandleInteract()
     {
         if (PlayerInputManager.Instance != null)
@@ -30,5 +49,10 @@ public class QuizInteractable : InteractableObject
         }
 
         quizManager.OpenQuizFromWave(targetWaveNumber);
+    }
+
+    private bool IsAccessible()
+    {
+        return quizManager != null && quizManager.IsWaveAccessible(targetWaveNumber);
     }
 }

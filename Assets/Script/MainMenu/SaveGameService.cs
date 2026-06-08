@@ -15,6 +15,8 @@ namespace GALATAMA.MainMenu
     public static class SaveGameService
     {
         private const string SaveFileName = "savegame.json";
+        private const string QuizWavePassedPrefix = "QUIZ_WAVE_PASSED_";
+        private const int MaxQuizWaveReset = 20;
 
         public static string SaveFilePath
         {
@@ -57,6 +59,8 @@ namespace GALATAMA.MainMenu
 
         public static void DeleteSave()
         {
+            ResetQuizProgress();
+
             if (!HasSave())
             {
                 return;
@@ -64,6 +68,17 @@ namespace GALATAMA.MainMenu
 
             File.Delete(SaveFilePath);
             Debug.Log("Save dihapus: " + SaveFilePath);
+        }
+
+        public static void ResetQuizProgress()
+        {
+            for (int waveNumber = 1; waveNumber <= MaxQuizWaveReset; waveNumber++)
+            {
+                PlayerPrefs.DeleteKey(QuizWavePassedPrefix + waveNumber);
+            }
+
+            PlayerPrefs.Save();
+            Debug.Log("[SaveGameService] Progress quiz di-reset.");
         }
     }
 }

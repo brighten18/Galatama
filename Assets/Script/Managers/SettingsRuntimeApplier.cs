@@ -150,25 +150,7 @@ namespace GALATAMA.MainMenu
         private void ApplyLodEnabled()
         {
             bool enabled = PlayerPrefs.GetInt(PrefLodEnabled, 1) == 1;
-            LODGroup[] lodGroups = FindObjectsOfType<LODGroup>(true);
-            int appliedCount = 0;
-
-            for (int i = 0; i < lodGroups.Length; i++)
-            {
-                if (lodGroups[i] == null) continue;
-                appliedCount++;
-
-                lodGroups[i].enabled = enabled;
-
-                if (enabled)
-                {
-                    lodGroups[i].ForceLOD(-1);
-                }
-                else
-                {
-                    lodGroups[i].ForceLOD(0);
-                }
-            }
+            int appliedCount = LodSettingsUtility.ApplyLodModeToAllGroups(enabled);
             
             lastAppliedLodEnabled = enabled;
             lastAppliedLodGroupCount = appliedCount;

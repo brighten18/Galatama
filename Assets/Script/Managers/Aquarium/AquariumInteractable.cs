@@ -9,7 +9,7 @@ public class AquariumInteractable : InteractableObject
     [SerializeField] private float defaultTargetPh = 8f;
     [SerializeField] private float defaultTargetAmmonia = 0f;
     [SerializeField] private float defaultSaltIncrease = 2f;
-    [SerializeField] private float defaultFeedHungerReduction = 35f;
+    [SerializeField] private float defaultFeedHungerReduction = 100f;
     [SerializeField] private int defaultPelletSpawnCount = 8;
     [SerializeField] private GameObject foodPelletPrefab;
 
@@ -46,7 +46,18 @@ public class AquariumInteractable : InteractableObject
 
     public override string GetItemName()
     {
-        return "Aquarium";
+        return (aquariumSystem != null && aquariumSystem.IsRewardLocked)
+            ? string.Empty
+            : "Aquarium";
+    }
+
+    /// <summary>
+    /// Menyembunyikan prompt dan highlight saat aquarium reward masih terkunci.
+    /// </summary>
+    public override void SetLookingAt(bool value)
+    {
+        if (value && aquariumSystem != null && aquariumSystem.IsRewardLocked) return;
+        base.SetLookingAt(value);
     }
 
     private bool TryUseHeldItemOnAquarium()

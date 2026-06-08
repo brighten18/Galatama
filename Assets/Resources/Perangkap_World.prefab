@@ -22,15 +22,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.0249999
+      value: 80.03
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.241
+      value: -3.62
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7
+      value: 41.88
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
       propertyPath: m_LocalRotation.w
@@ -157,13 +157,13 @@ MonoBehaviour:
   respawnCooldownSeconds: 20
   useHighlight: 1
   autoAddOutlineIfMissing: 0
-  highlightMode: 1
+  highlightMode: 0
   highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   highlightWidth: 4
   lureRadius: 2
   captureRadius: 0.8
-  minCaptureDelay: 1
-  maxCaptureDelay: 1
+  minCaptureDelay: 5
+  maxCaptureDelay: 10
   targetTimeout: 1
   fishLayer:
     serializedVersion: 2
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Outline
   outlineMode: 0
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineColor: {r: 1, g: 0.85098046, b: 0.20000002, a: 1}
   outlineWidth: 1
   precomputeOutline: 0
   bakeKeys: []

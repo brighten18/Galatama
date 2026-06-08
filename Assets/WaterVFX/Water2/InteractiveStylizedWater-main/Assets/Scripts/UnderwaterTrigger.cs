@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class UnderwaterTrigger : MonoBehaviour
 {
+    private int activeCameraCount;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "MainCamera")
         {
+            activeCameraCount++;
             RenderSettings.fog = true;
         }
 
@@ -17,7 +20,17 @@ public class UnderwaterTrigger : MonoBehaviour
     {
         if (other.tag == "MainCamera")
         {
-            RenderSettings.fog = false;
+            activeCameraCount = Mathf.Max(0, activeCameraCount - 1);
+            if (activeCameraCount == 0)
+            {
+                RenderSettings.fog = false;
+            }
         }
+    }
+
+    private void OnDisable()
+    {
+        activeCameraCount = 0;
+        RenderSettings.fog = false;
     }
 }

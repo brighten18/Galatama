@@ -86,7 +86,7 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
             inv.FishName.text = fishName;
 
         if (inv.FishHunger != null)
-            inv.FishHunger.text = $"Lapar: {state.hunger:0}/{state.maxHunger:0}";
+            inv.FishHunger.text = $"Kenyang: {state.hunger:0}/{state.maxHunger:0}";
 
         if (inv.FishHealth != null)
             inv.FishHealth.text = $"HP: {state.health:0}/{state.maxHealth:0}";
@@ -97,10 +97,10 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
                 inv.FishStatus.text = "Mati";
             else if (state.isStressed)
                 inv.FishStatus.text = "Stress";
-            else if (state.HungerPercent >= 0.8f)
+            else if (state.HungerPercent <= 0.2f)
                 inv.FishStatus.text = "Lapar";
             else
-                inv.FishStatus.text = "Sehat";
+                inv.FishStatus.text = "Kenyang";
         }
 
         inv.FishThingsUI.SetActive(true);

@@ -20,7 +20,7 @@ MonoBehaviour:
   localScale: {x: 1, y: 1, z: 1}
   aquariumRole: 2
   ammoniaReductionPerTick: 0
-  oxygenIncreasePerTick: 0.2
+  oxygenIncreasePerTick: 1
   temperatureChangePerTick: 0
   targetTemperature: 26
   salinityChange: 0
@@ -29,3 +29,4 @@ MonoBehaviour:
   targetAmmonia: 0
   instantOxygenIncrease: 0
   feedHungerReduction: 0
+  pelletSpawnCount: 0

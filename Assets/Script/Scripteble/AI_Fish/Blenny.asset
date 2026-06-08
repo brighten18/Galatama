@@ -29,11 +29,11 @@ MonoBehaviour:
   changeDirectionInterval: 3
   baseHealth: 100
   weight: 5
-  minOxygen: 4
-  maxAmmonia: 1
-  minTemperature: 23
-  maxTemperature: 30
-  minPh: 7.8
+  minOxygen: 6
+  maxAmmonia: 0.12
+  minTemperature: 21
+  maxTemperature: 27
+  minPh: 5.5
   maxPh: 8.5
-  minSalinity: 30
-  maxSalinity: 38
+  minSalinity: 32
+  maxSalinity: 35

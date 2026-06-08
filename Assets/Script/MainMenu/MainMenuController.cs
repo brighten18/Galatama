@@ -70,6 +70,10 @@ namespace GALATAMA.MainMenu
             {
                 SaveGameService.DeleteSave();
             }
+            else
+            {
+                SaveGameService.ResetQuizProgress();
+            }
 
             SceneManager.LoadScene(gameplaySceneName);
         }

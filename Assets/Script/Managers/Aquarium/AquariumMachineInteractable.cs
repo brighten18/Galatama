@@ -74,6 +74,12 @@ public class AquariumMachineInteractable : InteractableObject
             return;
         }
 
+        if (resolved.IsRewardLocked)
+        {
+            Debug.Log($"[AquariumMachine:{machineRole}] Aquarium masih terkunci oleh reward wave quiz.");
+            return;
+        }
+
         string cooldownKey = $"{machineRole}_{GetInstanceID()}";
         if (!cooldowns.IsReady(cooldownKey))
         {
@@ -92,7 +98,23 @@ public class AquariumMachineInteractable : InteractableObject
         }
     }
 
-    public override string GetItemName() => machineRole.ToString();
+    /// <summary>
+    /// Menyembunyikan prompt dan highlight saat aquarium reward masih terkunci.
+    /// </summary>
+    public override void SetLookingAt(bool value)
+    {
+        if (value && IsRewardLocked()) return;
+        base.SetLookingAt(value);
+    }
+
+    /// <summary>
+    /// Mengembalikan nama kosong saat reward terkunci sehingga InteractUIManager
+    /// tidak menampilkan panel interaksi sama sekali.
+    /// </summary>
+    public override string GetItemName()
+    {
+        return IsRewardLocked() ? string.Empty : machineRole.ToString();
+    }
 
     // â”€â”€â”€ Private â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€...
 
@@ -227,5 +249,14 @@ public class AquariumMachineInteractable : InteractableObject
         }
 
         return nearest;
+    }
+
+    /// <summary>
+    /// Mengecek apakah AquariumSystem yang terkait masih terkunci oleh reward wave quiz.
+    /// Menggunakan referensi <see cref="aquariumSystem"/> yang sudah di-resolve di Awake.
+    /// </summary>
+    private bool IsRewardLocked()
+    {
+        return aquariumSystem != null && aquariumSystem.IsRewardLocked;
     }
 }

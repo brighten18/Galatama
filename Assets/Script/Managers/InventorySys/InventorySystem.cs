@@ -71,6 +71,11 @@ public class InventorySystem : MonoBehaviour
         {
             FishThingsUI.SetActive(false);
         }
+        #if !UNITY_EDITOR && DEVELOPMENT_BUILD
+        Debug.developerConsoleVisible = false;
+        // Atau
+        Debug.developerConsoleEnabled = false;
+        #endif
     }
 
     public void CountSlotList()
@@ -451,7 +456,7 @@ public class InventorySystem : MonoBehaviour
         if (state != null)
         {
             if (FishHunger != null)
-                FishHunger.text = $"Lapar: {state.hunger:0}/{state.maxHunger:0}";
+                FishHunger.text = $"Kenyang: {state.hunger:0}/{state.maxHunger:0}";
 
             if (FishHealth != null)
                 FishHealth.text = $"HP: {state.health:0}/{state.maxHealth:0}";
@@ -462,10 +467,10 @@ public class InventorySystem : MonoBehaviour
                     FishStatus.text = "Mati";
                 else if (state.isStressed)
                     FishStatus.text = "Stress";
-                else if (state.HungerPercent >= 0.8f)
+                else if (state.HungerPercent <= 0.2f)
                     FishStatus.text = "Lapar";
                 else
-                    FishStatus.text = "Sehat";
+                    FishStatus.text = "Kenyang";
             }
         }
 

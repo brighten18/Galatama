@@ -1,322 +1,208 @@
 using UnityEngine;
 
-/// <summary>
-/// Status DO (Dissolved Oxygen) berdasarkan ambang batas RAS Galatama.
-/// </summary>
 public enum DOStatus
 {
-    Safe,     // DO >= 5 mg/L
-    Danger,   // DO 4-5 mg/L
-    Critical  // DO < 4 mg/L
+    Safe,
+    Danger,
+    Critical
 }
 
-/// <summary>
-/// Simulasi kualitas air RAS Galatama berbasis Time.deltaTime (5x Slower System).
-///
-/// Hubungan antar parameter (sesuai diagram):
-///   Temperature (+) --> Salinitas (+)
-///   Temperature (+) --> pH (+)
-///   Temperature (+/-) --> Pakan (-)   [kedua ekstrem suhu menurunkan efektivitas pakan]
-///   Salinitas (+>35) --> DO (-)
-///   Salinitas (-<32) --> Ammonia (+)  [x1.2 produksi NH3]
-///   pH (+>8.5) --> Ammonia (+)        [toksisitas NH3 x2]
-///   Ammonia (safe) --> DO (+)
-///   Ammonia (danger/critical) --> DO (-)
-///   Jumlah Ikan (Feses) --> Ammonia (+)
-///   Pakan (sisa) --> Ammonia (+)      [pembusukan pakan]
-///   Pakan (sisa) --> pH (-)           [asam organik dari dekomposisi]
-/// </summary>
 public class RasWaterSimulator : MonoBehaviour
 {
-    // KONSTANTA LAJU PER-DETIK (5x Slower System)
+    private const float TEMP_RANDOM_INTERVAL = 300f;
+    private const float TEMP_CHAIN_THRESHOLD = 27f;
+    private const float TEMP_DO_LOSS_THRESHOLD = 28f;
 
-    // --- Temperature ---
-    // +1 derajat per 5 menit jika Cooler mati
-    private const float TEMP_RISE_PER_SEC           = 1f / 300f;
-    private const float TEMP_THRESHOLD_HIGH          = 31f;
-    private const float TEMP_STATIC_DO_BASELINE      = 27f; // batas bawah efek statis DO
+    private const float SAL_LOW_THRESHOLD = 32f;
+    private const float SAL_HIGH_THRESHOLD = 35f;
 
-    // --- DO akibat Temperature tinggi ---
-    // -0.03 mg/L per 25 detik saat suhu > 31
-    private const float DO_LOSS_HIGH_TEMP_PER_SEC    = 0.03f / 25f;
+    private const float PH_LOW_FEED_THRESHOLD = 6.5f;
+    private const float PH_NH3_TOXIC_THRESHOLD = 8.5f;
 
-    // -0.05 mg/L per +1 derajat di atas 27, dihaluskan per 5 menit
-    private const float DO_STATIC_PER_DEG_PER_SEC    = 0.05f / 300f;
+    private const float NH3_SAFE_MAX = 0.1f;
+    private const float NH3_DANGER_MAX = 0.5f;
 
-    // --- Salinitas akibat Temperature tinggi ---
-    // +1 ppt per 5 menit saat suhu > 31
-    private const float SAL_RISE_HIGH_TEMP_PER_SEC   = 1f / 300f;
+    private const float DO_DANGER_THRESHOLD = 6f;
+    private const float DO_CRITICAL_THRESHOLD = 5f;
 
-    // --- pH akibat Temperature tinggi ---
-    // +0.1 per 5 menit saat suhu > 31
-    private const float PH_RISE_HIGH_TEMP_PER_SEC    = 0.1f / 300f;
+    private const float NH3_PER_FISH_PER_5_MIN = 0.02f;
+    private const float NH3_LOW_SAL_BONUS_PER_FISH_PER_5_MIN = 0.02f;
+    private const float NH3_DEAD_FISH_PER_MIN = 0.05f;
+    private const float NH3_AFTER_FEEDING_PER_FISH_PER_5_MIN = 0.03f;
+    private const float FED_FISH_AMMONIA_DURATION = 300f;
 
-    // --- Salinitas ---
-    private const float SAL_THRESHOLD_HIGH           = 35f;   // ambang efek DO
-    private const float SAL_THRESHOLD_LOW_STRESS     = 32f;   // ambang stres / NH3 naik
+    private const float DO_LOSS_SAL_HIGH_PER_2_MIN = 0.2f;
+    private const float DO_LOSS_TEMP_PER_DEG_PER_30_SEC = 0.5f;
+    private const float DO_LOSS_NH3_SAFE_PER_4_MIN = 0.01f;
+    private const float DO_LOSS_NH3_DANGER_PER_FISH_PER_5_MIN = 0.02f;
+    private const float DO_LOSS_NH3_CRITICAL_PER_FISH_PER_5_MIN = 0.04f;
 
-    // DO turun -0.1 per 2 menit per +1 ppt di atas 35
-    private const float DO_LOSS_SAL_PER_PPT_PER_SEC  = 0.1f / 120f;
+    private const float SAL_RISE_HIGH_TEMP_PER_3_MIN = 1f;
+    private const float PH_RISE_HIGH_TEMP_PER_3_MIN = 0.1f;
 
-    // NH3 naik 20% saat salinitas < 32
-    private const float NH3_LOW_SAL_MULTIPLIER        = 1.20f;
+    private const float FOOD_LOAD_DECAY_PER_SEC = 1f / 120f;
+    private const float FOOD_NH3_PER_UNIT_PER_SEC = 0.0002f;
+    private const float FOOD_PH_DROP_PER_UNIT_PER_SEC = 0.00004f;
 
-    // --- Ammonia ---
-    private const float NH3_SAFE_MAX                  = 0.1f;
-    private const float NH3_DANGER_MAX                = 0.5f;
-    private const float PH_NH3_TOXIC_THRESHOLD        = 8.5f;
-
-    // NH3 naik dasar per ikan: 0.08 per 5 menit
-    private const float NH3_PER_FISH_PER_SEC          = 0.08f / 300f;
-
-    // --- DO akibat Ammonia ---
-    // SAFE: +0.1 per 4 menit
-    private const float DO_GAIN_NH3_SAFE_PER_SEC      = 0.1f / 240f;
-
-    // DANGER: -0.02 per 5 menit per ikan
-    private const float DO_LOSS_NH3_DANGER_PER_SEC    = 0.02f / 300f;
-
-    // CRITICAL: -0.04 per 5 menit per ikan
-    private const float DO_LOSS_NH3_CRITICAL_PER_SEC  = 0.04f / 300f;
-
-    // --- Pakan (Food Load) ---
-    // Setiap pellet yang tidak dimakan busuk dalam ~2 menit (lifeTime pellet = 18 detik,
-    // tapi food load melambangkan efek akumulatif dari sesi makan).
-    // Nilai per-unit mengikuti 5x Slower: pakan jadi lebih lambat bereaksi ke kimia air.
-    private const float FOOD_LOAD_DECAY_PER_SEC       = 1f / 120f;  // habis dalam ~2 menit
-    private const float FOOD_NH3_PER_UNIT_PER_SEC     = 0.0002f;    // pakan busuk -> NH3
-    private const float FOOD_PH_DROP_PER_UNIT_PER_SEC = 0.00004f;   // asam organik -> pH turun
-
-    // --- Efektivitas Pakan ---
-    // KEDUA ekstrem suhu + pH rendah menurunkan efektivitas pakan ke 60%
-    private const float TEMP_LOW_FEED_THRESHOLD       = 24f;
-    private const float FEED_EFFICIENCY_LOW            = 0.60f;
-    private const float FEED_NORMAL                    = 1.00f;
-    private const float PH_LOW_FEED_THRESHOLD          = 7.8f;
-
-    // --- DO Thresholds ---
-    private const float DO_DANGER_THRESHOLD            = 5f;
-    private const float DO_CRITICAL_THRESHOLD          = 4f;
-
-    // STATE
+    private const float FEED_EFFICIENCY_LOW = 0.40f;
+    private const float FEED_NORMAL = 1.00f;
 
     private WaterQualityState water;
-    private bool              coolerActive;
-
-    /// <summary>
-    /// Beban pakan sisa yang belum dimakan (food load). Naik saat pellet di-spawn,
-    /// turun saat dimakan ikan atau membusuk alami.
-    /// </summary>
+    private bool coolerActive;
     private float foodLoad;
+    private float temperatureRandomTimer;
+    private readonly System.Collections.Generic.List<float> fedFishAmmoniaTimers =
+        new System.Collections.Generic.List<float>();
 
-    // INISIALISASI
+    public float FoodLoad => foodLoad;
 
-    /// <summary>
-    /// Inisialisasi simulator. Harus dipanggil sekali dari AquariumSystem.Awake().
-    /// </summary>
     public void Initialize(WaterQualityState waterState, bool isCoolerInstalled)
     {
-        water        = waterState;
+        water = waterState;
         coolerActive = isCoolerInstalled;
-        foodLoad     = 0f;
+        foodLoad = 0f;
+        temperatureRandomTimer = 0f;
     }
 
-    /// <summary>
-    /// Perbarui status Cooler (dipanggil saat equipment dipasang/dilepas).
-    /// </summary>
     public void SetCoolerActive(bool active) => coolerActive = active;
 
-    // FOOD LOAD API
-
-    /// <summary>
-    /// Tambahkan beban pakan saat pellet di-spawn (sebelum dimakan ikan).
-    /// Diagram: Pakan (+) -> NH3 (+) dan Pakan (+) -> pH (-)
-    /// </summary>
-    /// <param name="amount">Jumlah unit pakan (biasanya pelletCount * loadPerPellet).</param>
     public void AddFoodLoad(float amount)
     {
         if (amount <= 0f) return;
         foodLoad += amount;
     }
 
-    /// <summary>
-    /// Kurangi beban pakan saat satu pellet dimakan oleh ikan.
-    /// </summary>
-    /// <param name="amount">Jumlah unit pakan yang dikonsumsi.</param>
     public void ConsumeFoodLoad(float amount)
     {
         if (amount <= 0f) return;
         foodLoad = Mathf.Max(0f, foodLoad - amount);
     }
 
-    /// <summary>Kembalikan beban pakan saat ini (untuk debugging/UI).</summary>
-    public float FoodLoad => foodLoad;
+    public void RegisterFedFish()
+    {
+        fedFishAmmoniaTimers.Add(FED_FISH_AMMONIA_DURATION);
+    }
 
-    // TICK UTAMA
-
-    /// <summary>
-    /// Dipanggil tiap frame dari AquariumSystem.Update().
-    /// Menerapkan semua hubungan diagram secara kontinu berbasis waktu nyata.
-    /// </summary>
-    /// <param name="dt">Time.deltaTime dari frame saat ini.</param>
-    /// <param name="livingFishCount">Jumlah ikan hidup di akuarium.</param>
-    public void Tick(float dt, int livingFishCount)
+    public void Tick(float dt, int livingFishCount, int deadFishCount)
     {
         if (water == null) return;
 
-        // Urutan eksekusi mengikuti arah alir diagram (upstream ke downstream)
-        TickTemperature(dt);              // Temperature
-
-        TickSalinityFromTemperature(dt);  // Temperature --> Salinitas
-        TickPhFromTemperature(dt);        // Temperature --> pH
-        TickDOFromTemperature(dt);        // Temperature --> DO
-
-        TickDOFromSalinity(dt);           // Salinitas --> DO
-        TickAmmoniaFromFish(dt, livingFishCount); // Jumlah Ikan --> Ammonia
-
-        TickFoodDecomposition(dt);        // Pakan --> Ammonia, Pakan --> pH
-
-        TickDOFromAmmonia(dt, livingFishCount);   // Ammonia --> DO
+        TickTemperatureRandomWalk(dt);
+        TickTemperatureEffects(dt);
+        TickSalinityEffects(dt);
+        TickAmmoniaFromFish(dt, livingFishCount);
+        TickAmmoniaFromDeadFish(dt, deadFishCount);
+        TickAmmoniaAfterFeeding(dt);
+        TickFoodDecomposition(dt);
+        TickDOFromAmmonia(dt, livingFishCount);
 
         water.Clamp();
     }
 
-    // QUERY API
-
-    /// <summary>Kembalikan status DO saat ini sebagai enum.</summary>
     public DOStatus GetDOStatus()
     {
         if (water == null) return DOStatus.Safe;
         if (water.oxygen < DO_CRITICAL_THRESHOLD) return DOStatus.Critical;
-        if (water.oxygen < DO_DANGER_THRESHOLD)   return DOStatus.Danger;
+        if (water.oxygen < DO_DANGER_THRESHOLD) return DOStatus.Danger;
         return DOStatus.Safe;
     }
 
-    /// <summary>
-    /// Kembalikan multiplier efektivitas pakan berdasarkan kondisi air.
-    /// Diagram: Temperature (+/-) --> Pakan (-) dan pH (-) --> Pakan (-)
-    /// Kedua ekstrem suhu (terlalu dingin ATAU terlalu panas) menurunkan efektivitas.
-    /// </summary>
     public float GetFeedEfficiency()
     {
         if (water == null) return FEED_NORMAL;
 
-        bool tooCold = water.temperature < TEMP_LOW_FEED_THRESHOLD;
-        bool tooHot  = water.temperature > TEMP_THRESHOLD_HIGH;      // suhu > 31 juga merusak nafsu makan
-        bool lowPh   = water.ph < PH_LOW_FEED_THRESHOLD;
-
-        return (tooCold || tooHot || lowPh) ? FEED_EFFICIENCY_LOW : FEED_NORMAL;
+        bool tooCold = water.temperature < 21f;
+        bool lowPh = water.ph < PH_LOW_FEED_THRESHOLD;
+        return (tooCold || lowPh) ? FEED_EFFICIENCY_LOW : FEED_NORMAL;
     }
 
-    /// <summary>
-    /// Kembalikan apakah pH saat ini menyebabkan toksisitas NH3 berlipat ganda.
-    /// Diagram: pH (+) --> Ammonia (+)
-    /// </summary>
     public bool IsNH3ToxicityDoubled() => water != null && water.ph > PH_NH3_TOXIC_THRESHOLD;
 
-    // SUB-SIMULASI PRIVAT
-
-    // --- Temperature ---
-
-    private void TickTemperature(float dt)
+    private void TickTemperatureRandomWalk(float dt)
     {
-        if (!coolerActive)
-            water.temperature += TEMP_RISE_PER_SEC * dt;
+        temperatureRandomTimer += dt;
+        while (temperatureRandomTimer >= TEMP_RANDOM_INTERVAL)
+        {
+            temperatureRandomTimer -= TEMP_RANDOM_INTERVAL;
+            float delta = Random.Range(-10, 11) / 10f;
+            water.temperature = Mathf.Round((water.temperature + delta) * 10f) / 10f;
+        }
     }
 
-    // --- Temperature --> DO ---
-
-    private void TickDOFromTemperature(float dt)
+    private void TickTemperatureEffects(float dt)
     {
-        // DO turun saat suhu melewati 31Â°C (efek dinamis)
-        if (water.temperature > TEMP_THRESHOLD_HIGH)
-            water.oxygen -= DO_LOSS_HIGH_TEMP_PER_SEC * dt;
+        if (water.temperature <= TEMP_CHAIN_THRESHOLD)
+            return;
 
-        // Efek statis: setiap +1 derajat di atas 27Â°C mengurangi DO secara permanen
-        float excessDeg = Mathf.Max(0f, water.temperature - TEMP_STATIC_DO_BASELINE);
+        float excessDeg = Mathf.Max(0f, water.temperature - TEMP_DO_LOSS_THRESHOLD);
         if (excessDeg > 0f)
-            water.oxygen -= DO_STATIC_PER_DEG_PER_SEC * excessDeg * dt;
+            water.oxygen -= (DO_LOSS_TEMP_PER_DEG_PER_30_SEC / 30f) * excessDeg * dt;
+
+        water.salinity += (SAL_RISE_HIGH_TEMP_PER_3_MIN / 180f) * dt;
+        water.ph += (PH_RISE_HIGH_TEMP_PER_3_MIN / 180f) * dt;
     }
 
-    // --- Temperature --> Salinitas ---
-
-    private void TickSalinityFromTemperature(float dt)
+    private void TickSalinityEffects(float dt)
     {
-        if (water.temperature > TEMP_THRESHOLD_HIGH)
-            water.salinity += SAL_RISE_HIGH_TEMP_PER_SEC * dt;
+        if (water.salinity > SAL_HIGH_THRESHOLD)
+            water.oxygen -= (DO_LOSS_SAL_HIGH_PER_2_MIN / 120f) * dt;
     }
-
-    // --- Temperature --> pH ---
-
-    private void TickPhFromTemperature(float dt)
-    {
-        if (water.temperature > TEMP_THRESHOLD_HIGH)
-            water.ph += PH_RISE_HIGH_TEMP_PER_SEC * dt;
-    }
-
-    // --- Salinitas --> DO ---
-
-    private void TickDOFromSalinity(float dt)
-    {
-        // DO turun untuk setiap +1 ppt salinitas di atas 35
-        float excessPpt = Mathf.Max(0f, water.salinity - SAL_THRESHOLD_HIGH);
-        if (excessPpt > 0f)
-            water.oxygen -= DO_LOSS_SAL_PER_PPT_PER_SEC * excessPpt * dt;
-    }
-
-    // --- Jumlah Ikan (Feses) --> Ammonia ---
 
     private void TickAmmoniaFromFish(float dt, int livingFishCount)
     {
         if (livingFishCount <= 0) return;
 
-        // Salinitas rendah (<32 ppt) mempercepat produksi NH3 sebesar 20%
-        // Diagram: Salinitas (-) --> Ammonia (+)
-        float salMultiplier = (water.salinity < SAL_THRESHOLD_LOW_STRESS)
-            ? NH3_LOW_SAL_MULTIPLIER
-            : 1f;
+        float ammoniaPerFish = NH3_PER_FISH_PER_5_MIN;
+        if (water.salinity < SAL_LOW_THRESHOLD)
+            ammoniaPerFish += NH3_LOW_SAL_BONUS_PER_FISH_PER_5_MIN;
 
-        water.ammonia += NH3_PER_FISH_PER_SEC * livingFishCount * salMultiplier * dt;
+        water.ammonia += (ammoniaPerFish / 300f) * livingFishCount * dt;
     }
 
-    // --- Pakan --> Ammonia (+) dan Pakan --> pH (-) ---
+    private void TickAmmoniaFromDeadFish(float dt, int deadFishCount)
+    {
+        if (deadFishCount <= 0) return;
+        water.ammonia += (NH3_DEAD_FISH_PER_MIN / 60f) * deadFishCount * dt;
+    }
+
+    private void TickAmmoniaAfterFeeding(float dt)
+    {
+        for (int i = fedFishAmmoniaTimers.Count - 1; i >= 0; i--)
+        {
+            water.ammonia += (NH3_AFTER_FEEDING_PER_FISH_PER_5_MIN / 300f) * dt;
+            fedFishAmmoniaTimers[i] -= dt;
+
+            if (fedFishAmmoniaTimers[i] <= 0f)
+                fedFishAmmoniaTimers.RemoveAt(i);
+        }
+    }
 
     private void TickFoodDecomposition(float dt)
     {
         if (foodLoad <= 0f) return;
 
-        // Pakan yang tidak dimakan membusuk dan menghasilkan ammonia
-        // Diagram: Pakan (+) --> Ammonia (+)
         water.ammonia += FOOD_NH3_PER_UNIT_PER_SEC * foodLoad * dt;
-
-        // Dekomposisi pakan menghasilkan asam organik yang menurunkan pH
-        // Diagram: Pakan (+) --> pH (-)
         water.ph -= FOOD_PH_DROP_PER_UNIT_PER_SEC * foodLoad * dt;
-
-        // Pakan membusuk secara eksponensial (meluruh dari jumlah saat ini)
         foodLoad = Mathf.Max(0f, foodLoad - FOOD_LOAD_DECAY_PER_SEC * foodLoad * dt);
     }
 
-    // --- Ammonia --> DO ---
-
     private void TickDOFromAmmonia(float dt, int livingFishCount)
     {
-        float nh3 = water.ammonia;
+        bool toxicityDoubled = IsNH3ToxicityDoubled();
+        float toxicityMultiplier = toxicityDoubled ? 2f : 1f;
+        float measuredAmmonia = water.ammonia;
 
-        if (nh3 <= NH3_SAFE_MAX)
+        if (measuredAmmonia <= NH3_SAFE_MAX)
         {
-            // Ammonia terkontrol -> sistem nitrifikasi aktif -> DO naik
-            water.oxygen += DO_GAIN_NH3_SAFE_PER_SEC * dt;
+            water.oxygen -= (DO_LOSS_NH3_SAFE_PER_4_MIN / 240f) * toxicityMultiplier * dt;
         }
-        else if (nh3 <= NH3_DANGER_MAX)
+        else if (measuredAmmonia < NH3_DANGER_MAX)
         {
-            // Ammonia berbahaya -> mengganggu respirasi ikan -> DO turun per ikan
-            water.oxygen -= DO_LOSS_NH3_DANGER_PER_SEC * Mathf.Max(1, livingFishCount) * dt;
+            water.oxygen -= (DO_LOSS_NH3_DANGER_PER_FISH_PER_5_MIN / 300f) * toxicityMultiplier * Mathf.Max(1, livingFishCount) * dt;
         }
         else
         {
-            // Ammonia kritis -> respirasi terganggu berat -> DO turun cepat per ikan
-            water.oxygen -= DO_LOSS_NH3_CRITICAL_PER_SEC * Mathf.Max(1, livingFishCount) * dt;
+            water.oxygen -= (DO_LOSS_NH3_CRITICAL_PER_FISH_PER_5_MIN / 300f) * toxicityMultiplier * Mathf.Max(1, livingFishCount) * dt;
         }
     }
 }

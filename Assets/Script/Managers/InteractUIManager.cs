@@ -65,9 +65,19 @@ public class InteractUIManager : MonoBehaviour
 
             if (interactable != null && OnTargeted)
             {
-                SetCurrentInteractable(interactable);
-                interactionText.text = interactable.GetItemName();
-                interactionInfoUI.SetActive(true);
+                string itemName = interactable.GetItemName();
+                if (string.IsNullOrEmpty(itemName))
+                {
+                    // Interactable tidak ingin menampilkan prompt (misalnya reward terkunci
+                    // atau wave quiz belum bisa diakses). Perlakukan seperti tidak ada target.
+                    ClearInteraction();
+                }
+                else
+                {
+                    SetCurrentInteractable(interactable);
+                    interactionText.text = itemName;
+                    interactionInfoUI.SetActive(true);
+                }
             }
             else
             {

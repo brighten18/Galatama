@@ -38,7 +38,7 @@ public static class FishFactory
             holdLocalPosition = speciesData != null ? speciesData.holdLocalPosition : Vector3.zero,
             holdLocalRotation = speciesData != null ? speciesData.holdLocalRotation : Vector3.zero,
             holdLocalScale = speciesData != null ? speciesData.holdLocalScale : Vector3.one,
-            hunger = 0f,
+            hunger = 100f,
             maxHunger = 100f,
             health = maxHealth,
             maxHealth = maxHealth,
@@ -146,14 +146,13 @@ public class AquariumSystem : MonoBehaviour
 
     [Header("RAS Simulation")]
     [SerializeField] private WaterQualityState waterQuality = new WaterQualityState();
+    [Tooltip("1 = real-time. 0.5 = 2x lebih lambat. 0.25 = 4x lebih lambat.")]
+    [SerializeField] private float rasTimeScale = 1f;
     [SerializeField] private float simulationTickSeconds = 5f;
-    [SerializeField] private float hungerIncreasePerTick = 2f;
-    [SerializeField] private float starvationHealthLossPerTick = 4f;
-    [SerializeField] private float ammoniaIncreasePerFishTick = 0.08f;
-    [SerializeField] private float oxygenDecreasePerFishTick = 0.12f;
-    [SerializeField] private float waterStressHealthLossPerTick = 2f;
-    [SerializeField] private float criticalOxygenWarning = 4f;
+    [SerializeField] private float criticalOxygenWarning = 6f;
     [SerializeField] private float criticalAmmoniaWarning = 1f;
+    [SerializeField] private Material deadFishMaterial;
+    [SerializeField] private Color deadFishColor = Color.gray;
 
     [Header("Aquarium Equipment")]
     [SerializeField] private List<EquipmentData> installedEquipment = new List<EquipmentData>();
@@ -161,6 +160,9 @@ public class AquariumSystem : MonoBehaviour
     [SerializeField] private float waterChangeOxygenRecovery = 2f;
     [SerializeField] private float targetOxygen = 8f;
     [SerializeField] private float targetSalinity = 35f;
+
+    [Header("Reward Lock")]
+    [SerializeField] private bool startLockedUntilRewardUnlock = false;
 
     private readonly List<FishInstanceState> storedFish = new List<FishInstanceState>();
     private readonly List<GameObject> spawnedFish = new List<GameObject>();
@@ -179,11 +181,14 @@ public class AquariumSystem : MonoBehaviour
 
     private bool isOpen;
     private bool inventoryWasOpenBeforeAquarium;
+    private bool isRewardUnlocked = true;
 
     public int MaxFish => maxFish;
     public int FishCount => storedFish.Count;
     public bool IsFull => FishCount >= maxFish;
     public bool IsOpen => isOpen;
+    public bool IsRewardUnlocked => isRewardUnlocked;
+    public bool IsRewardLocked => !isRewardUnlocked;
     public WaterQualityState WaterQuality => waterQuality;
     public IReadOnlyList<AquariumFishSlotUI> FishSlots => fishSlots;
     public Bounds SwimBounds => swimBounds != null
@@ -192,6 +197,8 @@ public class AquariumSystem : MonoBehaviour
 
     private void Awake()
     {
+        isRewardUnlocked = !startLockedUntilRewardUnlock;
+
         if (fishContainer == null)
             fishContainer = transform;
 
@@ -224,10 +231,14 @@ public class AquariumSystem : MonoBehaviour
 
     private void Update()
     {
+        if (IsRewardLocked)
+            return;
+
         // Simulasi kontinu berbasis Time.deltaTime (RAS Galatama real-time)
         float dt = Time.deltaTime;
-        rasSimulator?.Tick(dt, CountLivingFish());
-        rasFishManager?.Tick(dt);
+        float rasDt = dt * Mathf.Max(0f, rasTimeScale);
+        rasSimulator?.Tick(rasDt, CountLivingFish(), CountDeadFish());
+        rasFishManager?.Tick(rasDt);
         SyncCoolerState();
 
         // Simulasi tick lama (equipment effects, UI refresh) tetap berjalan
@@ -268,13 +279,19 @@ public class AquariumSystem : MonoBehaviour
             Debug.Log($"[Aquarium][RAS] Ikan '{fish.itemName}' mati karena {reason}.");
             FishDied?.Invoke(this, fish);
             FishStateChanged?.Invoke(this, fish);
-            RefreshWaterQualityUI();
+            RemoveFishAt(i);
             break;
         }
     }
 
     public void OpenAquarium()
     {
+        if (IsRewardLocked)
+        {
+            Debug.Log("[Aquarium] Aquarium reward masih terkunci.");
+            return;
+        }
+
         if (isOpen) return;
 
         isOpen = true;
@@ -335,6 +352,7 @@ public class AquariumSystem : MonoBehaviour
 
     public bool TryAddFishFromInventoryItem(GameObject inventoryItem)
     {
+        if (IsRewardLocked) return false;
         if (inventoryItem == null) return false;
 
         int inventoryItemId = inventoryItem.GetInstanceID();
@@ -376,12 +394,14 @@ public class AquariumSystem : MonoBehaviour
 
     public bool TryAddFish(string itemName)
     {
+        if (IsRewardLocked) return false;
         itemName = ItemNameUtility.CleanName(itemName);
         return TryAddFish(FishFactory.CreateFromWildFish(itemName, ResolveSpeciesData(itemName)));
     }
 
     public bool TryAddFish(FishInstanceState fishState)
     {
+        if (IsRewardLocked) return false;
         fishState = FishFactory.EnsureValid(fishState, fishState != null ? fishState.itemName : string.Empty);
         string itemName = ItemNameUtility.CleanName(fishState.itemName);
         if (string.IsNullOrEmpty(itemName))
@@ -522,8 +542,9 @@ public class AquariumSystem : MonoBehaviour
         return storedFish[index];
     }
 
-    public void FeedFish(int index, float hungerReduction)
+    public void FeedFish(int index, float feedPoints)
     {
+        if (IsRewardLocked) return;
         if (index < 0 || index >= storedFish.Count)
             return;
 
@@ -531,13 +552,14 @@ public class AquariumSystem : MonoBehaviour
         if (fish == null || !fish.isAlive)
             return;
 
-        fish.hunger = Mathf.Max(0f, fish.hunger - Mathf.Abs(hungerReduction));
+        fish.hunger = Mathf.Min(fish.maxHunger, fish.hunger + Mathf.Abs(feedPoints));
         FishStateChanged?.Invoke(this, fish);
         RefreshUI();
     }
 
     public bool SetPh(float targetPh)
     {
+        if (IsRewardLocked) return false;
         float before = waterQuality.ph;
         waterQuality.ph = targetPh;
         CommitWaterQualityChange();
@@ -547,6 +569,7 @@ public class AquariumSystem : MonoBehaviour
 
     public bool SetAmmonia(float targetAmmonia)
     {
+        if (IsRewardLocked) return false;
         float before = waterQuality.ammonia;
         waterQuality.ammonia = Mathf.Max(0f, targetAmmonia);
         CommitWaterQualityChange();
@@ -556,6 +579,7 @@ public class AquariumSystem : MonoBehaviour
 
     public bool ChangeSalinity(float amount)
     {
+        if (IsRewardLocked) return false;
         float before = waterQuality.salinity;
         waterQuality.salinity = Mathf.Max(0f, waterQuality.salinity + amount);
         CommitWaterQualityChange();
@@ -565,6 +589,7 @@ public class AquariumSystem : MonoBehaviour
 
     public bool IncreaseOxygen(float amount)
     {
+        if (IsRewardLocked) return false;
         float before = waterQuality.oxygen;
         waterQuality.oxygen = Mathf.Max(0f, waterQuality.oxygen + amount);
         CommitWaterQualityChange();
@@ -574,6 +599,7 @@ public class AquariumSystem : MonoBehaviour
 
     public bool ChangeTemperature(float targetTemperature, float changePerTick)
     {
+        if (IsRewardLocked) return false;
         float before = waterQuality.temperature;
         float step = Mathf.Abs(changePerTick);
         if (step <= 0f)
@@ -593,6 +619,7 @@ public class AquariumSystem : MonoBehaviour
 
     public bool SpawnFoodPellets(GameObject pelletPrefab, float hungerReduction, int pelletCount)
     {
+        if (IsRewardLocked) return false;
         GameObject prefab = pelletPrefab != null ? pelletPrefab : Resources.Load<GameObject>("Pelets_Fabs");
         if (prefab == null)
         {
@@ -630,6 +657,7 @@ public class AquariumSystem : MonoBehaviour
 
     public void NotifyFishAboutFood(AquariumFoodPellet food)
     {
+        if (IsRewardLocked) return;
         if (food == null)
             return;
 
@@ -641,7 +669,7 @@ public class AquariumSystem : MonoBehaviour
                 continue;
 
             float hungerValue = state.hunger;
-            float chaseChance = hungerValue < 40f ? 1f : 0.35f;
+            float chaseChance = hungerValue <= 40f ? 1f : 0.35f;
             if (UnityEngine.Random.value > chaseChance)
                 continue;
 
@@ -653,6 +681,7 @@ public class AquariumSystem : MonoBehaviour
 
     public bool TryConsumeFood(AquariumFoodPellet food, FishBrain eater)
     {
+        if (IsRewardLocked) return false;
         if (food == null || eater == null)
             return false;
 
@@ -668,6 +697,7 @@ public class AquariumSystem : MonoBehaviour
         float baseReduction = food.HungerReduction;
         float efficiency    = rasSimulator != null ? rasSimulator.GetFeedEfficiency() : 1f;
         FeedFish(fishIndex, baseReduction * efficiency);
+        rasSimulator?.RegisterFedFish();
 
         for (int i = 0; i < spawnedFish.Count; i++)
         {
@@ -686,6 +716,7 @@ public class AquariumSystem : MonoBehaviour
 
     public bool InstallEquipment(EquipmentData equipment)
     {
+        if (IsRewardLocked) return false;
         if (equipment == null || installedEquipment.Contains(equipment))
             return false;
 
@@ -697,6 +728,7 @@ public class AquariumSystem : MonoBehaviour
 
     public bool RemoveEquipment(EquipmentData equipment)
     {
+        if (IsRewardLocked) return false;
         if (equipment == null)
             return false;
 
@@ -712,6 +744,7 @@ public class AquariumSystem : MonoBehaviour
 
     public void PerformWaterChange(float intensity = 1f)
     {
+        if (IsRewardLocked) return;
         intensity = Mathf.Clamp01(intensity);
         waterQuality.ammonia *= Mathf.Lerp(1f, waterChangeAmmoniaMultiplier, intensity);
         waterQuality.oxygen = Mathf.Min(targetOxygen, waterQuality.oxygen + waterChangeOxygenRecovery * intensity);
@@ -976,6 +1009,9 @@ public class AquariumSystem : MonoBehaviour
 
     private void TickSimulation(float deltaTime)
     {
+        if (IsRewardLocked)
+            return;
+
         if (simulationTickSeconds <= 0f)
             return;
 
@@ -992,10 +1028,9 @@ public class AquariumSystem : MonoBehaviour
 
     private void RunSimulationTick()
     {
-        int livingFish = CountLivingFish();
-        SimulateFishNeeds();
-        SimulateWaterQuality(livingFish);
-        ApplyWaterStress();
+        ApplyEquipmentEffects();
+        waterQuality.Clamp();
+        WaterQualityChanged?.Invoke(this, waterQuality);
 
         // Hanya perbarui teks ringkasan air + warning â€” TIDAK re-spawn icon slot
         RefreshWaterQualityUI();
@@ -1024,34 +1059,17 @@ public class AquariumSystem : MonoBehaviour
 
     private void SimulateFishNeeds()
     {
-        foreach (FishInstanceState fish in storedFish)
-        {
-            if (fish == null || !fish.isAlive)
-                continue;
-
-            fish.hunger = Mathf.Min(fish.maxHunger, fish.hunger + hungerIncreasePerTick);
-            if (fish.hunger >= fish.maxHunger)
-                DamageFish(fish, starvationHealthLossPerTick, "kelaparan");
-            else
-                FishStateChanged?.Invoke(this, fish);
-        }
     }
 
     private void SimulateWaterQuality(int livingFish)
     {
-        if (livingFish > 0)
-        {
-            waterQuality.ammonia += ammoniaIncreasePerFishTick * livingFish;
-            waterQuality.oxygen -= oxygenDecreasePerFishTick * livingFish;
-        }
-
-        ApplyEquipmentEffects();
-        waterQuality.Clamp();
-        WaterQualityChanged?.Invoke(this, waterQuality);
     }
 
     private void ApplyEquipmentEffects()
     {
+        if (IsRewardLocked)
+            return;
+
         foreach (EquipmentData equipment in installedEquipment)
         {
             if (equipment == null)
@@ -1067,19 +1085,23 @@ public class AquariumSystem : MonoBehaviour
 
     private void ApplyWaterStress()
     {
-        foreach (FishInstanceState fish in storedFish)
-        {
-            if (fish == null || !fish.isAlive)
-                continue;
+    }
 
-            AI_Fish_Data species = ResolveSpeciesData(fish.itemName);
-            bool stressed = IsWaterStressfulForFish(species);
-            fish.isStressed = stressed;
-            if (stressed)
-                DamageFish(fish, waterStressHealthLossPerTick, "kualitas air buruk");
-            else
-                FishStateChanged?.Invoke(this, fish);
+    public void SetRewardUnlocked(bool unlocked)
+    {
+        if (isRewardUnlocked == unlocked)
+        {
+            if (IsRewardLocked && isOpen)
+                CloseAquarium();
+            return;
         }
+
+        isRewardUnlocked = unlocked;
+
+        if (IsRewardLocked && isOpen)
+            CloseAquarium();
+
+        RefreshUI();
     }
 
     private bool IsWaterStressfulForFish(AI_Fish_Data species)
@@ -1132,6 +1154,62 @@ public class AquariumSystem : MonoBehaviour
         return count;
     }
 
+    private int CountDeadFish()
+    {
+        int count = 0;
+        foreach (FishInstanceState fish in storedFish)
+        {
+            if (fish != null && !fish.isAlive)
+                count++;
+        }
+
+        return count;
+    }
+
+    private void ApplyDeadFishVisual(int index)
+    {
+        if (index < 0 || index >= spawnedFish.Count)
+            return;
+
+        GameObject fishObject = spawnedFish[index];
+        if (fishObject == null)
+            return;
+
+        FishBrain brain = fishObject.GetComponent<FishBrain>();
+        if (brain != null)
+            brain.enabled = false;
+
+        FishMovement movement = fishObject.GetComponent<FishMovement>();
+        if (movement != null)
+            movement.enabled = false;
+
+        FishFlockingBehavior flocking = fishObject.GetComponent<FishFlockingBehavior>();
+        if (flocking != null)
+            flocking.enabled = false;
+
+        FishWanderBehavior wander = fishObject.GetComponent<FishWanderBehavior>();
+        if (wander != null)
+            wander.enabled = false;
+
+        foreach (Renderer renderer in fishObject.GetComponentsInChildren<Renderer>(true))
+        {
+            if (renderer == null)
+                continue;
+
+            if (deadFishMaterial != null)
+            {
+                renderer.material = deadFishMaterial;
+                continue;
+            }
+
+            foreach (Material material in renderer.materials)
+            {
+                if (material != null && material.HasProperty("_Color"))
+                    material.color = deadFishColor;
+            }
+        }
+    }
+
     private string BuildWarningText()
     {
         List<string> warnings = new List<string>();
@@ -1147,7 +1225,7 @@ public class AquariumSystem : MonoBehaviour
 
             if (!fish.isAlive)
                 warnings.Add(fish.itemName + " mati");
-            else if (fish.HungerPercent >= 0.8f)
+            else if (fish.HungerPercent <= 0.2f)
                 warnings.Add(fish.itemName + " lapar");
             else if (fish.isStressed)
                 warnings.Add(fish.itemName + " stress");

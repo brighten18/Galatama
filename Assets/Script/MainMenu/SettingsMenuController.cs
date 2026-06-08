@@ -238,22 +238,7 @@ namespace GALATAMA.MainMenu
                 else lodToggle.isOn = enabled;
             }
 
-            LODGroup[] lodGroups = FindObjectsOfType<LODGroup>(true);
-            for (int i = 0; i < lodGroups.Length; i++)
-            {
-                if (lodGroups[i] == null) continue;
-
-                lodGroups[i].enabled = enabled;
-
-                if (enabled)
-                {
-                    lodGroups[i].ForceLOD(-1);
-                }
-                else
-                {
-                    lodGroups[i].ForceLOD(0);
-                }
-            }
+            LodSettingsUtility.ApplyLodModeToAllGroups(enabled);
         }
 
         private void ApplyMusicVolume(float value, bool save)

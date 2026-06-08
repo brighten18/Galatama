@@ -119,7 +119,12 @@ public class InteractableObject : MonoBehaviour
         }
     }
 
-    public void SetLookingAt(bool value)
+    /// <summary>
+    /// Dipanggil oleh InteractUIManager setiap frame untuk menandai apakah player
+    /// sedang melihat object ini. Virtual agar subclass bisa mengoverride untuk
+    /// menyembunyikan prompt saat kondisi tertentu (misalnya reward terkunci).
+    /// </summary>
+    public virtual void SetLookingAt(bool value)
     {
         isBeingLookedAt = value;
         ApplyHighlightState(value);

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PauseManager : MonoBehaviour
 {
@@ -6,6 +7,7 @@ public class PauseManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private GameObject pauseScreenUI;
+    [SerializeField] private string mainMenuSceneName = "MainMenu";
 
     public bool IsPaused { get; private set; }
 
@@ -116,11 +118,18 @@ public class PauseManager : MonoBehaviour
     public void ExitGame()
     {
         Time.timeScale = 1f;
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        IsPaused = false;
+
+        if (pauseScreenUI != null)
+            pauseScreenUI.SetActive(false);
+
+        if (PlayerInputManager.Instance != null)
+        {
+            PlayerInputManager.Instance.SetPlayerMovement(true);
+        }
+
+        Cursor.visible = true;
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 
     private void OnDisable()

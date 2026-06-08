@@ -29,4 +29,4 @@ MonoBehaviour:
   targetAmmonia: 0
   instantOxygenIncrease: 0
   feedHungerReduction: 0
-  pelletSpawnCount: 8
+  pelletSpawnCount: 0

@@ -5,12 +5,28 @@ using System.Collections.Generic;
 public class RippleTrigger : MonoBehaviour
 {
     [SerializeField] private ParticleSystem ripple;
+    [SerializeField] private float validationInterval = 0.25f;
 
     private readonly HashSet<Collider> activeWaterInteractors = new HashSet<Collider>();
+    private Collider waterTrigger;
+    private float validationTimer;
 
     private void Awake()
     {
+        waterTrigger = GetComponent<Collider>();
         StopRipple(clearParticles: true);
+    }
+
+    private void Update()
+    {
+        validationTimer += Time.deltaTime;
+        if (validationTimer < validationInterval)
+        {
+            return;
+        }
+
+        validationTimer = 0f;
+        ValidateActiveInteractors();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,6 +61,37 @@ public class RippleTrigger : MonoBehaviour
     {
         activeWaterInteractors.Clear();
         StopRipple(clearParticles: true);
+    }
+
+    private void ValidateActiveInteractors()
+    {
+        if (activeWaterInteractors.Count == 0)
+        {
+            StopRipple(clearParticles: true);
+            return;
+        }
+
+        activeWaterInteractors.RemoveWhere(interactor =>
+            interactor == null ||
+            !interactor.enabled ||
+            !interactor.gameObject.activeInHierarchy ||
+            !IsPlayerInteractor(interactor) ||
+            !IsInsideWaterTrigger(interactor));
+
+        if (activeWaterInteractors.Count == 0)
+        {
+            StopRipple(clearParticles: true);
+        }
+    }
+
+    private bool IsInsideWaterTrigger(Collider interactor)
+    {
+        if (waterTrigger == null || interactor == null)
+        {
+            return false;
+        }
+
+        return waterTrigger.bounds.Intersects(interactor.bounds);
     }
 
     private bool IsPlayerInteractor(Collider other)

@@ -138,8 +138,8 @@ public class AquariumFishSlotUI : MonoBehaviour,
                 {
                     string statusLabel = !currentFishState.isAlive ? "Mati"
                         : currentFishState.isStressed ? "Stress"
-                        : currentFishState.HungerPercent >= 0.8f ? "Lapar"
-                        : "Sehat";
+                        : currentFishState.HungerPercent <= 0.2f ? "Lapar"
+                        : "Kenyang";
                     descText.text = $"HP: {currentFishState.health:0}/{currentFishState.maxHealth:0} | Status: {statusLabel}";
                 }
                 else
@@ -151,7 +151,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
             if (funcText != null)
             {
                 if (currentFishState != null)
-                    funcText.text = $"Lapar: {currentFishState.hunger:0}/{currentFishState.maxHunger:0} | Klik untuk pindah ke inventory";
+                    funcText.text = $"Kenyang: {currentFishState.hunger:0}/{currentFishState.maxHunger:0} | Klik untuk pindah ke inventory";
                 else
                     funcText.text = "Klik untuk pindah ke inventory";
             }

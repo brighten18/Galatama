@@ -347,6 +347,23 @@ public class QuizManager : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Mengembalikan true jika wave dengan nomor <paramref name="waveNumber"/> dapat dibuka
+    /// oleh player. Wave 1 (index 0) selalu bisa diakses. Wave N hanya bisa diakses jika
+    /// wave N-1 sudah diselesaikan.
+    /// </summary>
+    public bool IsWaveAccessible(int waveNumber)
+    {
+        if (waves == null || waves.Length == 0) return false;
+
+        int targetIndex = FindWaveIndexByNumber(waveNumber);
+        if (targetIndex < 0) return false;
+        if (targetIndex == 0) return true;
+
+        QuizWaveSO prevWave = waves[targetIndex - 1];
+        return prevWave == null || IsWavePassed(prevWave.waveNumber);
+    }
+
     private void Shuffle<T>(List<T> list)
     {
         for (int i = 0; i < list.Count; i++)
@@ -356,5 +373,25 @@ public class QuizManager : MonoBehaviour
             list[i] = list[r];
             list[r] = tmp;
         }
+    }
+
+    /// <summary>
+    /// Menghapus semua data progres quiz dari PlayerPrefs dan me-refresh state reward.
+    /// Gunakan hanya untuk keperluan debugging/testing.
+    /// </summary>
+    [ContextMenu("DEBUG: Reset All Quiz Progress")]
+    public void DebugResetAllProgress()
+    {
+        if (waves == null) return;
+        for (int i = 0; i < waves.Length; i++)
+        {
+            if (waves[i] != null)
+                PlayerPrefs.DeleteKey(KeyWavePassedPrefix + waves[i].waveNumber);
+        }
+        PlayerPrefs.Save();
+        Debug.Log("[QuizManager] Semua progres quiz telah di-reset.");
+
+        if (rewardUnlockManager != null)
+            rewardUnlockManager.RefreshRewardsFromSave();
     }
 }

@@ -9,32 +9,44 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.04949801
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.049498018
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.44648966
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 237.942
+      value: 0.0015866961
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.1612165
+      value: -0.0071798256
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 226.83
+      value: 0.0053846077
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071067
+      value: 0.00000023841858
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: -0.000000014901161
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.00000020861626
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -59,6 +71,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4717973472083285153}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2873044342990857874}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1391446077695462380}
   m_SourcePrefab: {fileID: 100100000, guid: 04ed876b28cb642408bc0de34289fba2, type: 3}
 --- !u!1 &7094198339324778838 stripped
 GameObject:
@@ -86,3 +104,50 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.01794789, y: 0.017947884, z: 0.055597108}
   m_Center: {x: -0.0000000027939677, y: 0, z: -0.01948354}
+--- !u!114 &2873044342990857874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7094198339324778838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d223a3eeae5f40caa8c9dc0b5daf4f13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AquariumMachineInteractable
+  itemName: Heater
+  keepInWorldAfterInteract: 1
+  respawnAfterPickup: 0
+  respawnCooldownSeconds: 300
+  useHighlight: 1
+  autoAddOutlineIfMissing: 0
+  highlightMode: 0
+  highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  highlightWidth: 4
+  aquariumSystem: {fileID: 0}
+  machineRole: 3
+  cooldownSeconds: 4
+  oxygenIncrease: 0
+  salinityChange: 0
+  targetTemperature: 30
+  temperatureChangePerUse: 2
+  searchRadius: 15
+--- !u!114 &1391446077695462380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7094198339324778838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Outline
+  outlineMode: 0
+  outlineColor: {r: 1, g: 0.85098046, b: 0.20000002, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []

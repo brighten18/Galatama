@@ -108,7 +108,25 @@ public class PlayerInputManager : MonoBehaviour
             _input.cursorInputForLook = enableLook;
             Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
             Cursor.visible = !locked;
+
+            // Reset look input agar kamera tidak melanjutkan momentum saat dikunci
+            if (!enableLook)
+                _input.look = Vector2.zero;
         }
+
+        SetCameraLookLocked(!enableLook);
+    }
+
+    /// <summary>
+    /// Mengunci atau membuka kunci rotasi kamera pada ThirdPersonController.
+    /// Dipakai oleh popup dan UI interaksi agar kamera berhenti saat panel terbuka.
+    /// </summary>
+    public void SetCameraLookLocked(bool locked)
+    {
+        if (playerController != null)
+            playerController.SetCameraLookLocked(locked);
+        if (locked && _input != null)
+            _input.look = Vector2.zero;
     }
 
     public void SetPlayerMovement(bool enabled)

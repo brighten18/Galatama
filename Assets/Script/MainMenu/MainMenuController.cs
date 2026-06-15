@@ -54,6 +54,7 @@ namespace GALATAMA.MainMenu
 
         [Header("Scene")]
         [SerializeField] private string gameplaySceneName = "Galatama";
+        [SerializeField] private string cutsceneSceneName = "CutScene";
 
         private int selectedSlotIndex;
         private System.Action pendingConfirmAction;
@@ -185,7 +186,8 @@ namespace GALATAMA.MainMenu
             SaveGameData data = SaveGameService.CreateNewSlotData(selectedSlotIndex, saveName, gameplaySceneName);
             SaveGameService.SaveSlot(data);
             SaveGameService.PrepareNewGameSlot(selectedSlotIndex);
-            SceneManager.LoadScene(gameplaySceneName);
+            // Load the intro cutscene before gameplay for new saves.
+            SceneManager.LoadScene(cutsceneSceneName);
         }
 
         private void ConfirmLoadSelectedSlot()

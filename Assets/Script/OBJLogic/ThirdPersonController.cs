@@ -119,6 +119,9 @@ namespace StarterAssets
         // Apakah cursor sedang ditampilkan (toggle dengan Ctrl)
         private bool _cursorVisible;
 
+        // Apakah rotasi kamera dikunci secara eksternal (misalnya saat popup/interaksi terbuka)
+        private bool _cameraLookLocked;
+
         // Apakah klik kanan sedang ditahan untuk rotasi kamera (hanya aktif saat cursor visible)
         private bool _rightClickHeld;
         private bool _externalCameraOverrideActive;
@@ -229,8 +232,8 @@ namespace StarterAssets
                 _cinemachineTargetYaw = ClampAngle(_externalCameraYaw, float.MinValue, float.MaxValue);
                 _cinemachineTargetPitch = ClampAngle(_externalCameraPitch, BottomClamp, TopClamp);
             }
-            // if there is an input and camera position is not fixed
-            else if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            // if there is an input, camera is not locked, and camera position is not fixed
+            else if (!_cameraLookLocked && _input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
@@ -460,6 +463,17 @@ namespace StarterAssets
             }
         }
 
+        /// <summary>
+        /// Mengunci atau membuka kunci rotasi kamera secara eksternal.
+        /// Dipanggil saat popup/UI interaksi terbuka agar kamera berhenti bergerak.
+        /// </summary>
+        public void SetCameraLookLocked(bool locked)
+        {
+            _cameraLookLocked = locked;
+            if (locked)
+                _input.look = Vector2.zero;
+        }
+
         public float GetCameraYaw()
         {
             return _cinemachineTargetYaw;
@@ -512,6 +526,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
             if (Keyboard.current == null) return;
             if (!Keyboard.current.ctrlKey.wasPressedThisFrame) return;
+            if (_cameraLookLocked) return; // Jangan izinkan toggle saat kamera dikunci eksternal
 
             _cursorVisible = !_cursorVisible;
             Cursor.visible = _cursorVisible;
@@ -534,7 +549,7 @@ namespace StarterAssets
         private void HandleRightClickCamera()
         {
 #if ENABLE_INPUT_SYSTEM
-            if (Mouse.current == null || !_cursorVisible) return;
+            if (Mouse.current == null || !_cursorVisible || _cameraLookLocked) return;
 
             bool rightPressed = Mouse.current.rightButton.isPressed;
             if (rightPressed == _rightClickHeld) return;

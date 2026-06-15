@@ -85,6 +85,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7120815545283643393}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4963048617920781948}
   m_SourcePrefab: {fileID: 100100000, guid: 4ebcb0cdeabfbe4408140aad7b20d199, type: 3}
 --- !u!1 &9110158947458950593 stripped
 GameObject:
@@ -161,9 +164,9 @@ MonoBehaviour:
   highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   highlightWidth: 4
   lureRadius: 2
-  captureRadius: 0.8
-  minCaptureDelay: 5
-  maxCaptureDelay: 10
+  captureRadius: 1.52
+  minCaptureDelay: 1
+  maxCaptureDelay: 1
   targetTimeout: 1
   fishLayer:
     serializedVersion: 2
@@ -241,3 +244,23 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!114 &4963048617920781948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9110158947458950593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0e0de55a70a40a46b16b95e8ec08326, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrapWorldMarker
+  heightOffset: 0.2
+  markerSize: 0.001
+  emptyTrapSprite: {fileID: 21300000, guid: e820ca6ac6ef06d4da14caa8c264d084, type: 3}
+  fishCaughtSprite: {fileID: 21300000, guid: e820ca6ac6ef06d4da14caa8c264d084, type: 3}
+  emptyColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  capturedColor: {r: 0.3, g: 1, b: 0.45, a: 1}
+  bobSpeed: 1.5
+  bobAmount: 0.05

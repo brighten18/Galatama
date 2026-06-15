@@ -68,15 +68,15 @@ public class FishTrapPlacer : MonoBehaviour
             return;
         }
 
-        // Spawn dulu di posisi sementara
+        // Spawn sementara di origin untuk mengukur bounds dalam world space
         GameObject spawnedTrap = Instantiate(prefab, Vector3.zero, Quaternion.identity);
 
-        // Hitung tinggi objek dari Bounds semua Renderer-nya
-        float halfHeight = GetObjectHalfHeight(spawnedTrap);
+        // Hitung offset pivot-ke-bawah: seberapa jauh pivot perlu diangkat agar
+        // bagian bawah mesh tepat menyentuh lantai (tidak tergantung posisi pivot model)
+        float pivotLift = GetPivotToBottomOffset(spawnedTrap);
 
-        // Letakan trap sehingga bagian bawahnya menyentuh lantai
-        // halfHeight = jarak dari pivot ke bawah objek
-        Vector3 finalPosition = floorPoint + Vector3.up * (halfHeight + trapBottomOffset);
+        // Tempatkan pivot tepat di atas lantai; trapBottomOffset hanya diterapkan sekali di sini
+        Vector3 finalPosition = floorPoint + Vector3.up * (pivotLift + trapBottomOffset);
         spawnedTrap.transform.position = finalPosition;
 
         FishTrapWorld trapWorld = spawnedTrap.GetComponent<FishTrapWorld>();
@@ -92,27 +92,34 @@ public class FishTrapPlacer : MonoBehaviour
         }
     }
 
-    private float GetObjectHalfHeight(GameObject obj)
+    /// <summary>
+    /// Menghitung seberapa jauh pivot perlu diangkat dari lantai agar bagian bawah mesh
+    /// tepat menyentuh lantai, terlepas dari posisi pivot di dalam model.
+    /// </summary>
+    private float GetPivotToBottomOffset(GameObject obj)
     {
         Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
 
-        if (renderers.Length == 0)
+        Bounds combined;
+        if (renderers.Length > 0)
         {
-            // Fallback ke Collider kalau tidak ada Renderer
+            combined = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+                combined.Encapsulate(renderers[i].bounds);
+        }
+        else
+        {
+            // Fallback ke Collider non-trigger jika tidak ada Renderer
             Collider col = obj.GetComponentInChildren<Collider>();
-            if (col != null) return col.bounds.extents.y;
-            return 0f;
+            if (col == null || col.isTrigger) return 0f;
+            combined = col.bounds;
         }
 
-        // Gabungkan semua bounds dari setiap child renderer
-        Bounds combinedBounds = renderers[0].bounds;
-        for (int i = 1; i < renderers.Length; i++)
-        {
-            combinedBounds.Encapsulate(renderers[i].bounds);
-        }
-
-        // extents.y = setengah tinggi total objek
-        return combinedBounds.extents.y;
+        // Saat objek berada di origin, combined.min.y = posisi Y terbawah mesh dalam world space.
+        // Jika positif: pivot sudah di atas bawah mesh → tidak perlu angkat.
+        // Jika negatif: bawah mesh di bawah pivot → pivot perlu diangkat sebesar |min.y|.
+        float bottomY = combined.min.y;
+        return Mathf.Max(0f, -bottomY);
     }
 
     private bool TryGetOceanPlacement(out Vector3 placePosition)
@@ -155,7 +162,7 @@ public class FishTrapPlacer : MonoBehaviour
             return false;
         }
 
-        placePosition = seaFloorHit.point + Vector3.up * trapBottomOffset;
+        placePosition = seaFloorHit.point;
         return true;
     }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class FishTrapWorld : InteractableObject
 {
+    /// <summary>Fired when a fish is captured. Parameter is the fish item name.</summary>
+    public static event System.Action<string> OnFishCaptured;
+
     [Header("Capture")]
     [SerializeField] private float lureRadius = 8f;
     [SerializeField] private float captureRadius = 0.8f;
@@ -17,11 +20,13 @@ public class FishTrapWorld : InteractableObject
     private bool playerInPickupRange;
     private string capturedFishItemName;
     private Coroutine captureRoutine;
+    private TrapWorldMarker worldMarker;
 
     void Awake()
     {
         base.Awake();
         itemName = "Perangkap";
+        worldMarker = GetComponent<TrapWorldMarker>();
     }
 
     protected override void Update()
@@ -193,6 +198,10 @@ public class FishTrapWorld : InteractableObject
             StopCoroutine(captureRoutine);
             captureRoutine = null;
         }
+
+        // Notify the world marker and the notification UI
+        worldMarker?.SetCapturedState(true);
+        OnFishCaptured?.Invoke(capturedFishItemName);
 
         Debug.Log("[FishTrapWorld] Perangkap menangkap ikan: " + capturedFishItemName);
     }

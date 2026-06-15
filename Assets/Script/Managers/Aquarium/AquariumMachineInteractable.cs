@@ -80,7 +80,7 @@ public class AquariumMachineInteractable : InteractableObject
             return;
         }
 
-        string cooldownKey = $"{machineRole}_{GetInstanceID()}";
+        string cooldownKey = $"{machineRole}_{BuildPersistentObjectKey(transform)}";
         if (!cooldowns.IsReady(cooldownKey))
         {
             float remaining = cooldowns.GetRemaining(cooldownKey);
@@ -258,5 +258,22 @@ public class AquariumMachineInteractable : InteractableObject
     private bool IsRewardLocked()
     {
         return aquariumSystem != null && aquariumSystem.IsRewardLocked;
+    }
+
+    private static string BuildPersistentObjectKey(Transform target)
+    {
+        if (target == null)
+            return "missing";
+
+        System.Text.StringBuilder builder = new System.Text.StringBuilder(target.name);
+        Transform current = target.parent;
+
+        while (current != null)
+        {
+            builder.Insert(0, current.name + "/");
+            current = current.parent;
+        }
+
+        return builder.ToString();
     }
 }

@@ -33,8 +33,6 @@ public class QuizRewardUnlockManager : MonoBehaviour
 
     [SerializeField] private WaveInteractionReward[] waveRewards;
 
-    private const string KeyWavePassedPrefix = "QUIZ_WAVE_PASSED_";
-
     // Digunakan untuk memastikan OnEnable tidak dijalankan sebelum Start()
     // menyelesaikan inisialisasi awal (menghindari race condition Awake order).
     private bool hasStarted = false;
@@ -103,7 +101,7 @@ public class QuizRewardUnlockManager : MonoBehaviour
 
     private bool IsWavePassed(int waveNumber)
     {
-        return PlayerPrefs.GetInt(KeyWavePassedPrefix + waveNumber, 0) == 1;
+        return QuizManager.Instance != null && QuizManager.Instance.IsWavePassed(waveNumber);
     }
 
     private void SetBlockersActive(GameObject[] blockers, bool active)

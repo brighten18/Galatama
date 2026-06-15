@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using GALATAMA.MainMenu;
 
 public class InventorySystem : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class InventorySystem : MonoBehaviour
 
     private readonly Queue<PickupAlertEntry> pickupAlertQueue = new Queue<PickupAlertEntry>();
     private Coroutine pickupAlertRoutine;
+    private bool suppressPickupAlerts;
 
     private struct PickupAlertEntry
     {
@@ -258,8 +260,11 @@ public class InventorySystem : MonoBehaviour
         ReCalculeList();
         CheckFull();
 
-        Image itemImage = itemObject.GetComponent<Image>();
-        TriggerPickupAlert(ItemName, itemImage != null ? itemImage.sprite : null);
+        if (!suppressPickupAlerts)
+        {
+            Image itemImage = itemObject.GetComponent<Image>();
+            TriggerPickupAlert(ItemName, itemImage != null ? itemImage.sprite : null);
+        }
         return true;
     }
 
@@ -286,8 +291,11 @@ public class InventorySystem : MonoBehaviour
         ReCalculeList();
         CheckFull();
 
-        Image itemImage = itemObject.GetComponent<Image>();
-        TriggerFishPickupAlert(fishState.itemName, itemImage != null ? itemImage.sprite : null, fishState);
+        if (!suppressPickupAlerts)
+        {
+            Image itemImage = itemObject.GetComponent<Image>();
+            TriggerFishPickupAlert(fishState.itemName, itemImage != null ? itemImage.sprite : null, fishState);
+        }
         return true;
     }
 
@@ -606,5 +614,136 @@ public class InventorySystem : MonoBehaviour
 
         CheckFull();
         Debug.Log("Item list setelah recalculate: " + itemList.Count);
+    }
+
+    public InventorySaveData CaptureSaveData()
+    {
+        EnsureSlotReferences();
+
+        InventorySaveData data = new InventorySaveData();
+        data.mainSlots = CaptureSlotCollection(slotList);
+
+        if (EquipSystem.Instance != null)
+            data.quickSlots = CaptureSlotCollection(EquipSystem.Instance.quickSlotsList);
+
+        return data;
+    }
+
+    public void RestoreFromSaveData(InventorySaveData data)
+    {
+        EnsureSlotReferences();
+        ClearAllItemsForRestore();
+        suppressPickupAlerts = true;
+
+        if (data == null)
+        {
+            suppressPickupAlerts = false;
+            ReCalculeList();
+            if (EquipSystem.Instance != null)
+                EquipSystem.Instance.RebuildItemListFromQuickSlots();
+            return;
+        }
+
+        RestoreSlotCollection(slotList, data.mainSlots);
+
+        if (EquipSystem.Instance != null)
+        {
+            RestoreSlotCollection(EquipSystem.Instance.quickSlotsList, data.quickSlots);
+            EquipSystem.Instance.RebuildItemListFromQuickSlots();
+            EquipSystem.Instance.ForceUnequip();
+        }
+
+        suppressPickupAlerts = false;
+        ReCalculeList();
+    }
+
+    private void EnsureSlotReferences()
+    {
+        if (slotList.Count == 0)
+            CountSlotList();
+    }
+
+    private List<InventorySlotSaveData> CaptureSlotCollection(List<GameObject> slots)
+    {
+        List<InventorySlotSaveData> result = new List<InventorySlotSaveData>();
+        if (slots == null)
+            return result;
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            InventorySlotSaveData slotData = new InventorySlotSaveData { slotIndex = i };
+            GameObject slot = slots[i];
+            if (slot != null && slot.transform.childCount > 0)
+            {
+                GameObject itemObject = slot.transform.GetChild(0).gameObject;
+                slotData.itemName = ItemNameUtility.CleanName(itemObject.name);
+
+                FishRuntimeData fishRuntime = itemObject.GetComponent<FishRuntimeData>();
+                if (fishRuntime != null && fishRuntime.State != null)
+                    slotData.fishState = FishStateSaveData.FromRuntime(fishRuntime.State);
+            }
+
+            result.Add(slotData);
+        }
+
+        return result;
+    }
+
+    private void RestoreSlotCollection(List<GameObject> slots, List<InventorySlotSaveData> slotDataList)
+    {
+        if (slots == null || slotDataList == null)
+            return;
+
+        for (int i = 0; i < slotDataList.Count; i++)
+        {
+            InventorySlotSaveData slotData = slotDataList[i];
+            if (slotData == null || slotData.IsEmpty)
+                continue;
+
+            if (slotData.slotIndex < 0 || slotData.slotIndex >= slots.Count)
+                continue;
+
+            GameObject targetSlot = slots[slotData.slotIndex];
+            if (targetSlot == null)
+                continue;
+
+            if (slotData.fishState != null)
+                TryAddFishStateToInventorySlot(slotData.fishState.ToRuntimeState(), targetSlot);
+            else
+                TryAddItemToInventorySlot(slotData.itemName, targetSlot);
+        }
+    }
+
+    private void ClearAllItemsForRestore()
+    {
+        if (EquipSystem.Instance != null)
+            EquipSystem.Instance.ForceUnequip();
+
+        ClearSlotChildren(slotList);
+
+        if (EquipSystem.Instance != null)
+            ClearSlotChildren(EquipSystem.Instance.quickSlotsList);
+
+        itemList.Clear();
+    }
+
+    private void ClearSlotChildren(List<GameObject> slots)
+    {
+        if (slots == null)
+            return;
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            GameObject slot = slots[i];
+            if (slot == null)
+                continue;
+
+            for (int childIndex = slot.transform.childCount - 1; childIndex >= 0; childIndex--)
+            {
+                Transform child = slot.transform.GetChild(childIndex);
+                child.SetParent(null);
+                Destroy(child.gameObject);
+            }
+        }
     }
 }

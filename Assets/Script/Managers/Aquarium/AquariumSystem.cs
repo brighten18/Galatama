@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using GALATAMA.MainMenu;
 
 [Serializable]
 public class FishInstanceState
@@ -163,6 +164,7 @@ public class AquariumSystem : MonoBehaviour
 
     [Header("Reward Lock")]
     [SerializeField] private bool startLockedUntilRewardUnlock = false;
+    [SerializeField] private string persistentAquariumId = string.Empty;
 
     private readonly List<FishInstanceState> storedFish = new List<FishInstanceState>();
     private readonly List<GameObject> spawnedFish = new List<GameObject>();
@@ -190,6 +192,7 @@ public class AquariumSystem : MonoBehaviour
     public bool IsRewardUnlocked => isRewardUnlocked;
     public bool IsRewardLocked => !isRewardUnlocked;
     public WaterQualityState WaterQuality => waterQuality;
+    public string PersistentAquariumId => string.IsNullOrWhiteSpace(persistentAquariumId) ? BuildDefaultPersistentId() : persistentAquariumId;
     public IReadOnlyList<AquariumFishSlotUI> FishSlots => fishSlots;
     public Bounds SwimBounds => swimBounds != null
         ? swimBounds.bounds
@@ -198,6 +201,8 @@ public class AquariumSystem : MonoBehaviour
     private void Awake()
     {
         isRewardUnlocked = !startLockedUntilRewardUnlock;
+        if (string.IsNullOrWhiteSpace(persistentAquariumId))
+            persistentAquariumId = BuildDefaultPersistentId();
 
         if (fishContainer == null)
             fishContainer = transform;
@@ -1104,6 +1109,59 @@ public class AquariumSystem : MonoBehaviour
         RefreshUI();
     }
 
+    public AquariumSaveData CaptureSaveData()
+    {
+        AquariumSaveData data = new AquariumSaveData
+        {
+            aquariumId = PersistentAquariumId,
+            waterQuality = WaterQualitySaveData.FromRuntime(waterQuality),
+            installedEquipmentItemNames = CaptureInstalledEquipmentNames(),
+            fish = new List<FishStateSaveData>()
+        };
+
+        for (int i = 0; i < storedFish.Count; i++)
+        {
+            FishInstanceState fishState = storedFish[i];
+            if (fishState == null)
+                continue;
+
+            data.fish.Add(FishStateSaveData.FromRuntime(fishState));
+        }
+
+        return data;
+    }
+
+    public void RestoreFromSaveData(AquariumSaveData data)
+    {
+        ClearAquariumForRestore();
+
+        if (data == null)
+        {
+            RefreshUI();
+            return;
+        }
+
+        if (data.waterQuality != null)
+            data.waterQuality.ApplyTo(waterQuality);
+
+        RestoreInstalledEquipment(data.installedEquipmentItemNames);
+
+        if (data.fish != null)
+        {
+            for (int i = 0; i < data.fish.Count; i++)
+            {
+                FishStateSaveData fishSave = data.fish[i];
+                if (fishSave == null)
+                    continue;
+
+                TryAddFish(fishSave.ToRuntimeState());
+            }
+        }
+
+        waterQuality.Clamp();
+        RefreshUI();
+    }
+
     private bool IsWaterStressfulForFish(AI_Fish_Data species)
     {
         float minOxygen = species != null ? species.minOxygen : 4f;
@@ -1260,5 +1318,92 @@ public class AquariumSystem : MonoBehaviour
         {
             Debug.LogWarning("[Aquarium] FishContainer memiliki scale tidak seragam. Ikan bisa terlihat gepeng. Gunakan FishContainer dengan scale 1,1,1 atau matikan Parent Spawned Fish To Container.");
         }
+    }
+
+    private List<string> CaptureInstalledEquipmentNames()
+    {
+        List<string> names = new List<string>();
+        for (int i = 0; i < installedEquipment.Count; i++)
+        {
+            EquipmentData equipment = installedEquipment[i];
+            if (equipment == null || string.IsNullOrEmpty(equipment.itemName))
+                continue;
+
+            names.Add(equipment.itemName);
+        }
+
+        return names;
+    }
+
+    private void RestoreInstalledEquipment(List<string> equipmentItemNames)
+    {
+        installedEquipment.Clear();
+        if (equipmentItemNames == null)
+            return;
+
+        for (int i = 0; i < equipmentItemNames.Count; i++)
+        {
+            EquipmentData equipment = ResolveEquipmentByItemName(equipmentItemNames[i]);
+            if (equipment != null && !installedEquipment.Contains(equipment))
+                installedEquipment.Add(equipment);
+        }
+    }
+
+    private EquipmentData ResolveEquipmentByItemName(string itemName)
+    {
+        if (string.IsNullOrEmpty(itemName))
+            return null;
+
+        for (int i = 0; i < installedEquipment.Count; i++)
+        {
+            EquipmentData equipment = installedEquipment[i];
+            if (equipment != null && equipment.itemName == itemName)
+                return equipment;
+        }
+
+        if (EquipSystem.Instance != null && EquipSystem.Instance.equipmentDataList != null)
+        {
+            for (int i = 0; i < EquipSystem.Instance.equipmentDataList.Count; i++)
+            {
+                EquipmentData equipment = EquipSystem.Instance.equipmentDataList[i];
+                if (equipment != null && equipment.itemName == itemName)
+                    return equipment;
+            }
+        }
+
+        return null;
+    }
+
+    private void ClearAquariumForRestore()
+    {
+        for (int i = spawnedFish.Count - 1; i >= 0; i--)
+        {
+            if (spawnedFish[i] != null)
+                Destroy(spawnedFish[i]);
+        }
+
+        spawnedFish.Clear();
+
+        for (int i = 0; i < storedFish.Count; i++)
+        {
+            rasFishManager?.UnregisterFish(storedFish[i]);
+        }
+
+        storedFish.Clear();
+        consumedInventoryItemIds.Clear();
+    }
+
+    private string BuildDefaultPersistentId()
+    {
+        StringBuilder builder = new StringBuilder(transform.name);
+        Transform current = transform.parent;
+
+        while (current != null)
+        {
+            builder.Insert(0, current.name + "/");
+            current = current.parent;
+        }
+
+        return builder.ToString();
     }
 }

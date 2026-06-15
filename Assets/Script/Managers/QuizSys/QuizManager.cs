@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using GALATAMA.MainMenu;
 
 public class QuizManager : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class QuizManager : MonoBehaviour
         public int correctIndex;
     }
 
-    private const string KeyWavePassedPrefix = "QUIZ_WAVE_PASSED_";
+    public static QuizManager Instance { get; private set; }
 
     [Header("Quiz Data")]
     [SerializeField] private QuizWaveSO[] waves;
@@ -25,6 +26,7 @@ public class QuizManager : MonoBehaviour
     [SerializeField] private InventorySystem inventorySystem;
 
     private readonly List<RuntimeQuestion> activeQuestions = new List<RuntimeQuestion>();
+    private readonly HashSet<int> passedWaveNumbers = new HashSet<int>();
     private int currentWaveIndex;
     private int currentQuestionIndex;
     private int correctCount;
@@ -32,6 +34,23 @@ public class QuizManager : MonoBehaviour
     private bool inventoryWasOpenBeforeQuiz;
 
     public bool IsOpen => isOpen;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
 
     private void Start()
     {
@@ -307,13 +326,13 @@ public class QuizManager : MonoBehaviour
 
     private void SaveWavePassed(int waveNumber)
     {
-        PlayerPrefs.SetInt(KeyWavePassedPrefix + waveNumber, 1);
-        PlayerPrefs.Save();
+        if (waveNumber > 0)
+            passedWaveNumbers.Add(waveNumber);
     }
 
-    private bool IsWavePassed(int waveNumber)
+    public bool IsWavePassed(int waveNumber)
     {
-        return PlayerPrefs.GetInt(KeyWavePassedPrefix + waveNumber, 0) == 1;
+        return passedWaveNumbers.Contains(waveNumber);
     }
 
     private int GetFirstUnpassedWaveIndex()
@@ -382,14 +401,36 @@ public class QuizManager : MonoBehaviour
     [ContextMenu("DEBUG: Reset All Quiz Progress")]
     public void DebugResetAllProgress()
     {
-        if (waves == null) return;
-        for (int i = 0; i < waves.Length; i++)
-        {
-            if (waves[i] != null)
-                PlayerPrefs.DeleteKey(KeyWavePassedPrefix + waves[i].waveNumber);
-        }
-        PlayerPrefs.Save();
+        passedWaveNumbers.Clear();
         Debug.Log("[QuizManager] Semua progres quiz telah di-reset.");
+
+        if (rewardUnlockManager != null)
+            rewardUnlockManager.RefreshRewardsFromSave();
+    }
+
+    public QuizSaveData CaptureSaveData()
+    {
+        QuizSaveData data = new QuizSaveData();
+        foreach (int waveNumber in passedWaveNumbers)
+        {
+            data.passedWaveNumbers.Add(waveNumber);
+        }
+
+        data.passedWaveNumbers.Sort();
+        return data;
+    }
+
+    public void RestoreFromSaveData(QuizSaveData data)
+    {
+        passedWaveNumbers.Clear();
+        if (data != null && data.passedWaveNumbers != null)
+        {
+            for (int i = 0; i < data.passedWaveNumbers.Count; i++)
+            {
+                if (data.passedWaveNumbers[i] > 0)
+                    passedWaveNumbers.Add(data.passedWaveNumbers[i]);
+            }
+        }
 
         if (rewardUnlockManager != null)
             rewardUnlockManager.RefreshRewardsFromSave();

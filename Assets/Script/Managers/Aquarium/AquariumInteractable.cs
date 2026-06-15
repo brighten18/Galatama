@@ -173,6 +173,23 @@ public class AquariumInteractable : InteractableObject
             ? equipment.itemName
             : fallback;
 
-        return $"{GetInstanceID()}:{itemKey}";
+        return $"{BuildPersistentObjectKey(transform)}:{itemKey}";
+    }
+
+    private static string BuildPersistentObjectKey(Transform target)
+    {
+        if (target == null)
+            return "missing";
+
+        System.Text.StringBuilder builder = new System.Text.StringBuilder(target.name);
+        Transform current = target.parent;
+
+        while (current != null)
+        {
+            builder.Insert(0, current.name + "/");
+            current = current.parent;
+        }
+
+        return builder.ToString();
     }
 }

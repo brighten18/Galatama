@@ -145,6 +145,14 @@ public class EquipSystem : MonoBehaviour
         Debug.Log("[EquipSystem] Item dilepas.");
     }
 
+    public void ForceUnequip()
+    {
+        if (SelectedItem == null && !isnowEquipped && ToolsHolder != null && ToolsHolder.transform.childCount == 0)
+            return;
+
+        UnequipCurrent();
+    }
+
     // DITAMBAH: Hapus semua model di ToolsHolder
     private void ClearToolsHolder()
     {
@@ -449,6 +457,20 @@ public class EquipSystem : MonoBehaviour
                 counter++;
         }
         return counter == 6;
+    }
+
+    public void RebuildItemListFromQuickSlots()
+    {
+        itemList.Clear();
+
+        for (int i = 0; i < quickSlotsList.Count; i++)
+        {
+            GameObject slot = quickSlotsList[i];
+            if (slot == null || slot.transform.childCount == 0)
+                continue;
+
+            itemList.Add(ItemNameUtility.CleanName(slot.transform.GetChild(0).name));
+        }
     }
 }
 

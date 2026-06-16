@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e98f76bf364bf84994f145b6a0efa3f, type: 3}
+  m_Name: 3W_Quiz 7
+  m_EditorClassIdentifier: Assembly-CSharp::QuizQuestionSO
+  question: Mengapa penggunaan UV Filter dianggap lebih aman bagi ikan hias laut
+    dibandingkan penggunaan obat kimia?
+  options:
+  - Karena UV Filter membuat air menjadi lebih asin
+  - Karena UV Filter tidak meninggalkan residu zat kimia berbahaya dalam air
+  - Karena UV Filter bisa mendinginkan suhu air
+  - Karena UV Filter memberikan cahaya tambahan bagi ikan untuk bermain
+  correctIndex: 1

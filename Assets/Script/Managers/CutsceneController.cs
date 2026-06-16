@@ -1,4 +1,6 @@
 using System.Collections;
+using Cinemachine;
+using GALATAMA.MainMenu;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -6,138 +8,172 @@ using UnityEngine.UI;
 namespace GALATAMA.Cutscene
 {
     /// <summary>
-    /// Controls the intro cutscene sequence with a typewriter text effect and fade transitions.
-    /// Panels are defined via the Inspector. First "Next" click completes the typewriter;
-    /// second click advances to the next panel (or loads gameplay after the last panel).
+    /// Memainkan intro cutscene berbasis Cinemachine dengan perpindahan kamera per area.
+    /// Setiap sequence hanya dimainkan sekali per save slot.
     /// </summary>
     public class CutsceneController : MonoBehaviour
     {
         [System.Serializable]
-        public struct PanelData
+        public class ShotData
         {
-            [TextArea(2, 5)]
-            public string body;
+            public string shotName = "Shot";
+            public CinemachineVirtualCamera virtualCamera;
+            [Min(0.1f)] public float duration = 3f;
         }
 
-        [Header("UI References")]
-        [SerializeField] private RawImage backgroundImage;
-        [SerializeField] private Text bodyText;
-        [SerializeField] private Text panelIndicatorText;
-        [SerializeField] private Button nextButton;
+        [Header("Sequence")]
+        [SerializeField] private ShotData[] shots;
+
+        [Header("Scene")]
+        [SerializeField] private string gameplaySceneName = "Galatama";
+
+        [Header("UI")]
         [SerializeField] private Button skipButton;
+        [SerializeField] private Text shotLabelText;
         [SerializeField] private Image fadeOverlay;
 
-        [Header("Panels")]
-        [SerializeField] private PanelData[] panels;
-
-        [Header("Settings")]
-        [SerializeField] private string gameplaySceneName = "Galatama";
-        [SerializeField] private float typewriterSpeed = 0.04f;
+        [Header("Timing")]
         [SerializeField] private float fadeDuration = 0.5f;
+        [SerializeField] private float initialDelay = 0.35f;
 
-        private int _currentIndex;
-        private bool _isTyping;
-        private Coroutine _typewriterCoroutine;
+        [Header("Camera Priority")]
+        [SerializeField] private int activePriority = 20;
+        [SerializeField] private int inactivePriority = 0;
+
+        private bool isTransitioning;
+        private Coroutine playRoutine;
+
+        private void Awake()
+        {
+            SetAllCameraPriority(inactivePriority);
+            SetFadeAlpha(1f);
+        }
 
         private void Start()
         {
-            nextButton.onClick.AddListener(OnNextClicked);
-            skipButton.onClick.AddListener(OnSkipClicked);
-            StartCoroutine(PlayIntro());
+            if (skipButton != null)
+                skipButton.onClick.AddListener(SkipCutscene);
+
+            playRoutine = StartCoroutine(PlaySequence());
         }
 
-        private IEnumerator PlayIntro()
+        private void OnDestroy()
         {
-            if (fadeOverlay != null)
-                yield return StartCoroutine(Fade(1f, 0f));
-            ShowPanel(0);
+            if (skipButton != null)
+                skipButton.onClick.RemoveListener(SkipCutscene);
         }
 
-        private void ShowPanel(int index)
+        private IEnumerator PlaySequence()
         {
-            _currentIndex = index;
-            if (bodyText != null) bodyText.text = string.Empty;
-            UpdateIndicator();
-            if (_typewriterCoroutine != null) StopCoroutine(_typewriterCoroutine);
-            if (panels != null && panels.Length > index)
-                _typewriterCoroutine = StartCoroutine(TypewriterEffect(panels[index].body));
-        }
-
-        private void UpdateIndicator()
-        {
-            if (panelIndicatorText != null && panels != null)
-                panelIndicatorText.text = $"{_currentIndex + 1} / {panels.Length}";
-        }
-
-        private IEnumerator TypewriterEffect(string fullText)
-        {
-            _isTyping = true;
-            if (bodyText != null) bodyText.text = string.Empty;
-            foreach (char c in fullText)
+            if (shots == null || shots.Length == 0)
             {
-                if (bodyText != null) bodyText.text += c;
-                yield return new WaitForSeconds(typewriterSpeed);
+                yield return LoadGameplay();
+                yield break;
             }
-            _isTyping = false;
+
+            yield return new WaitForSeconds(initialDelay);
+            yield return Fade(1f, 0f);
+
+            for (int i = 0; i < shots.Length; i++)
+            {
+                ShotData shot = shots[i];
+                ActivateShot(shot);
+                yield return new WaitForSeconds(Mathf.Max(0.1f, shot != null ? shot.duration : 0.1f));
+            }
+
+            yield return LoadGameplay();
         }
 
-        private void OnNextClicked()
+        private void ActivateShot(ShotData shot)
         {
-            if (_isTyping)
-            {
-                // First click: instantly complete current panel text.
-                if (_typewriterCoroutine != null) StopCoroutine(_typewriterCoroutine);
-                _isTyping = false;
-                if (bodyText != null && panels != null && panels.Length > _currentIndex)
-                    bodyText.text = panels[_currentIndex].body;
+            SetAllCameraPriority(inactivePriority);
+
+            if (shot == null)
                 return;
-            }
 
-            int nextIndex = _currentIndex + 1;
-            if (panels != null && nextIndex < panels.Length)
-                StartCoroutine(TransitionToPanel(nextIndex));
-            else
-                StartCoroutine(LoadGameplay());
+            if (shot.virtualCamera != null)
+                shot.virtualCamera.Priority = activePriority;
+
+            if (shotLabelText != null)
+                shotLabelText.text = string.IsNullOrWhiteSpace(shot.shotName) ? string.Empty : shot.shotName;
         }
 
-        private void OnSkipClicked() => StartCoroutine(LoadGameplay());
-
-        private IEnumerator TransitionToPanel(int nextIndex)
+        private void SkipCutscene()
         {
-            SetButtonsInteractable(false);
-            if (fadeOverlay != null) yield return StartCoroutine(Fade(0f, 1f));
-            ShowPanel(nextIndex);
-            if (fadeOverlay != null) yield return StartCoroutine(Fade(1f, 0f));
-            SetButtonsInteractable(true);
+            if (isTransitioning)
+                return;
+
+            if (playRoutine != null)
+                StopCoroutine(playRoutine);
+
+            StartCoroutine(LoadGameplay());
         }
 
         private IEnumerator LoadGameplay()
         {
-            SetButtonsInteractable(false);
-            if (fadeOverlay != null) yield return StartCoroutine(Fade(0f, 1f));
+            if (isTransitioning)
+                yield break;
+
+            isTransitioning = true;
+
+            if (skipButton != null)
+                skipButton.interactable = false;
+
+            MarkCutsceneAsPlayed();
+            yield return Fade(0f, 1f);
             SceneManager.LoadScene(gameplaySceneName);
         }
 
-        private void SetButtonsInteractable(bool state)
+        private void MarkCutsceneAsPlayed()
         {
-            if (nextButton != null) nextButton.interactable = state;
-            if (skipButton != null) skipButton.interactable = state;
+            int activeSlot = SaveGameService.GetActiveSlotIndex();
+            if (!SaveGameService.IsValidSlotIndex(activeSlot))
+                return;
+
+            SaveGameService.MarkIntroCutscenePlayed(activeSlot);
+        }
+
+        private void SetAllCameraPriority(int priority)
+        {
+            if (shots == null)
+                return;
+
+            for (int i = 0; i < shots.Length; i++)
+            {
+                ShotData shot = shots[i];
+                if (shot != null && shot.virtualCamera != null)
+                    shot.virtualCamera.Priority = priority;
+            }
         }
 
         private IEnumerator Fade(float from, float to)
         {
-            if (fadeOverlay == null) yield break;
+            if (fadeOverlay == null)
+                yield break;
+
             float elapsed = 0f;
-            Color c = fadeOverlay.color;
+            Color color = fadeOverlay.color;
+
             while (elapsed < fadeDuration)
             {
                 elapsed += Time.deltaTime;
-                c.a = Mathf.Lerp(from, to, elapsed / fadeDuration);
-                fadeOverlay.color = c;
+                color.a = Mathf.Lerp(from, to, elapsed / fadeDuration);
+                fadeOverlay.color = color;
                 yield return null;
             }
-            c.a = to;
-            fadeOverlay.color = c;
+
+            color.a = to;
+            fadeOverlay.color = color;
+        }
+
+        private void SetFadeAlpha(float alpha)
+        {
+            if (fadeOverlay == null)
+                return;
+
+            Color color = fadeOverlay.color;
+            color.a = alpha;
+            fadeOverlay.color = color;
         }
     }
 }

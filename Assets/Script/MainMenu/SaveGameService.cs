@@ -11,6 +11,7 @@ namespace GALATAMA.MainMenu
         public int slotIndex;
         public string saveName;
         public bool hasSavedProgress;
+        public bool introCutscenePlayed;
         public long createdAtTicks;
         public long savedAtTicks;
         public string sceneName;
@@ -173,6 +174,7 @@ namespace GALATAMA.MainMenu
         public int slotIndex;
         public bool exists;
         public bool hasSavedProgress;
+        public bool introCutscenePlayed;
         public string saveName;
         public string sceneName;
         public string summaryLocationName;
@@ -229,6 +231,7 @@ namespace GALATAMA.MainMenu
                 slotIndex = slotIndex,
                 exists = false,
                 hasSavedProgress = false,
+                introCutscenePlayed = false,
                 saveName = string.Empty,
                 sceneName = string.Empty,
                 summaryLocationName = string.Empty,
@@ -241,6 +244,7 @@ namespace GALATAMA.MainMenu
 
             header.exists = true;
             header.hasSavedProgress = data.hasSavedProgress;
+            header.introCutscenePlayed = data.introCutscenePlayed;
             header.saveName = data.saveName;
             header.sceneName = data.sceneName;
             header.summaryLocationName = data.summaryLocationName;
@@ -268,6 +272,7 @@ namespace GALATAMA.MainMenu
                 slotIndex = slotIndex,
                 saveName = string.IsNullOrWhiteSpace(saveName) ? "Save " + slotIndex : saveName.Trim(),
                 hasSavedProgress = false,
+                introCutscenePlayed = false,
                 createdAtTicks = nowTicks,
                 savedAtTicks = nowTicks,
                 sceneName = initialSceneName,
@@ -333,6 +338,19 @@ namespace GALATAMA.MainMenu
             if (data.cooldowns == null)
                 data.cooldowns = new List<CooldownEntrySaveData>();
 
+            return true;
+        }
+
+        public static bool MarkIntroCutscenePlayed(int slotIndex)
+        {
+            if (!TryLoadSlot(slotIndex, out SaveGameData data))
+                return false;
+
+            if (data.introCutscenePlayed)
+                return true;
+
+            data.introCutscenePlayed = true;
+            SaveSlot(data);
             return true;
         }
 

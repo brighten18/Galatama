@@ -39,6 +39,9 @@ namespace StarterAssets
         [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
         public float Gravity = -15.0f;
 
+        [Tooltip("Multiplier applied to gravity while the player is falling (vertical velocity < 0). Higher values make the fall feel heavier and more responsive.")]
+        public float FallMultiplier = 2.5f;
+
         [Space(10)]
         [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
         public float JumpTimeout = 0.50f;
@@ -177,8 +180,8 @@ namespace StarterAssets
 
         private void Update()
         {
-            JumpAndGravity();
             GroundedCheck();
+            JumpAndGravity();
             Move();
             HandlePickUpInput();
             HandleCtrlCameraMode();
@@ -401,10 +404,13 @@ namespace StarterAssets
                 _input.jump = false;
             }
 
-            // apply gravity over time if under terminal (multiply by delta time twice to linearly speed...
+            // Apply gravity over time if under terminal velocity.
+            // When falling (verticalVelocity < 0), apply FallMultiplier to make the descent
+            // feel heavier and prevent the floaty "moon gravity" effect.
             if (_verticalVelocity < _terminalVelocity)
             {
-                _verticalVelocity += Gravity * Time.deltaTime;
+                float gravityScale = _verticalVelocity < 0f ? FallMultiplier : 1f;
+                _verticalVelocity += Gravity * gravityScale * Time.deltaTime;
             }
         }
 

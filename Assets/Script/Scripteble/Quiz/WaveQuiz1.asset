@@ -13,10 +13,15 @@ MonoBehaviour:
   m_Name: WaveQuiz1
   m_EditorClassIdentifier: Assembly-CSharp::QuizWaveSO
   waveNumber: 1
-  questionCountToAsk: 5
+  questionCountToAsk: 10
   questionPool:
   - {fileID: 11400000, guid: c16ce790646aefe48906864a6448401c, type: 2}
   - {fileID: 11400000, guid: be38b5be47dc8754ea97f11f19bc7b3b, type: 2}
   - {fileID: 11400000, guid: 8b109c76b4a7df042bd28340aaf577e2, type: 2}
   - {fileID: 11400000, guid: b1e1dbbbd6d55f34caeb5ac3fef919fd, type: 2}
   - {fileID: 11400000, guid: 40713551ee6c609438a00d28de60f79a, type: 2}
+  - {fileID: 11400000, guid: fd47a37cbcbc7814c860bd85c3ade538, type: 2}
+  - {fileID: 11400000, guid: ccd653d8501dd9c46a306fd424dfc876, type: 2}
+  - {fileID: 11400000, guid: aaf095f0b01e5814f95801b7a2010c68, type: 2}
+  - {fileID: 11400000, guid: 52db1027527947d4dadbd2666efc378f, type: 2}
+  - {fileID: 11400000, guid: 42cfdb366548c1d4da1c90ef87597de5, type: 2}

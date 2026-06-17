@@ -196,7 +196,9 @@ namespace GALATAMA.MainMenu
                 return;
 
             SaveGameService.PrepareLoadSlot(selectedSlotIndex);
-            string sceneToLoad = string.IsNullOrWhiteSpace(data.sceneName) ? gameplaySceneName : data.sceneName;
+            string sceneToLoad = data.introCutscenePlayed
+                ? (string.IsNullOrWhiteSpace(data.sceneName) ? gameplaySceneName : data.sceneName)
+                : cutsceneSceneName;
             SceneManager.LoadScene(sceneToLoad);
         }
 

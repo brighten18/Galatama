@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d85f838480629ca47aa3f9b2ddc1c7fc, type: 3}
+  m_Name: OpeningMonologue
+  m_EditorClassIdentifier: Assembly-CSharp::MonologueData
+  panels:
+  - Pagi yang luar biasa! Udara laut pesisir ini memang selalu berhasil membuatku
+    bersemangat.
+  - Hari ini adalah langkah pertamaku merintis usaha budidaya ikan hias air laut.
+    Rasanya sudah tidak sabar untuk mulai bekerja!
+  - Tapi tunggu dulu...
+  - Sebelum bergegas ke gudang, sepertinya aku harus mengecek catatan daftar tugasku.
+    Kalau tidak salah, semalam aku meletakkannya **di atas meja**.

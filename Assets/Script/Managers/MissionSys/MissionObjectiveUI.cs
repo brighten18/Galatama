@@ -23,6 +23,7 @@ public class MissionObjectiveUI : MonoBehaviour
     private CanvasGroup canvasGroup;
     private Coroutine activeFadeRoutine;
     private bool _missionDisplayed;
+    private MissionData _pendingMission;
     private readonly List<RectTransform> _activeStrikethroughLines = new List<RectTransform>();
 
     private void Awake()
@@ -42,28 +43,70 @@ public class MissionObjectiveUI : MonoBehaviour
 
     private void OnEnable()
     {
-        if (MissionManager.Instance == null) return;
-        MissionManager.Instance.OnMissionStarted += ShowMission;
-        MissionManager.Instance.OnAllMissionsCompleted += HandleAllCompleted;
+        if (MissionManager.Instance != null)
+        {
+            MissionManager.Instance.OnMissionStarted += ShowMission;
+            MissionManager.Instance.OnAllMissionsCompleted += HandleAllCompleted;
+        }
+
+        if (MonologueManager.Instance != null)
+            MonologueManager.Instance.OnMonologueFinished += OnMonologueFinished;
     }
 
     private void OnDisable()
     {
-        if (MissionManager.Instance == null) return;
-        MissionManager.Instance.OnMissionStarted -= ShowMission;
-        MissionManager.Instance.OnAllMissionsCompleted -= HandleAllCompleted;
+        if (MissionManager.Instance != null)
+        {
+            MissionManager.Instance.OnMissionStarted -= ShowMission;
+            MissionManager.Instance.OnAllMissionsCompleted -= HandleAllCompleted;
+        }
+
+        if (MonologueManager.Instance != null)
+            MonologueManager.Instance.OnMonologueFinished -= OnMonologueFinished;
     }
 
     private void Start()
     {
+        // Jika monolog sedang berjalan, tunda tampilan misi hingga monolog selesai
+        if (MonologueManager.Instance != null && MonologueManager.Instance.IsPlaying)
+        {
+            _pendingMission = MissionManager.Instance?.CurrentMission;
+            return;
+        }
+
         // Fallback: tampilkan misi aktif hanya jika event belum menanganinya lebih dulu
         if (!_missionDisplayed && MissionManager.Instance != null && MissionManager.Instance.CurrentMission != null)
             ShowMission(MissionManager.Instance.CurrentMission);
     }
 
+    /// <summary>Dipanggil saat monolog awal selesai. Menampilkan misi yang sudah diantrekan.</summary>
+    private void OnMonologueFinished()
+    {
+        if (MonologueManager.Instance != null)
+            MonologueManager.Instance.OnMonologueFinished -= OnMonologueFinished;
+
+        if (_pendingMission != null)
+        {
+            var mission = _pendingMission;
+            _pendingMission = null;
+            ShowMission(mission);
+        }
+        else if (!_missionDisplayed && MissionManager.Instance != null && MissionManager.Instance.CurrentMission != null)
+        {
+            ShowMission(MissionManager.Instance.CurrentMission);
+        }
+    }
+
     private void ShowMission(MissionData data)
     {
         if (panel == null || data == null) return;
+
+        // Jika monolog masih berjalan, antrekan misi untuk ditampilkan nanti
+        if (MonologueManager.Instance != null && MonologueManager.Instance.IsPlaying)
+        {
+            _pendingMission = data;
+            return;
+        }
 
         _missionDisplayed = true;
 

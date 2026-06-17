@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace GALATAMA.Cutscene
 {
@@ -27,6 +28,14 @@ namespace GALATAMA.Cutscene
         [SerializeField] private Button skipButton;
         [SerializeField] private Image fadeOverlay;
 
+        [Header("Panel UI Root")]
+        [SerializeField] private GameObject panelUI;
+
+        [Header("Video")]
+        [SerializeField] private VideoPlayer videoPlayer;
+        [SerializeField] private RawImage videoRawImage;
+        [SerializeField] private GameObject videoCanvas;
+
         [Header("Panels")]
         [SerializeField] private PanelData[] panels;
 
@@ -43,7 +52,30 @@ namespace GALATAMA.Cutscene
         {
             nextButton.onClick.AddListener(OnNextClicked);
             skipButton.onClick.AddListener(OnSkipClicked);
+
+            // Pre-prepare video di background selagi panel berjalan,
+            // agar tidak ada jeda saat transisi ke video.
+            videoPlayer.prepareCompleted += OnVideoPrepared;
+            videoPlayer.Prepare();
+
             StartCoroutine(PlayIntro());
+        }
+
+        private void OnDestroy()
+        {
+            videoPlayer.prepareCompleted -= OnVideoPrepared;
+        }
+
+        /// <summary>
+        /// Dipanggil saat VideoPlayer selesai di-prepare.
+        /// Membuat RenderTexture sesuai dimensi video dan langsung menghubungkannya.
+        /// </summary>
+        private void OnVideoPrepared(VideoPlayer vp)
+        {
+            vp.prepareCompleted -= OnVideoPrepared;
+            RenderTexture rt = new RenderTexture((int)vp.width, (int)vp.height, 0);
+            vp.targetTexture = rt;
+            if (videoRawImage != null) videoRawImage.texture = rt;
         }
 
         private IEnumerator PlayIntro()
@@ -114,6 +146,30 @@ namespace GALATAMA.Cutscene
         private IEnumerator LoadGameplay()
         {
             SetButtonsInteractable(false);
+
+            // Fade out panel UI
+            if (fadeOverlay != null) yield return StartCoroutine(Fade(0f, 1f));
+
+            // Sembunyikan panel UI, tampilkan video canvas
+            if (panelUI != null) panelUI.SetActive(false);
+            if (videoCanvas != null) videoCanvas.SetActive(true);
+
+            // Fallback: tunggu hanya jika prepare belum selesai (seharusnya sudah selesai dari Start)
+            if (!videoPlayer.isPrepared)
+                yield return new WaitUntil(() => videoPlayer.isPrepared);
+
+            // Mulai video sebelum fade-in agar frame pertama sudah terrender ke RenderTexture
+            // saat overlay menghilang — mencegah environment 3D bocor lewat RT yang masih kosong.
+            videoPlayer.Play();
+            yield return null; // tunggu satu frame agar frame pertama video masuk ke RT
+
+            // Fade in video
+            if (fadeOverlay != null) yield return StartCoroutine(Fade(1f, 0f));
+
+            // Tunggu sampai video selesai — tidak bisa di-skip
+            yield return new WaitUntil(() => !videoPlayer.isPlaying);
+
+            // Fade out lalu load gameplay
             if (fadeOverlay != null) yield return StartCoroutine(Fade(0f, 1f));
             SceneManager.LoadScene(gameplaySceneName);
         }

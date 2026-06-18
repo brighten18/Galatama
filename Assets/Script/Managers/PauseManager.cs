@@ -7,11 +7,13 @@ public class PauseManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private GameObject pauseScreenUI;
+    [SerializeField] private TutorialSequenceSO movementTutorial;
     [SerializeField] private string mainMenuSceneName = "MainMenu";
 
     public bool IsPaused { get; private set; }
 
     private bool pausePressedLastFrame;
+    private bool _reopenPauseAfterTutorial;
 
     private void Awake()
     {
@@ -43,8 +45,17 @@ public class PauseManager : MonoBehaviour
             return;
         }
 
-        // Block ESC entirely while a monologue is on screen.
+        // Block ESC entirely while a monologue or tutorial is on screen.
         if (MonologueManager.Instance != null && MonologueManager.Instance.IsPlaying)
+        {
+            if (PlayerInputManager.Instance != null)
+                PlayerInputManager.Instance.ResetPauseInput();
+
+            pausePressedLastFrame = false;
+            return;
+        }
+
+        if (TutorialManager.Instance != null && TutorialManager.Instance.IsPlaying)
         {
             if (PlayerInputManager.Instance != null)
                 PlayerInputManager.Instance.ResetPauseInput();
@@ -112,6 +123,7 @@ public class PauseManager : MonoBehaviour
     {
         IsPaused = false;
         Time.timeScale = 1f;
+        _reopenPauseAfterTutorial = false;
 
         if (pauseScreenUI != null)
             pauseScreenUI.SetActive(false);
@@ -129,6 +141,7 @@ public class PauseManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         IsPaused = false;
+        _reopenPauseAfterTutorial = false;
 
         if (pauseScreenUI != null)
             pauseScreenUI.SetActive(false);
@@ -142,12 +155,54 @@ public class PauseManager : MonoBehaviour
         SceneManager.LoadScene(mainMenuSceneName);
     }
 
+    public void OpenMovementTutorial()
+    {
+        if (!IsPaused || movementTutorial == null || TutorialManager.Instance == null || TutorialManager.Instance.IsPlaying)
+            return;
+
+        _reopenPauseAfterTutorial = true;
+
+        if (pauseScreenUI != null)
+            pauseScreenUI.SetActive(false);
+
+        TutorialManager.Instance.OnTutorialFinished -= HandleTutorialFinished;
+        TutorialManager.Instance.OnTutorialFinished += HandleTutorialFinished;
+        TutorialManager.Instance.TryPlayTutorial(movementTutorial, ignorePlayOnce: true, markCompletedOnClose: false);
+    }
+
+    private void HandleTutorialFinished(TutorialSequenceSO _)
+    {
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.OnTutorialFinished -= HandleTutorialFinished;
+
+        if (!IsPaused || !_reopenPauseAfterTutorial)
+            return;
+
+        _reopenPauseAfterTutorial = false;
+
+        if (pauseScreenUI != null)
+            pauseScreenUI.SetActive(true);
+
+        if (PlayerInputManager.Instance != null)
+        {
+            PlayerInputManager.Instance.SetCursorAndLook(false, false);
+            PlayerInputManager.Instance.SetPlayerMovement(false);
+            PlayerInputManager.Instance.ResetPauseInput();
+        }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     private void OnDisable()
     {
         if (Instance == this)
         {
             Time.timeScale = 1f;
         }
+
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.OnTutorialFinished -= HandleTutorialFinished;
     }
 
 }

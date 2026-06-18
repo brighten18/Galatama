@@ -67,9 +67,9 @@ Material:
     - _WaveSpeed: 0.5
     - __RECEIVE_SHADOWS_OFF: 1
     m_Colors:
-    - _DeepWater: {r: 0.0031683247, g: 0.57009846, b: 0.8396226, a: 0.8}
+    - _DeepWater: {r: 0.0031683247, g: 0.57009846, b: 0.8396226, a: 0.74509805}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ShallowWater: {r: 0.1452829, g: 0.8045571, b: 1, a: 0.58431375}
+    - _ShallowWater: {r: 0.14528286, g: 0.8045571, b: 1, a: 0.39215687}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &1884228871837556916

@@ -13,6 +13,11 @@ public class Equiptable_Items : MonoBehaviour
     [Header("Delay / Cooldown")]
     public float interactCooldown = 2f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource useItemSfxSource;
+    [SerializeField] private AudioClip useItemSfx;
+    [SerializeField, Range(0f, 1f)] private float useItemSfxVolume = 1f;
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -56,6 +61,7 @@ public class Equiptable_Items : MonoBehaviour
     {
         isUsingItem = true;
 
+        PlayUseItemSfx();
         animator.SetTrigger("Tangkap");
 
         EnableSphereCollider();
@@ -66,6 +72,14 @@ public class Equiptable_Items : MonoBehaviour
         DisableSphereCollider();
 
         isUsingItem = false;
+    }
+
+    private void PlayUseItemSfx()
+    {
+        if (useItemSfxSource == null || useItemSfx == null)
+            return;
+
+        useItemSfxSource.PlayOneShot(useItemSfx, Mathf.Clamp01(useItemSfxVolume));
     }
 
     public void EnableSphereCollider()

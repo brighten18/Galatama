@@ -13,6 +13,11 @@ public class FishTrapPlacer : MonoBehaviour
     [SerializeField] private float trapBottomOffset = 0.1f;
     [SerializeField] private LayerMask seaFloorLayer = ~0;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource placeTrapSfxSource;
+    [SerializeField] private AudioClip placeTrapSfx;
+    [SerializeField, Range(0f, 1f)] private float placeTrapSfxVolume = 1f;
+
     private bool isPlacing;
 
     void Update()
@@ -89,7 +94,10 @@ public class FishTrapPlacer : MonoBehaviour
         {
             Destroy(spawnedTrap);
             Debug.LogWarning("[FishTrapPlacer] Gagal konsumsi Perangkap dari quickslot.");
+            return;
         }
+
+        PlayPlaceTrapSfx();
     }
 
     /// <summary>
@@ -164,5 +172,13 @@ public class FishTrapPlacer : MonoBehaviour
 
         placePosition = seaFloorHit.point;
         return true;
+    }
+
+    private void PlayPlaceTrapSfx()
+    {
+        if (placeTrapSfxSource == null || placeTrapSfx == null)
+            return;
+
+        placeTrapSfxSource.PlayOneShot(placeTrapSfx, Mathf.Clamp01(placeTrapSfxVolume));
     }
 }

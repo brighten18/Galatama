@@ -122,39 +122,24 @@ public class AquariumFishSlotUI : MonoBehaviour,
         if (!hasFish) return;
 
         // Panel info item â€” isi nama, deskripsi status, dan fungsi berdasarkan state ikan
-        GameObject itemInfoUI = InventorySystem.Instance?.ItemInfoUI;
-        if (itemInfoUI != null)
+        InventorySystem inventory = InventorySystem.Instance;
+        if (inventory != null)
         {
-            itemInfoUI.SetActive(true);
-            Text nameText = itemInfoUI.transform.Find("ItemName")?.GetComponent<Text>();
-            Text descText = itemInfoUI.transform.Find("ItemDescription")?.GetComponent<Text>();
-            Text funcText = itemInfoUI.transform.Find("ItemFunc")?.GetComponent<Text>();
-
-            if (nameText != null) nameText.text = currentFishName;
-
-            if (descText != null)
+            string description = string.Empty;
+            if (currentFishState != null)
             {
-                if (currentFishState != null)
-                {
-                    string statusLabel = !currentFishState.isAlive ? "Mati"
-                        : currentFishState.isStressed ? "Stress"
-                        : currentFishState.HungerPercent <= 0.2f ? "Lapar"
-                        : "Kenyang";
-                    descText.text = $"HP: {currentFishState.health:0}/{currentFishState.maxHealth:0} | Status: {statusLabel}";
-                }
-                else
-                {
-                    descText.text = string.Empty;
-                }
+                string statusLabel = !currentFishState.isAlive ? "Mati"
+                    : currentFishState.isStressed ? "Stress"
+                    : currentFishState.HungerPercent <= 0.2f ? "Lapar"
+                    : "Kenyang";
+                description = $"HP: {currentFishState.health:0}/{currentFishState.maxHealth:0} | Status: {statusLabel}";
             }
 
-            if (funcText != null)
-            {
-                if (currentFishState != null)
-                    funcText.text = $"Kenyang: {currentFishState.hunger:0}/{currentFishState.maxHunger:0} | Klik untuk pindah ke inventory";
-                else
-                    funcText.text = "Klik untuk pindah ke inventory";
-            }
+            string functionality = currentFishState != null
+                ? $"Kenyang: {currentFishState.hunger:0}/{currentFishState.maxHunger:0} | Klik untuk pindah ke inventory"
+                : "Klik untuk pindah ke inventory";
+
+            inventory.ShowItemInfoPanel(currentFishName, description, functionality);
         }
 
         // Pop_Up-FishStatus
@@ -167,8 +152,9 @@ public class AquariumFishSlotUI : MonoBehaviour,
     /// </summary>
     public void OnPointerExit(PointerEventData eventData)
     {
-        GameObject itemInfoUI = InventorySystem.Instance?.ItemInfoUI;
-        if (itemInfoUI != null) itemInfoUI.SetActive(false);
+        InventorySystem inventory = InventorySystem.Instance;
+        if (inventory != null)
+            inventory.HideItemInfoPanel();
         InventoryItemLogic.HideFishStatusUI();
     }
 
@@ -184,8 +170,9 @@ public class AquariumFishSlotUI : MonoBehaviour,
         if (eventData.button != PointerEventData.InputButton.Left) return;
 
         InventoryItemLogic.HideFishStatusUI();
-        GameObject itemInfoUI = InventorySystem.Instance?.ItemInfoUI;
-        if (itemInfoUI != null) itemInfoUI.SetActive(false);
+        InventorySystem inventory = InventorySystem.Instance;
+        if (inventory != null)
+            inventory.HideItemInfoPanel();
 
         TakeFishToInventory();
     }

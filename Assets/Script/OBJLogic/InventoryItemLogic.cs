@@ -6,12 +6,6 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
 {
     public bool isTrashable;
 
-    // Referensi panel info inventory
-    private GameObject itemInfoUI;
-    private Text itemInfoUI_itemName;
-    private Text itemInfoUI_itemDescription;
-    private Text itemInfoUI_itemFunctionality;
-
     private DragDrop dragDrop;
  
     public string thisName, thisDescription, thisFunctionality;
@@ -28,11 +22,6 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
     private void Start()
     {
         dragDrop = GetComponent<DragDrop>();
-
-        itemInfoUI = InventorySystem.Instance.ItemInfoUI;
-        itemInfoUI_itemName = itemInfoUI.transform.Find("ItemName").GetComponent<Text>();
-        itemInfoUI_itemDescription = itemInfoUI.transform.Find("ItemDescription").GetComponent<Text>();
-        itemInfoUI_itemFunctionality = itemInfoUI.transform.Find("ItemFunc").GetComponent<Text>();
     }
 
     private void Update()
@@ -48,11 +37,11 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
     /// </summary>
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // --- ItemInfoPanel ---
-        itemInfoUI.SetActive(true);
-        itemInfoUI_itemName.text = thisName;
-        itemInfoUI_itemDescription.text = thisDescription;
-        itemInfoUI_itemFunctionality.text = thisFunctionality;
+        InventorySystem inv = InventorySystem.Instance;
+        if (inv != null)
+        {
+            inv.ShowItemInfoPanel(thisName, thisDescription, thisFunctionality);
+        }
 
         // --- Pop_Up-FishStatus ---
         FishRuntimeData fishData = GetComponent<FishRuntimeData>();
@@ -67,7 +56,10 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
     /// </summary>
     public void OnPointerExit(PointerEventData eventData)
     {
-        itemInfoUI.SetActive(false);
+        InventorySystem inv = InventorySystem.Instance;
+        if (inv != null)
+            inv.HideItemInfoPanel();
+
         HideFishStatusUI();
     }
 

@@ -86,7 +86,34 @@ MonoBehaviour:
   LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
   FootstepAudioClips:
   - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
+  - {fileID: 8300000, guid: 90432a3c0a3b7e443bdeff812f860993, type: 3}
+  - {fileID: 8300000, guid: ed0ca2e2bb2a9aa4ebd5ab5f955ce472, type: 3}
+  - {fileID: 8300000, guid: 7b7fdb48d930c8c46a2e7c414d322634, type: 3}
+  - {fileID: 8300000, guid: 2d192db352c82134bb0c73fdc44f5c31, type: 3}
   FootstepAudioVolume: 1
+  surfaceAudioSets:
+  - SurfaceType: 1
+    FootstepClips:
+    - {fileID: 8300000, guid: 7b7fdb48d930c8c46a2e7c414d322634, type: 3}
+    LandingClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+  - SurfaceType: 2
+    FootstepClips:
+    - {fileID: 8300000, guid: 4326a393513004c4aa1623707cf33643, type: 3}
+    LandingClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+  - SurfaceType: 3
+    FootstepClips:
+    - {fileID: 8300000, guid: 2d192db352c82134bb0c73fdc44f5c31, type: 3}
+    LandingClip: {fileID: 8300000, guid: 2d192db352c82134bb0c73fdc44f5c31, type: 3}
+  - SurfaceType: 4
+    FootstepClips:
+    - {fileID: 8300000, guid: ed0ca2e2bb2a9aa4ebd5ab5f955ce472, type: 3}
+    LandingClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+  terrainTextureSurfaceSets:
+  - TerrainLayer: {fileID: 8574412962073106934, guid: 735ed0c8c853d1b4e840578f17b5dc68, type: 2}
+    SurfaceType: 1
+  - TerrainLayer: {fileID: 8574412962073106934, guid: 43440626ea925ce408eed4c0f6c86cd2, type: 2}
+    SurfaceType: 4
+  surfaceCheckDistance: 1.5
   JumpHeight: 1.1
   Gravity: -20
   FallMultiplier: 3

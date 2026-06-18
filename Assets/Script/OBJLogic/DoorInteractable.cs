@@ -17,6 +17,12 @@ public class DoorInteractable : InteractableObject
     [Header("Animation")]
     [SerializeField, Min(1f)] private float rotateSpeedDegreesPerSecond = 180f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource doorSfxSource;
+    [SerializeField] private AudioClip openDoorSfx;
+    [SerializeField] private AudioClip closeDoorSfx;
+    [SerializeField, Range(0f, 1f)] private float doorSfxVolume = 1f;
+
     private bool isOpen;
 
     protected override void Awake()
@@ -32,6 +38,7 @@ public class DoorInteractable : InteractableObject
             PlayerInputManager.Instance.ResetInteractInput();
 
         isOpen = !isOpen;
+        PlayDoorSfx(isOpen);
     }
 
     protected override void Update()
@@ -71,6 +78,18 @@ public class DoorInteractable : InteractableObject
                 maxStep
             );
         }
+    }
+
+    private void PlayDoorSfx(bool opening)
+    {
+        if (doorSfxSource == null)
+            return;
+
+        AudioClip clipToPlay = opening ? openDoorSfx : closeDoorSfx;
+        if (clipToPlay == null)
+            return;
+
+        doorSfxSource.PlayOneShot(clipToPlay, Mathf.Clamp01(doorSfxVolume));
     }
 
 #if UNITY_EDITOR

@@ -54,6 +54,9 @@ namespace StarterAssets
         /// </summary>
         private void ReadScrollInput()
         {
+            // Disable zoom while a monologue is playing.
+            if (MonologueManager.Instance != null && MonologueManager.Instance.IsPlaying) return;
+
             if (Mouse.current == null) return;
 
             float scrollY = Mouse.current.scroll.ReadValue().y;

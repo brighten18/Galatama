@@ -43,6 +43,16 @@ public class PauseManager : MonoBehaviour
             return;
         }
 
+        // Block ESC entirely while a monologue is on screen.
+        if (MonologueManager.Instance != null && MonologueManager.Instance.IsPlaying)
+        {
+            if (PlayerInputManager.Instance != null)
+                PlayerInputManager.Instance.ResetPauseInput();
+
+            pausePressedLastFrame = false;
+            return;
+        }
+
         bool pausePressed = PlayerInputManager.Instance != null && PlayerInputManager.Instance.Pause;
 
         if (PosterPopupManager.Instance != null && PosterPopupManager.Instance.IsOpen)

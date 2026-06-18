@@ -282,6 +282,32 @@ public class MonologueManager : MonoBehaviour
     }
 
     // -------------------------------------------------------------------------
+    // Application focus
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Re-enforces cursor visibility and input block state when the application
+    /// regains focus after an alt+tab. Prevents cursor from disappearing or
+    /// input from leaking back during an active monologue.
+    /// </summary>
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus || !IsPlaying) return;
+
+        var pm = PlayerInputManager.Instance;
+        if (pm != null)
+        {
+            pm.SetPlayerMovement(false);
+            pm.SetCursorAndLook(false, false);
+        }
+
+        // SetCursorAndLook may internally alter cursor state — override to ensure
+        // cursor is always visible and unlocked while monologue is active.
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    // -------------------------------------------------------------------------
     // Player input control
     // -------------------------------------------------------------------------
 

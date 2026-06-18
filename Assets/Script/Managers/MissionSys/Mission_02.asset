@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionTitle: MISI
   missionDescription: Pergi ke area gudang dan ejaidhjsaidnaisjhdasihdasndhnkasj
+  waypointIndex: 0

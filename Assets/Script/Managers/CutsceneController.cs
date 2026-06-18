@@ -18,6 +18,9 @@ namespace GALATAMA.Cutscene
         {
             [TextArea(2, 5)]
             public string body;
+
+            /// <summary>Texture yang ditampilkan di background saat panel ini aktif.</summary>
+            public Texture2D backgroundTexture;
         }
 
         [Header("UI References")]
@@ -90,6 +93,12 @@ namespace GALATAMA.Cutscene
             _currentIndex = index;
             if (bodyText != null) bodyText.text = string.Empty;
             UpdateIndicator();
+
+            Debug.Log($"[CutsceneController] ShowPanel({index}) | backgroundImage={(backgroundImage != null ? backgroundImage.name : "NULL")} | texture={(panels != null && panels.Length > index && panels[index].backgroundTexture != null ? panels[index].backgroundTexture.name : "NULL")}");
+
+            if (backgroundImage != null && panels != null && panels.Length > index && panels[index].backgroundTexture != null)
+                backgroundImage.texture = panels[index].backgroundTexture;
+
             if (_typewriterCoroutine != null) StopCoroutine(_typewriterCoroutine);
             if (panels != null && panels.Length > index)
                 _typewriterCoroutine = StartCoroutine(TypewriterEffect(panels[index].body));

@@ -1169,17 +1169,23 @@ MonoBehaviour:
   panels:
   - body: Namaku Jafar. Setelah bertahun-tahun merantau dan menyelesaikan studi di
       luar negeri, aku akhirnya melangkahkan kaki kembali ke kampung halamanku.
+    backgroundTexture: {fileID: 2800000, guid: 76275b9910f5c7c4fb8154ccb4a0e164, type: 3}
   - body: Malam ini udaranya terasa begitu tenang. Rasanya rindu sekali melihat kembali
       rumah pesisir tempatku dibesarkan dulu.
+    backgroundTexture: {fileID: 2800000, guid: 0d779940d341d9e4c814fbc8dcfba409, type: 3}
   - body: Namun, kepulanganku kali ini bukan sekadar untuk bernostalgia. Ada sebuah
       mimpi dan tekad besar yang harus kuwujudkan di sini.
+    backgroundTexture: {fileID: 2800000, guid: 60a1c26c94c0852458a28d2b77d80fe8, type: 3}
   - body: Berbekal ilmu yang kupelajari, aku memutuskan untuk merintis usaha budidaya
       ikan hias. Gudang tua ini akan menjadi titik awal dari segalanya.
+    backgroundTexture: {fileID: 2800000, guid: 61664963de725974da8091c439e42f5e, type: 3}
   - body: Wah, aku sudah tidak sabar! Membayangkan fasilitas ini beroperasi membuatku
       sangat bersemangat!
+    backgroundTexture: {fileID: 2800000, guid: 251db57992e472f478c25c58ad91066a, type: 3}
   - body: Dengan kerja keras dan teknologi Recirculating Aquaculture System (RAS)
       yang ramah lingkungan, aku pasti bisa menciptakan akuarium budidaya air laut
       terbaik!
+    backgroundTexture: {fileID: 2800000, guid: 2b1ee77acf8f9514d84aac883d298593, type: 3}
   gameplaySceneName: Galatama
   typewriterSpeed: 0.04
   fadeDuration: 0.5

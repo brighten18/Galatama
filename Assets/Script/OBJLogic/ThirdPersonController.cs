@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
@@ -14,6 +15,21 @@ namespace StarterAssets
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
+        [System.Serializable]
+        public class SurfaceAudioSet
+        {
+            public PlayerSurfaceType SurfaceType = PlayerSurfaceType.Default;
+            public AudioClip[] FootstepClips;
+            public AudioClip LandingClip;
+        }
+
+        [System.Serializable]
+        public class TerrainTextureSurfaceSet
+        {
+            public TerrainLayer TerrainLayer;
+            public PlayerSurfaceType SurfaceType = PlayerSurfaceType.Default;
+        }
+
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
@@ -31,6 +47,14 @@ namespace StarterAssets
         public AudioClip LandingAudioClip;
         public AudioClip[] FootstepAudioClips;
         [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
+
+        [Header("Surface Footstep Audio")]
+        [Tooltip("Mapping jenis permukaan ke kumpulan audio langkah dan landing.")]
+        [SerializeField] private SurfaceAudioSet[] surfaceAudioSets;
+        [Tooltip("Mapping Terrain Layer ke jenis permukaan player.")]
+        [SerializeField] private TerrainTextureSurfaceSet[] terrainTextureSurfaceSets;
+        [Tooltip("Jarak raycast untuk mendeteksi permukaan di bawah kaki player.")]
+        [SerializeField] private float surfaceCheckDistance = 1.5f;
 
         [Space(10)]
         [Tooltip("The height the player can jump")]
@@ -130,6 +154,8 @@ namespace StarterAssets
         private bool _externalCameraOverrideActive;
         private float _externalCameraYaw;
         private float _externalCameraPitch;
+        private PlayerSurfaceType _currentSurfaceType = PlayerSurfaceType.Default;
+        private readonly List<SurfaceOverrideZone> _activeTriggerSurfaceZones = new List<SurfaceOverrideZone>();
 
         private bool IsCurrentDeviceMouse
         {
@@ -221,11 +247,207 @@ namespace StarterAssets
             Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore);
 
+            DetectCurrentSurface();
+
             // update animator if using character
             if (_hasAnimator)
             {
                 _animator.SetBool(_animIDGrounded, Grounded);
             }
+        }
+
+        private void DetectCurrentSurface()
+        {
+            if (TryGetActiveTriggerSurface(out PlayerSurfaceType triggerSurfaceType))
+            {
+                _currentSurfaceType = triggerSurfaceType;
+                return;
+            }
+
+            // CharacterController does not fire OnTriggerEnter on its own MonoBehaviours,
+            // so we perform a direct overlap check each frame to catch SurfaceOverrideZone triggers.
+            if (TryGetOverlapTriggerSurface(out PlayerSurfaceType overlapSurfaceType))
+            {
+                _currentSurfaceType = overlapSurfaceType;
+                return;
+            }
+
+            Vector3 rayOrigin = transform.position + Vector3.up * 0.2f;
+
+            if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, surfaceCheckDistance, GroundLayers,
+                    QueryTriggerInteraction.Ignore))
+            {
+                if (TryGetSurfaceOverrideFromCollider(hit.collider, out PlayerSurfaceType overrideSurfaceType))
+                {
+                    _currentSurfaceType = overrideSurfaceType;
+                    return;
+                }
+
+                if (TryGetTerrainSurface(hit, out PlayerSurfaceType terrainSurfaceType))
+                {
+                    _currentSurfaceType = terrainSurfaceType;
+                    return;
+                }
+            }
+
+            _currentSurfaceType = PlayerSurfaceType.Default;
+        }
+
+        private SurfaceAudioSet GetCurrentSurfaceAudioSet()
+        {
+            if (surfaceAudioSets == null || surfaceAudioSets.Length == 0)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < surfaceAudioSets.Length; i++)
+            {
+                SurfaceAudioSet surfaceAudioSet = surfaceAudioSets[i];
+                if (surfaceAudioSet != null && surfaceAudioSet.SurfaceType == _currentSurfaceType)
+                {
+                    return surfaceAudioSet;
+                }
+            }
+
+            return null;
+        }
+
+        private static AudioClip GetRandomClip(AudioClip[] clips)
+        {
+            if (clips == null || clips.Length == 0)
+            {
+                return null;
+            }
+
+            int index = Random.Range(0, clips.Length);
+            return clips[index];
+        }
+
+        private bool TryGetActiveTriggerSurface(out PlayerSurfaceType surfaceType)
+        {
+            for (int i = _activeTriggerSurfaceZones.Count - 1; i >= 0; i--)
+            {
+                SurfaceOverrideZone zone = _activeTriggerSurfaceZones[i];
+                if (zone == null)
+                {
+                    _activeTriggerSurfaceZones.RemoveAt(i);
+                    continue;
+                }
+
+                surfaceType = zone.SurfaceType;
+                return true;
+            }
+
+            surfaceType = PlayerSurfaceType.Default;
+            return false;
+        }
+
+        private static bool TryGetSurfaceOverrideFromCollider(Collider collider, out PlayerSurfaceType surfaceType)
+        {
+            SurfaceOverrideZone zone = collider.GetComponent<SurfaceOverrideZone>();
+            if (zone == null)
+            {
+                zone = collider.GetComponentInParent<SurfaceOverrideZone>();
+            }
+
+            if (zone != null)
+            {
+                surfaceType = zone.SurfaceType;
+                return true;
+            }
+
+            surfaceType = PlayerSurfaceType.Default;
+            return false;
+        }
+
+        private bool TryGetTerrainSurface(RaycastHit hit, out PlayerSurfaceType surfaceType)
+        {
+            if (!(hit.collider is TerrainCollider terrainCollider))
+            {
+                surfaceType = PlayerSurfaceType.Default;
+                return false;
+            }
+
+            Terrain terrain = terrainCollider.GetComponent<Terrain>();
+            if (terrain == null || terrain.terrainData == null || terrainTextureSurfaceSets == null || terrainTextureSurfaceSets.Length == 0)
+            {
+                surfaceType = PlayerSurfaceType.Default;
+                return false;
+            }
+
+            TerrainData terrainData = terrain.terrainData;
+            Vector3 localPosition = hit.point - terrain.transform.position;
+            int mapX = Mathf.Clamp((int)((localPosition.x / terrainData.size.x) * terrainData.alphamapWidth), 0, terrainData.alphamapWidth - 1);
+            int mapZ = Mathf.Clamp((int)((localPosition.z / terrainData.size.z) * terrainData.alphamapHeight), 0, terrainData.alphamapHeight - 1);
+            float[,,] alphaMap = terrainData.GetAlphamaps(mapX, mapZ, 1, 1);
+
+            int dominantLayerIndex = 0;
+            float dominantLayerWeight = 0f;
+            for (int i = 0; i < terrainData.alphamapLayers; i++)
+            {
+                float weight = alphaMap[0, 0, i];
+                if (weight > dominantLayerWeight)
+                {
+                    dominantLayerWeight = weight;
+                    dominantLayerIndex = i;
+                }
+            }
+
+            TerrainLayer[] terrainLayers = terrainData.terrainLayers;
+            if (dominantLayerIndex < 0 || dominantLayerIndex >= terrainLayers.Length)
+            {
+                surfaceType = PlayerSurfaceType.Default;
+                return false;
+            }
+
+            TerrainLayer dominantLayer = terrainLayers[dominantLayerIndex];
+            for (int i = 0; i < terrainTextureSurfaceSets.Length; i++)
+            {
+                TerrainTextureSurfaceSet textureSurfaceSet = terrainTextureSurfaceSets[i];
+                if (textureSurfaceSet != null && textureSurfaceSet.TerrainLayer == dominantLayer)
+                {
+                    surfaceType = textureSurfaceSet.SurfaceType;
+                    return true;
+                }
+            }
+
+            surfaceType = PlayerSurfaceType.Default;
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether the player capsule physically overlaps any trigger SurfaceOverrideZone.
+        /// Needed because CharacterController does not raise OnTrigger* callbacks on its own GameObject.
+        /// </summary>
+        private bool TryGetOverlapTriggerSurface(out PlayerSurfaceType surfaceType)
+        {
+            float halfHeight = _controller.height * 0.5f - _controller.radius;
+            Vector3 worldCenter = transform.position + _controller.center;
+            Vector3 capsuleBottom = worldCenter - Vector3.up * halfHeight;
+            Vector3 capsuleTop = worldCenter + Vector3.up * halfHeight;
+
+            Collider[] overlaps = Physics.OverlapCapsule(
+                capsuleBottom, capsuleTop, _controller.radius,
+                ~0, QueryTriggerInteraction.Collide);
+
+            for (int i = 0; i < overlaps.Length; i++)
+            {
+                Collider col = overlaps[i];
+                if (!col.isTrigger) continue;
+
+                SurfaceOverrideZone zone = col.GetComponent<SurfaceOverrideZone>();
+                if (zone == null)
+                    zone = col.GetComponentInParent<SurfaceOverrideZone>();
+
+                if (zone != null)
+                {
+                    surfaceType = zone.SurfaceType;
+                    return true;
+                }
+            }
+
+            surfaceType = PlayerSurfaceType.Default;
+            return false;
         }
 
         private void CameraRotation()
@@ -590,14 +812,71 @@ namespace StarterAssets
             Cursor.lockState = shouldHide ? CursorLockMode.Confined : CursorLockMode.None;
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            RegisterTriggerSurface(other);
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            RegisterTriggerSurface(other);
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            UnregisterTriggerSurface(other);
+        }
+
+        private void RegisterTriggerSurface(Collider other)
+        {
+            if (other == null || !other.isTrigger)
+            {
+                return;
+            }
+
+            SurfaceOverrideZone zone = other.GetComponent<SurfaceOverrideZone>();
+            if (zone == null)
+            {
+                zone = other.GetComponentInParent<SurfaceOverrideZone>();
+            }
+
+            if (zone != null && !_activeTriggerSurfaceZones.Contains(zone))
+            {
+                _activeTriggerSurfaceZones.Add(zone);
+            }
+        }
+
+        private void UnregisterTriggerSurface(Collider other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+
+            SurfaceOverrideZone zone = other.GetComponent<SurfaceOverrideZone>();
+            if (zone == null)
+            {
+                zone = other.GetComponentInParent<SurfaceOverrideZone>();
+            }
+
+            if (zone != null)
+            {
+                _activeTriggerSurfaceZones.Remove(zone);
+            }
+        }
+
         private void OnFootstep(AnimationEvent animationEvent)
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                if (FootstepAudioClips.Length > 0)
+                SurfaceAudioSet currentSurfaceAudio = GetCurrentSurfaceAudioSet();
+                AudioClip clip = currentSurfaceAudio != null
+                    ? GetRandomClip(currentSurfaceAudio.FootstepClips)
+                    : GetRandomClip(FootstepAudioClips);
+
+                if (clip != null)
                 {
-                    var index = Random.Range(0, FootstepAudioClips.Length);
-                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                    AudioSource.PlayClipAtPoint(clip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
                 }
             }
         }
@@ -606,7 +885,15 @@ namespace StarterAssets
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                SurfaceAudioSet currentSurfaceAudio = GetCurrentSurfaceAudioSet();
+                AudioClip clip = currentSurfaceAudio != null && currentSurfaceAudio.LandingClip != null
+                    ? currentSurfaceAudio.LandingClip
+                    : LandingAudioClip;
+
+                if (clip != null)
+                {
+                    AudioSource.PlayClipAtPoint(clip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                }
             }
         }
     }

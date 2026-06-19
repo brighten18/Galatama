@@ -23,6 +23,11 @@ public class InventorySystem : MonoBehaviour
     public Text PickupAlertName;
     public Image PickupAlertImage;
 
+    [Header("Item Info Audio")]
+    [SerializeField] private AudioSource itemInfoSfxSource;
+    [SerializeField] private AudioClip openItemInfoSfx;
+    [SerializeField, Range(0f, 1f)] private float openItemInfoSfxVolume = 1f;
+
     [Header("Fish Pickup Info UI")]
     public GameObject FishThingsUI;
     public Text FishName;
@@ -451,6 +456,36 @@ public class InventorySystem : MonoBehaviour
         PickupAlertUI.SetActive(true);
     }
 
+    public void ShowItemInfoPanel(string itemName, string itemDescription, string itemFunctionality, bool playSfx = true)
+    {
+        if (ItemInfoUI == null)
+            return;
+
+        Text itemNameText = ItemInfoUI.transform.Find("ItemName")?.GetComponent<Text>();
+        Text itemDescriptionText = ItemInfoUI.transform.Find("ItemDescription")?.GetComponent<Text>();
+        Text itemFunctionalityText = ItemInfoUI.transform.Find("ItemFunc")?.GetComponent<Text>();
+
+        if (itemNameText != null)
+            itemNameText.text = itemName;
+
+        if (itemDescriptionText != null)
+            itemDescriptionText.text = itemDescription;
+
+        if (itemFunctionalityText != null)
+            itemFunctionalityText.text = itemFunctionality;
+
+        ItemInfoUI.SetActive(true);
+
+        if (playSfx)
+            PlayOpenItemInfoSfx();
+    }
+
+    public void HideItemInfoPanel()
+    {
+        if (ItemInfoUI != null)
+            ItemInfoUI.SetActive(false);
+    }
+
     private void ShowFishPickupAlert(string fishName, Sprite icon, FishInstanceState state)
     {
         if (FishThingsUI == null) return;
@@ -483,6 +518,14 @@ public class InventorySystem : MonoBehaviour
         }
 
         FishThingsUI.SetActive(true);
+    }
+
+    private void PlayOpenItemInfoSfx()
+    {
+        if (itemInfoSfxSource == null || openItemInfoSfx == null)
+            return;
+
+        itemInfoSfxSource.PlayOneShot(openItemInfoSfx, Mathf.Clamp01(openItemInfoSfxVolume));
     }
 
     private IEnumerator HidePickupAlertAfterDelay(float delay)

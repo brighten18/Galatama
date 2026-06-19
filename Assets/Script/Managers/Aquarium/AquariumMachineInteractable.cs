@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Komponen mesin aquarium dunia (Aerator, Heater, Chiller, WaterPump).
@@ -12,7 +13,7 @@ using UnityEngine;
 ///   4. AquariumSystem terdekat dalam radius searchRadius
 ///   5. FindFirstObjectByType â€” fallback terakhir
 /// </summary>
-public class AquariumMachineInteractable : InteractableObject
+public class AquariumMachineInteractable : InteractableObject, IInteractCooldownProvider
 {
     [SerializeField] private AquariumSystem aquariumSystem;
     [SerializeField] private AquariumEquipmentRole machineRole = AquariumEquipmentRole.Aerator;
@@ -37,7 +38,19 @@ public class AquariumMachineInteractable : InteractableObject
     [Tooltip("Radius pencarian AquariumSystem terdekat jika field tidak di-assign")]
     [SerializeField] private float searchRadius = 15f;
 
+    [Header("Cooldown World UI")]
+    [SerializeField] private bool showWorldCooldownUI = true;
+    [SerializeField] private Vector3 cooldownUIOffset = new Vector3(0f, 1.6f, 0f);
+    [SerializeField] private Vector2 cooldownUICanvasSize = new Vector2(60f, 60f);
+    [SerializeField] private float cooldownUIWorldScale = 0.006f;
+    [SerializeField, Range(0f, 0.45f)] private float cooldownUIInnerPadding = 0.08f;
+    [SerializeField] private Color cooldownUIFillColor = new Color(0.2f, 0.82f, 1f, 0.95f);
+    [SerializeField] private Color cooldownUIBackgroundColor = new Color(0f, 0f, 0f, 0.35f);
+    [SerializeField] private int cooldownUIFontSize = 18;
+
     private AquariumActionCooldowns cooldowns;
+    private string cooldownKey;
+    private WorldSpaceCooldownUI worldCooldownUI;
 
     // â”€â”€â”€ Unity lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â...
 
@@ -54,7 +67,34 @@ public class AquariumMachineInteractable : InteractableObject
         if (cooldowns == null)
             cooldowns = gameObject.AddComponent<AquariumActionCooldowns>();
 
+        worldCooldownUI = GetComponent<WorldSpaceCooldownUI>();
+        if (showWorldCooldownUI && worldCooldownUI == null)
+            worldCooldownUI = gameObject.AddComponent<WorldSpaceCooldownUI>();
+
+        if (worldCooldownUI != null)
+            ApplyWorldCooldownUISettings();
+
+        cooldownKey = $"{machineRole}_{BuildPersistentObjectKey(transform)}";
         itemName = machineRole.ToString();
+    }
+
+    private void OnValidate()
+    {
+        if (worldCooldownUI == null)
+            worldCooldownUI = GetComponent<WorldSpaceCooldownUI>();
+
+        if (worldCooldownUI != null)
+            ApplyWorldCooldownUISettings();
+    }
+
+    private void LateUpdate()
+    {
+        if (!showWorldCooldownUI || worldCooldownUI == null)
+            return;
+
+        float remaining = GetCooldownRemainingSeconds();
+        bool shouldShow = isBeingLookedAt && remaining > 0f;
+        worldCooldownUI.SetCooldown(remaining, GetCooldownDurationSeconds(), shouldShow);
     }
 
     // â”€â”€â”€ Interact â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”...
@@ -80,7 +120,6 @@ public class AquariumMachineInteractable : InteractableObject
             return;
         }
 
-        string cooldownKey = $"{machineRole}_{BuildPersistentObjectKey(transform)}";
         if (!cooldowns.IsReady(cooldownKey))
         {
             float remaining = cooldowns.GetRemaining(cooldownKey);
@@ -96,6 +135,36 @@ public class AquariumMachineInteractable : InteractableObject
             TriggerPickUpAnimation();
             Debug.Log($"[AquariumMachine:{machineRole}] Cooldown dimulai {cooldownSeconds}s.");
         }
+    }
+
+    public bool ShouldShowCooldownUI()
+    {
+        return false;
+    }
+
+    public float GetCooldownRemainingSeconds()
+    {
+        if (cooldowns == null || string.IsNullOrEmpty(cooldownKey))
+            return 0f;
+
+        return cooldowns.GetRemaining(cooldownKey);
+    }
+
+    public float GetCooldownDurationSeconds()
+    {
+        return Mathf.Max(0f, cooldownSeconds);
+    }
+
+    private void ApplyWorldCooldownUISettings()
+    {
+        worldCooldownUI.Configure(
+            cooldownUIOffset,
+            cooldownUICanvasSize,
+            cooldownUIWorldScale,
+            cooldownUIInnerPadding,
+            cooldownUIFillColor,
+            cooldownUIBackgroundColor,
+            cooldownUIFontSize);
     }
 
     /// <summary>
@@ -275,5 +344,312 @@ public class AquariumMachineInteractable : InteractableObject
         }
 
         return builder.ToString();
+    }
+}
+
+public class WorldSpaceCooldownUI : MonoBehaviour
+{
+    [Header("World Space UI")]
+    [SerializeField] private Vector3 worldOffset = new Vector3(0f, 1.6f, 0f);
+    [SerializeField] private Vector2 canvasSize = new Vector2(60f, 60f);
+    [SerializeField] private float worldScale = 0.006f;
+    [SerializeField, Range(0f, 0.45f)] private float innerPadding = 0.08f;
+    [SerializeField] private Color fillColor = new Color(0.2f, 0.82f, 1f, 0.95f);
+    [SerializeField] private Color backgroundColor = new Color(0f, 0f, 0f, 0.35f);
+    [SerializeField] private int fontSize = 18;
+
+    [Header("Optional References")]
+    [SerializeField] private Canvas worldCanvas;
+    [SerializeField] private Image backgroundImage;
+    [SerializeField] private Image fillImage;
+    [SerializeField] private Text timerText;
+
+    private Camera targetCamera;
+    private static Sprite cachedCircleSprite;
+
+    private void Awake()
+    {
+        EnsureUI();
+        SetVisible(false);
+    }
+
+    private void LateUpdate()
+    {
+        if (worldCanvas == null || !worldCanvas.gameObject.activeSelf)
+            return;
+
+        if (targetCamera == null)
+            targetCamera = Camera.main;
+
+        if (targetCamera == null)
+            return;
+
+        Transform canvasTransform = worldCanvas.transform;
+        canvasTransform.position = transform.position + worldOffset;
+        ApplyStableScale();
+
+        Vector3 direction = canvasTransform.position - targetCamera.transform.position;
+        if (direction.sqrMagnitude > 0.001f)
+            canvasTransform.rotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
+    }
+
+    public void SetWorldOffset(Vector3 offset)
+    {
+        worldOffset = offset;
+    }
+
+    public void Configure(
+        Vector3 offset,
+        Vector2 size,
+        float scale,
+        float padding,
+        Color newFillColor,
+        Color newBackgroundColor,
+        int newFontSize)
+    {
+        worldOffset = offset;
+        canvasSize = size;
+        worldScale = Mathf.Max(0.0001f, scale);
+        innerPadding = Mathf.Clamp(padding, 0f, 0.45f);
+        fillColor = newFillColor;
+        backgroundColor = newBackgroundColor;
+        fontSize = Mathf.Max(1, newFontSize);
+        EnsureUI();
+        ApplyVisualSettings();
+    }
+
+    public void SetCooldown(float remainingSeconds, float totalSeconds, bool forceVisible)
+    {
+        EnsureUI();
+
+        float safeTotal = Mathf.Max(0.01f, totalSeconds);
+        float clampedRemaining = Mathf.Clamp(remainingSeconds, 0f, safeTotal);
+        bool visible = forceVisible && clampedRemaining > 0f;
+
+        if (fillImage != null)
+            fillImage.fillAmount = clampedRemaining / safeTotal;
+
+        if (timerText != null)
+            timerText.text = visible ? Mathf.CeilToInt(clampedRemaining).ToString() : string.Empty;
+
+        SetVisible(visible);
+    }
+
+    private void SetVisible(bool visible)
+    {
+        if (worldCanvas != null)
+            worldCanvas.gameObject.SetActive(visible);
+    }
+
+    private void EnsureUI()
+    {
+        if (worldCanvas == null)
+        {
+            Transform existing = transform.Find("CooldownWorldCanvas");
+            if (existing != null)
+                worldCanvas = existing.GetComponent<Canvas>();
+        }
+
+        if (worldCanvas == null)
+            CreateCanvasHierarchy();
+
+        if (worldCanvas == null)
+            return;
+
+        worldCanvas.renderMode = RenderMode.WorldSpace;
+        RectTransform canvasRect = worldCanvas.GetComponent<RectTransform>();
+        canvasRect.sizeDelta = canvasSize;
+        ApplyStableScale();
+
+        if (fillImage == null)
+        {
+            Transform fill = worldCanvas.transform.Find("CooldownFill");
+            if (fill != null)
+                fillImage = fill.GetComponent<Image>();
+        }
+
+        if (backgroundImage == null)
+        {
+            Transform bg = worldCanvas.transform.Find("CooldownBackground");
+            if (bg != null)
+                backgroundImage = bg.GetComponent<Image>();
+        }
+
+        if (timerText == null)
+        {
+            Transform label = worldCanvas.transform.Find("CooldownTimerText");
+            if (label != null)
+                timerText = label.GetComponent<Text>();
+        }
+
+        ApplyVisualSettings();
+    }
+
+    private void CreateCanvasHierarchy()
+    {
+        GameObject canvasObject = new GameObject("CooldownWorldCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+        canvasObject.transform.SetParent(transform, false);
+
+        worldCanvas = canvasObject.GetComponent<Canvas>();
+        worldCanvas.renderMode = RenderMode.WorldSpace;
+        worldCanvas.sortingOrder = 100;
+
+        CanvasScaler scaler = canvasObject.GetComponent<CanvasScaler>();
+        scaler.dynamicPixelsPerUnit = 10f;
+
+        GraphicRaycaster raycaster = canvasObject.GetComponent<GraphicRaycaster>();
+        raycaster.enabled = false;
+
+        RectTransform canvasRect = canvasObject.GetComponent<RectTransform>();
+        canvasRect.sizeDelta = canvasSize;
+        ApplyStableScale();
+
+        GameObject backgroundObject = CreateImageObject("CooldownBackground", canvasObject.transform, false);
+        backgroundImage = backgroundObject.GetComponent<Image>();
+
+        GameObject fillObject = CreateImageObject("CooldownFill", canvasObject.transform, true);
+        fillImage = fillObject.GetComponent<Image>();
+        fillImage.type = Image.Type.Filled;
+        fillImage.fillMethod = Image.FillMethod.Radial360;
+        fillImage.fillOrigin = (int)Image.Origin360.Top;
+        fillImage.fillClockwise = false;
+        fillImage.fillAmount = 1f;
+
+        GameObject textObject = new GameObject("CooldownTimerText", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        textObject.transform.SetParent(canvasObject.transform, false);
+        RectTransform textRect = textObject.GetComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = Vector2.zero;
+        textRect.offsetMax = Vector2.zero;
+
+        timerText = textObject.GetComponent<Text>();
+        timerText.alignment = TextAnchor.MiddleCenter;
+        timerText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        timerText.fontSize = fontSize;
+        timerText.color = Color.white;
+        timerText.raycastTarget = false;
+    }
+
+    private void ApplyVisualSettings()
+    {
+        if (worldCanvas != null)
+        {
+            RectTransform canvasRect = worldCanvas.GetComponent<RectTransform>();
+            if (canvasRect != null)
+            {
+                canvasRect.sizeDelta = canvasSize;
+                ApplyStableScale();
+            }
+        }
+
+        if (backgroundImage != null)
+        {
+            backgroundImage.sprite = GetCircleSprite();
+            backgroundImage.color = backgroundColor;
+            backgroundImage.type = Image.Type.Simple;
+        }
+
+        if (fillImage != null)
+        {
+            fillImage.sprite = GetCircleSprite();
+            fillImage.color = fillColor;
+        }
+
+        if (timerText != null)
+            timerText.fontSize = fontSize;
+
+        ApplyPadding(backgroundImage != null ? backgroundImage.rectTransform : null, false);
+        ApplyPadding(fillImage != null ? fillImage.rectTransform : null, true);
+    }
+
+    private void ApplyPadding(RectTransform rect, bool inset)
+    {
+        if (rect == null)
+            return;
+
+        if (inset)
+        {
+            rect.anchorMin = new Vector2(innerPadding, innerPadding);
+            rect.anchorMax = new Vector2(1f - innerPadding, 1f - innerPadding);
+        }
+        else
+        {
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+        }
+
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+    }
+
+    private GameObject CreateImageObject(string objectName, Transform parent, bool inset)
+    {
+        GameObject imageObject = new GameObject(objectName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        imageObject.transform.SetParent(parent, false);
+
+        RectTransform rect = imageObject.GetComponent<RectTransform>();
+        ApplyPadding(rect, inset);
+
+        Image image = imageObject.GetComponent<Image>();
+        image.sprite = GetCircleSprite();
+        image.raycastTarget = false;
+        return imageObject;
+    }
+
+    private void ApplyStableScale()
+    {
+        if (worldCanvas == null)
+            return;
+
+        RectTransform canvasRect = worldCanvas.GetComponent<RectTransform>();
+        if (canvasRect == null)
+            return;
+
+        Vector3 parentLossyScale = transform.lossyScale;
+        float safeX = Mathf.Abs(parentLossyScale.x) > 0.0001f ? Mathf.Abs(parentLossyScale.x) : 1f;
+        float safeY = Mathf.Abs(parentLossyScale.y) > 0.0001f ? Mathf.Abs(parentLossyScale.y) : 1f;
+        float safeZ = Mathf.Abs(parentLossyScale.z) > 0.0001f ? Mathf.Abs(parentLossyScale.z) : 1f;
+
+        canvasRect.localScale = new Vector3(
+            worldScale / safeX,
+            worldScale / safeY,
+            worldScale / safeZ);
+    }
+
+    private static Sprite GetCircleSprite()
+    {
+        if (cachedCircleSprite != null)
+            return cachedCircleSprite;
+
+        const int size = 128;
+        Texture2D texture = new Texture2D(size, size, TextureFormat.ARGB32, false);
+        texture.name = "GeneratedCooldownCircle";
+        texture.wrapMode = TextureWrapMode.Clamp;
+        texture.filterMode = FilterMode.Bilinear;
+
+        Vector2 center = new Vector2((size - 1) * 0.5f, (size - 1) * 0.5f);
+        float radius = (size - 1) * 0.5f;
+        Color[] pixels = new Color[size * size];
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float distance = Vector2.Distance(new Vector2(x, y), center);
+                pixels[y * size + x] = distance <= radius ? Color.white : Color.clear;
+            }
+        }
+
+        texture.SetPixels(pixels);
+        texture.Apply();
+
+        cachedCircleSprite = Sprite.Create(
+            texture,
+            new Rect(0f, 0f, size, size),
+            new Vector2(0.5f, 0.5f),
+            size);
+
+        return cachedCircleSprite;
     }
 }

@@ -13,6 +13,14 @@ public class AquariumInteractable : InteractableObject
     [SerializeField] private int defaultPelletSpawnCount = 8;
     [SerializeField] private GameObject foodPelletPrefab;
 
+    [Header("Action Audio")]
+    [SerializeField] private AudioSource aquariumActionSfxSource;
+    [SerializeField] private AudioClip phControlSfx;
+    [SerializeField] private AudioClip amoniaControlSfx;
+    [SerializeField] private AudioClip saltControlSfx;
+    [SerializeField] private AudioClip fishFoodSfx;
+    [SerializeField, Range(0f, 1f)] private float aquariumActionSfxVolume = 1f;
+
     private AquariumActionCooldowns cooldowns;
 
     private void Awake()
@@ -95,6 +103,7 @@ public class AquariumInteractable : InteractableObject
         aquariumSystem.SetPh(targetPh);
         StartCooldown(key, equipment);
         ConsumeHeldItem(equipment);
+        PlayAquariumActionSfx(phControlSfx);
         return true;
     }
 
@@ -108,6 +117,7 @@ public class AquariumInteractable : InteractableObject
         aquariumSystem.SetAmmonia(targetAmmonia);
         StartCooldown(key, equipment);
         ConsumeHeldItem(equipment);
+        PlayAquariumActionSfx(amoniaControlSfx);
         return true;
     }
 
@@ -119,6 +129,7 @@ public class AquariumInteractable : InteractableObject
 
         aquariumSystem.ChangeSalinity(amount);
         ConsumeHeldItem(equipment);
+        PlayAquariumActionSfx(saltControlSfx);
         return true;
     }
 
@@ -136,6 +147,7 @@ public class AquariumInteractable : InteractableObject
             return true;
 
         ConsumeHeldItem(equipment);
+        PlayAquariumActionSfx(fishFoodSfx);
         return true;
     }
 
@@ -174,6 +186,14 @@ public class AquariumInteractable : InteractableObject
             : fallback;
 
         return $"{BuildPersistentObjectKey(transform)}:{itemKey}";
+    }
+
+    private void PlayAquariumActionSfx(AudioClip clip)
+    {
+        if (aquariumActionSfxSource == null || clip == null)
+            return;
+
+        aquariumActionSfxSource.PlayOneShot(clip, Mathf.Clamp01(aquariumActionSfxVolume));
     }
 
     private static string BuildPersistentObjectKey(Transform target)

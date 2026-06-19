@@ -23,6 +23,14 @@ public class AquariumActionCooldowns : MonoBehaviour
         return Mathf.Max(0f, (float)remainingSeconds);
     }
 
+    public float GetNormalizedRemaining(string key, float totalCooldownSeconds)
+    {
+        if (totalCooldownSeconds <= 0f)
+            return 0f;
+
+        return Mathf.Clamp01(GetRemaining(key) / totalCooldownSeconds);
+    }
+
     public void StartCooldown(string key, float cooldownSeconds)
     {
         if (string.IsNullOrEmpty(key) || cooldownSeconds <= 0f)

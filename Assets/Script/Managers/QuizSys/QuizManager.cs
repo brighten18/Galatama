@@ -293,6 +293,8 @@ public class QuizManager : MonoBehaviour
             if (rewardUnlockManager != null)
                 rewardUnlockManager.OnWavePassed(passedWaveNumber);
 
+            ShowRewardResult(passedWaveNumber);
+
             if (AreAllWavesPassed())
             {
                 message += "\nSemua gelombang lulus.";
@@ -304,7 +306,27 @@ public class QuizManager : MonoBehaviour
             return;
         }
 
+        ui.HideRewardInfo();
         ui.ShowResult(message, true, false);
+    }
+
+    private void ShowRewardResult(int passedWaveNumber)
+    {
+        if (ui == null)
+            return;
+
+        if (rewardUnlockManager != null
+            && rewardUnlockManager.TryGetRewardDisplayData(passedWaveNumber, out QuizRewardUnlockManager.RewardDisplayData rewardDisplay))
+        {
+            ui.ShowRewardInfo(
+                rewardDisplay.rewardTitle,
+                rewardDisplay.rewardDescription,
+                rewardDisplay.rewardIcon
+            );
+            return;
+        }
+
+        ui.HideRewardInfo();
     }
 
     private void RestartCurrentWave()

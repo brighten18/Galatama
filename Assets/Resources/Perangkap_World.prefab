@@ -261,8 +261,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrapWorldMarker
   heightOffset: 0.2
   markerSize: 0.001
-  emptyTrapSprite: {fileID: 21300000, guid: e820ca6ac6ef06d4da14caa8c264d084, type: 3}
-  fishCaughtSprite: {fileID: 21300000, guid: e820ca6ac6ef06d4da14caa8c264d084, type: 3}
+  emptyTrapSprite: {fileID: 21300000, guid: ec0eb291c87395548932364e700fc6c5, type: 3}
+  fishCaughtSprite: {fileID: 21300000, guid: 60724c4e3827bf447a8c0eb823949305, type: 3}
   emptyColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   capturedColor: {r: 0.3, g: 1, b: 0.45, a: 1}
   bobSpeed: 1.5
@@ -278,7 +278,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 6908246837533656432, guid: cbff2b0bf0388394b93a55b257dbdc93, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 6fb351c7d91971e4c880161ac1f41037, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

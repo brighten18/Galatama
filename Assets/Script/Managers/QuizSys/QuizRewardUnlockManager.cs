@@ -6,6 +6,21 @@ using UnityEngine;
 public class QuizRewardUnlockManager : MonoBehaviour
 {
     [Serializable]
+    public class RewardDisplayData
+    {
+        public string rewardTitle;
+        [TextArea(2, 4)] public string rewardDescription;
+        public Sprite rewardIcon;
+
+        public bool HasVisibleContent()
+        {
+            return !string.IsNullOrWhiteSpace(rewardTitle)
+                || !string.IsNullOrWhiteSpace(rewardDescription)
+                || rewardIcon != null;
+        }
+    }
+
+    [Serializable]
     public class WaveInteractionReward
     {
         [Min(1)] public int requiredWaveNumber = 1;
@@ -27,6 +42,10 @@ public class QuizRewardUnlockManager : MonoBehaviour
         [Header("Aquarium Freeze")]
         [Tooltip("Aquarium reward yang harus dibekukan total sebelum reward dibuka.")]
         public AquariumSystem[] aquariumsToFreeze;
+
+        [Header("Reward UI")]
+        [Tooltip("Data hadiah yang ditampilkan ke player saat wave ini lulus.")]
+        public RewardDisplayData rewardDisplay;
 
         [NonSerialized] public readonly List<GameObject> spawnedLockVisuals = new List<GameObject>();
     }
@@ -97,6 +116,29 @@ public class QuizRewardUnlockManager : MonoBehaviour
             SyncLockVisuals(reward, !unlocked);
             SetAquariumUnlockState(reward.aquariumsToFreeze, unlocked);
         }
+    }
+
+    public bool TryGetRewardDisplayData(int waveNumber, out RewardDisplayData rewardDisplay)
+    {
+        rewardDisplay = null;
+
+        if (waveRewards == null)
+            return false;
+
+        for (int i = 0; i < waveRewards.Length; i++)
+        {
+            WaveInteractionReward reward = waveRewards[i];
+            if (reward == null || reward.requiredWaveNumber != waveNumber)
+                continue;
+
+            if (reward.rewardDisplay == null || !reward.rewardDisplay.HasVisibleContent())
+                return false;
+
+            rewardDisplay = reward.rewardDisplay;
+            return true;
+        }
+
+        return false;
     }
 
     private bool IsWavePassed(int waveNumber)

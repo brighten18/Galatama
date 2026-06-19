@@ -48,6 +48,12 @@ namespace StarterAssets
         public AudioClip[] FootstepAudioClips;
         [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
 
+        [Header("Footstep Timer")]
+        [Tooltip("Interval antar langkah saat berjalan normal (detik). 24fps anim: 10 frame = ~0.417s.")]
+        [SerializeField] private float footstepWalkInterval = 0.417f;
+        [Tooltip("Interval antar langkah saat berlari (detik). 24fps anim: 6 frame = 0.25s.")]
+        [SerializeField] private float footstepSprintInterval = 0.25f;
+
         [Header("Surface Footstep Audio")]
         [Tooltip("Mapping jenis permukaan ke kumpulan audio langkah dan landing.")]
         [SerializeField] private SurfaceAudioSet[] surfaceAudioSets;
@@ -122,6 +128,14 @@ namespace StarterAssets
         private float _jumpGroundCooldown = 0f;
         private const float JumpGroundCooldownDuration = 0.15f;
 
+        // Digunakan untuk mendeteksi transisi dari grounded ke not-grounded tanpa lompat
+        private bool _wasGrounded = true;
+
+        // Audio
+        private AudioSource _audioSource;
+        private float _footstepTimer;
+        private bool _wasAirborne;
+
         // animation IDs
         private int _animIDSpeed;
         private int _animIDGrounded;
@@ -186,6 +200,7 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
+            _audioSource = GetComponent<AudioSource>();
 #if ENABLE_INPUT_SYSTEM 
             _playerInput = GetComponent<PlayerInput>();
 #else
@@ -209,6 +224,8 @@ namespace StarterAssets
             GroundedCheck();
             JumpAndGravity();
             Move();
+            HandleFootstepAudio();
+            HandleLandingAudio();
             HandlePickUpInput();
             HandleCtrlCameraMode();
             HandleRightClickCamera();
@@ -560,6 +577,14 @@ namespace StarterAssets
                 _input.jump = false;
             }
 
+            // Saat pertama kali meninggalkan tanah tanpa lompat (melangkah dari tepian),
+            // reset vertical velocity ke 0 agar akselerasi jatuh konsisten dengan
+            // kondisi apex setelah lompat (keduanya mulai dari v=0 saat mulai jatuh).
+            if (!Grounded && _wasGrounded && _jumpGroundCooldown == 0f && _verticalVelocity < 0f)
+                _verticalVelocity = 0f;
+
+            _wasGrounded = Grounded;
+
             if (Grounded)
             {
                 // reset the fall timeout timer
@@ -629,7 +654,7 @@ namespace StarterAssets
             // Apply gravity over time if under terminal velocity.
             // When falling (verticalVelocity < 0), apply FallMultiplier to make the descent
             // feel heavier and prevent the floaty "moon gravity" effect.
-            if (_verticalVelocity < _terminalVelocity)
+            if (_verticalVelocity > -_terminalVelocity)
             {
                 float gravityScale = _verticalVelocity < 0f ? FallMultiplier : 1f;
                 _verticalVelocity += Gravity * gravityScale * Time.deltaTime;
@@ -865,35 +890,66 @@ namespace StarterAssets
             }
         }
 
-        private void OnFootstep(AnimationEvent animationEvent)
-        {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
-                SurfaceAudioSet currentSurfaceAudio = GetCurrentSurfaceAudioSet();
-                AudioClip clip = currentSurfaceAudio != null
-                    ? GetRandomClip(currentSurfaceAudio.FootstepClips)
-                    : GetRandomClip(FootstepAudioClips);
+        // Animation event stubs — kept to avoid "Function not found" warnings from the Animator.
+        // Audio playback is handled exclusively by HandleFootstepAudio() and HandleLandingAudio().
+        private void OnFootstep(AnimationEvent animationEvent) { }
+        private void OnLand(AnimationEvent animationEvent) { }
 
-                if (clip != null)
-                {
-                    AudioSource.PlayClipAtPoint(clip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
-                }
+        /// <summary>
+        /// Memainkan SFX langkah kaki berbasis timer sehingga tidak bergantung pada animation events.
+        /// </summary>
+        private void HandleFootstepAudio()
+        {
+            if (!Grounded || _speed < 0.1f)
+            {
+                _footstepTimer = 0f;
+                // Hentikan audio yang sedang berjalan agar tidak terus berputar saat berhenti.
+                if (_audioSource != null && _audioSource.isPlaying)
+                    _audioSource.Stop();
+                return;
+            }
+
+            _footstepTimer -= Time.deltaTime;
+            if (_footstepTimer > 0f) return;
+
+            float interval = _input.sprint ? footstepSprintInterval : footstepWalkInterval;
+            _footstepTimer = interval;
+
+            SurfaceAudioSet surfaceAudio = GetCurrentSurfaceAudioSet();
+            AudioClip clip = surfaceAudio != null
+                ? GetRandomClip(surfaceAudio.FootstepClips)
+                : GetRandomClip(FootstepAudioClips);
+
+            if (clip != null && _audioSource != null)
+            {
+                _audioSource.volume = FootstepAudioVolume;
+                _audioSource.clip = clip;
+                _audioSource.Play();
             }
         }
 
-        private void OnLand(AnimationEvent animationEvent)
+        /// <summary>
+        /// Mendeteksi pendaratan player dan memutar SFX landing secara berbasis state.
+        /// </summary>
+        private void HandleLandingAudio()
         {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
-                SurfaceAudioSet currentSurfaceAudio = GetCurrentSurfaceAudioSet();
-                AudioClip clip = currentSurfaceAudio != null && currentSurfaceAudio.LandingClip != null
-                    ? currentSurfaceAudio.LandingClip
-                    : LandingAudioClip;
+            bool justLanded = Grounded && _wasAirborne;
+            _wasAirborne = !Grounded;
 
-                if (clip != null)
-                {
-                    AudioSource.PlayClipAtPoint(clip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
-                }
+            if (!justLanded) return;
+
+            SurfaceAudioSet surfaceAudio = GetCurrentSurfaceAudioSet();
+            AudioClip clip = surfaceAudio != null && surfaceAudio.LandingClip != null
+                ? surfaceAudio.LandingClip
+                : LandingAudioClip;
+
+            if (clip != null && _audioSource != null)
+            {
+                _audioSource.volume = FootstepAudioVolume;
+                _audioSource.clip = clip;
+                _audioSource.Play();
+                // Reset timer agar langkah pertama tidak langsung memotong landing clip.
+                _footstepTimer = footstepWalkInterval;
             }
         }
     }

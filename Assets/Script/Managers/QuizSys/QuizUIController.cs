@@ -17,6 +17,10 @@ public class QuizUIController : MonoBehaviour
     [Header("Result")]
     [SerializeField] private GameObject resultPanel;
     [SerializeField] private Text resultText;
+    [SerializeField] private GameObject rewardInfoRoot;
+    [SerializeField] private Image rewardIcon;
+    [SerializeField] private Text rewardTitleText;
+    [SerializeField] private Text rewardDescriptionText;
     [SerializeField] private Button retryButton;
     [SerializeField] private Button nextButton;
     [SerializeField] private Button closeButton;
@@ -38,6 +42,7 @@ public class QuizUIController : MonoBehaviour
         {
             if (questionPanel != null) questionPanel.SetActive(false);
             if (resultPanel != null) resultPanel.SetActive(false);
+            HideRewardInfo();
         }
     }
 
@@ -49,6 +54,7 @@ public class QuizUIController : MonoBehaviour
         if (waveText != null) waveText.text = wave;
         if (progressText != null) progressText.text = progress;
         if (questionText != null) questionText.text = question;
+        HideRewardInfo();
 
         for (int i = 0; i < answerButtons.Length; i++)
         {
@@ -78,6 +84,52 @@ public class QuizUIController : MonoBehaviour
         if (resultText != null) resultText.text = message;
         if (retryButton != null) retryButton.gameObject.SetActive(showRetry);
         if (nextButton != null) nextButton.gameObject.SetActive(showNext);
+    }
+
+    public void ShowRewardInfo(string title, string description, Sprite icon)
+    {
+        bool hasContent = !string.IsNullOrWhiteSpace(title)
+            || !string.IsNullOrWhiteSpace(description)
+            || icon != null;
+
+        if (rewardInfoRoot != null)
+            rewardInfoRoot.SetActive(hasContent);
+
+        if (!hasContent)
+        {
+            HideRewardInfo();
+            return;
+        }
+
+        if (rewardTitleText != null)
+            rewardTitleText.text = string.IsNullOrWhiteSpace(title) ? "Hadiah Baru" : title;
+
+        if (rewardDescriptionText != null)
+            rewardDescriptionText.text = description ?? string.Empty;
+
+        if (rewardIcon != null)
+        {
+            rewardIcon.sprite = icon;
+            rewardIcon.enabled = icon != null;
+        }
+    }
+
+    public void HideRewardInfo()
+    {
+        if (rewardInfoRoot != null)
+            rewardInfoRoot.SetActive(false);
+
+        if (rewardTitleText != null)
+            rewardTitleText.text = string.Empty;
+
+        if (rewardDescriptionText != null)
+            rewardDescriptionText.text = string.Empty;
+
+        if (rewardIcon != null)
+        {
+            rewardIcon.sprite = null;
+            rewardIcon.enabled = false;
+        }
     }
 
     public void PlayPickSfx()

@@ -3,12 +3,17 @@ using UnityEngine.UI;
 
 [DefaultExecutionOrder(-100)]
 public class InteractUIManager : MonoBehaviour
-{   
+{
     public static InteractUIManager Instance { get; private set; }
 
     [Header("UI Settings")]
     public GameObject interactionInfoUI;
     private Text interactionText;
+
+    [Header("Cooldown UI")]
+    [SerializeField] private GameObject cooldownUIRoot;
+    [SerializeField] private Image cooldownRadialImage;
+    [SerializeField] private Text cooldownTimerText;
 
     [Header("Interaction Settings")]
     public float maxInteractionDistance = 5f;
@@ -17,8 +22,6 @@ public class InteractUIManager : MonoBehaviour
     public bool HasNonTriggerHit => lastNonTriggerHit.collider != null;
 
     private InteractableObject currentInteractable;
-    // âœï¸ DIHAPUS: public StarterAssetsInputs _Input;
-
     private Camera mainCamera;
     private bool isReady = false;
 
@@ -29,6 +32,7 @@ public class InteractUIManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
     }
 
@@ -36,40 +40,35 @@ public class InteractUIManager : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        // âœï¸ DIHAPUS: FindGameObjectWithTag dan GetComponent StarterAssetsInputs
-
         if (interactionInfoUI != null)
             interactionText = interactionInfoUI.GetComponent<Text>();
         else
             Debug.LogError("interactionInfoUI belum diassign di Inspector!");
 
-        // âœï¸ DIUBAH: Hapus _Input != null dari pengecekan isReady
+        SetCooldownUIVisible(false);
         isReady = mainCamera != null && interactionText != null;
     }
 
     private void Update()
     {
-        if (!isReady) return;
+        if (!isReady)
+            return;
 
-        Ray ray = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        Ray ray = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         RaycastHit[] hits = Physics.RaycastAll(ray, maxInteractionDistance, Physics.AllLayers, QueryTriggerInteraction.Collide);
         System.Array.Sort(hits, (left, right) => left.distance.CompareTo(right.distance));
 
-        RaycastHit hit;
-        if (TryGetFirstValidHit(hits, out hit))
+        if (TryGetFirstValidHit(hits, out RaycastHit hit))
         {
             lastNonTriggerHit = hit;
             OnTargeted = true;
 
             InteractableObject interactable = hit.transform.GetComponentInParent<InteractableObject>();
-
             if (interactable != null && OnTargeted)
             {
                 string itemName = interactable.GetItemName();
                 if (string.IsNullOrEmpty(itemName))
                 {
-                    // Interactable tidak ingin menampilkan prompt (misalnya reward terkunci
-                    // atau wave quiz belum bisa diakses). Perlakukan seperti tidak ada target.
                     ClearInteraction();
                 }
                 else
@@ -77,6 +76,7 @@ public class InteractUIManager : MonoBehaviour
                     SetCurrentInteractable(interactable);
                     interactionText.text = itemName;
                     interactionInfoUI.SetActive(true);
+                    UpdateCooldownUI(interactable);
                 }
             }
             else
@@ -128,6 +128,7 @@ public class InteractUIManager : MonoBehaviour
 
         currentInteractable = null;
         interactionInfoUI.SetActive(false);
+        SetCooldownUIVisible(false);
         OnTargeted = false;
         lastNonTriggerHit = default;
     }
@@ -146,5 +147,39 @@ public class InteractUIManager : MonoBehaviour
         return interactable != null &&
                currentInteractable == interactable &&
                OnTargeted;
+    }
+
+    private void UpdateCooldownUI(InteractableObject interactable)
+    {
+        IInteractCooldownProvider cooldownProvider = interactable as IInteractCooldownProvider;
+        if (cooldownProvider == null || !cooldownProvider.ShouldShowCooldownUI())
+        {
+            SetCooldownUIVisible(false);
+            return;
+        }
+
+        float duration = Mathf.Max(0.01f, cooldownProvider.GetCooldownDurationSeconds());
+        float remaining = Mathf.Clamp(cooldownProvider.GetCooldownRemainingSeconds(), 0f, duration);
+        float fillAmount = remaining / duration;
+
+        if (cooldownRadialImage != null)
+            cooldownRadialImage.fillAmount = fillAmount;
+
+        if (cooldownTimerText != null)
+            cooldownTimerText.text = Mathf.CeilToInt(remaining).ToString();
+
+        SetCooldownUIVisible(true);
+    }
+
+    private void SetCooldownUIVisible(bool visible)
+    {
+        if (cooldownUIRoot != null)
+            cooldownUIRoot.SetActive(visible);
+
+        if (!visible && cooldownRadialImage != null)
+            cooldownRadialImage.fillAmount = 0f;
+
+        if (!visible && cooldownTimerText != null)
+            cooldownTimerText.text = string.Empty;
     }
 }

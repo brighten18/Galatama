@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fe16c7cbae058a41880fadc69130eb3, type: 3}
   m_Name: WaveQuiz1
   m_EditorClassIdentifier: Assembly-CSharp::QuizWaveSO
-  waveNumber: 1
+  waveNumber: 3
   questionCountToAsk: 10
   questionPool:
   - {fileID: 11400000, guid: c16ce790646aefe48906864a6448401c, type: 2}

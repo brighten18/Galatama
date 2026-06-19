@@ -6,6 +6,20 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
+/// Entry tunggal dalam library monologue. Beri key unik agar script lain
+/// bisa memanggil PlayMonologue("key") tanpa perlu referensi langsung ke asset.
+/// </summary>
+[Serializable]
+public struct MonologueEntry
+{
+    [Tooltip("Nama unik untuk monologue ini. Dipakai saat memanggil PlayMonologue(\"key\").")]
+    public string key;
+
+    [Tooltip("Asset MonologueData yang berisi panel-panel teks.")]
+    public MonologueData data;
+}
+
+/// <summary>
 /// Manages the opening monologue sequence in the gameplay scene.
 /// Displays panel-by-panel with a typewriter effect and a "Lanjut" button.
 /// Blocks player movement and camera look while active.
@@ -36,6 +50,10 @@ public class MonologueManager : MonoBehaviour
 
     [Header("Opening Monologue")]
     [SerializeField] private MonologueData openingMonologue;
+
+    [Header("Monologue Library")]
+    [Tooltip("Daftar semua monologue tambahan. Isi Key unik untuk setiap entry.")]
+    [SerializeField] private MonologueEntry[] monologues;
 
     [Header("Settings")]
     [SerializeField] private float typewriterSpeed = 0.04f;
@@ -110,6 +128,43 @@ public class MonologueManager : MonoBehaviour
         StartCoroutine(PlayMonologueRoutine(data));
     }
 
+    /// <summary>
+    /// Plays a monologue from the library by its key (case-sensitive).
+    /// </summary>
+    public void PlayMonologue(string key)
+    {
+        if (monologues == null || monologues.Length == 0)
+        {
+            Debug.LogWarning($"[MonologueManager] Library kosong, key '{key}' tidak ditemukan.");
+            return;
+        }
+
+        foreach (MonologueEntry entry in monologues)
+        {
+            if (entry.key == key)
+            {
+                PlayMonologue(entry.data);
+                return;
+            }
+        }
+
+        Debug.LogWarning($"[MonologueManager] Monologue dengan key '{key}' tidak ditemukan di library.");
+    }
+
+    /// <summary>
+    /// Plays a monologue from the library by its index in the monologues array.
+    /// </summary>
+    public void PlayMonologue(int index)
+    {
+        if (monologues == null || index < 0 || index >= monologues.Length)
+        {
+            Debug.LogWarning($"[MonologueManager] Index {index} di luar range library.");
+            return;
+        }
+
+        PlayMonologue(monologues[index].data);
+    }
+
     // -------------------------------------------------------------------------
     // Core sequence
     // -------------------------------------------------------------------------
@@ -123,6 +178,10 @@ public class MonologueManager : MonoBehaviour
         if (fadeOverlay != null)
             yield return StartCoroutine(Fade(1f, 0f));
 
+        // Re-enable button setelah fade agar button selalu aktif saat panel pertama tampil,
+        // baik untuk opening monologue maupun monologue subsequent.
+        SetNextButtonInteractable(true);
+
         ShowPanel(0, setPose: false);
     }
 
@@ -132,6 +191,11 @@ public class MonologueManager : MonoBehaviour
         _currentIndex = 0;
         IsPlaying = true;
         SetPlayerBlocked(true);
+
+        // Bersihkan konten lama sebelum panel ditampilkan agar tidak ada visual gap.
+        if (bodyText != null) bodyText.text = string.Empty;
+        if (characterImage != null) characterImage.sprite = null;
+        _lastPoseIndex = -1;
 
         monologuePanel.SetActive(true);
         UpdateIndicator();
@@ -317,10 +381,8 @@ public class MonologueManager : MonoBehaviour
         if (pm == null) return;
 
         pm.SetPlayerMovement(!blocked);
-
-        // When blocked: unlock cursor so the player can click "Lanjut".
-        // When unblocked: restore locked cursor for gameplay.
         pm.SetCursorAndLook(!blocked, !blocked);
+        pm.SetInteractionBlocked(blocked);
 
         if (blocked)
         {

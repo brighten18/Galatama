@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d85f838480629ca47aa3f9b2ddc1c7fc, type: 3}
+  m_Name: PostMisi2Monologue
+  m_EditorClassIdentifier: Assembly-CSharp::MonologueData
+  panels:
+  - Wah... inilah gudang yang penuh mimpi itu.
+  - Akhirnya, setelah sekian lama merencanakan dan bekerja keras, aku berhasil menata
+    dan membangun sistem Recirculating Aquaculture System (RAS).
+  - "Tapi... tunggu sebentar. \n(Jafar tiba tiba terdiam, wajahnya tampak sedikit
+    bingung)"
+  - Saking lamanya aku fokus pada perakitan pipa, aku malah agak lupa tentang detail
+    fungsi dari masing-masing komponen ini.
+  - Alangkah baiknya aku melihat poster di <b>mading</b>  itu terlebih dahulu untuk
+    menyegarkan ingatanku, sebelum aku mulai mencari ikan.

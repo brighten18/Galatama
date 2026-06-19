@@ -51,6 +51,8 @@ public class MissionObjectiveUI : MonoBehaviour
 
         if (MonologueManager.Instance != null)
             MonologueManager.Instance.OnMonologueFinished += OnMonologueFinished;
+
+        PosterMission3Tracker.OnAnyProgressChanged += OnPosterProgress;
     }
 
     private void OnDisable()
@@ -63,6 +65,8 @@ public class MissionObjectiveUI : MonoBehaviour
 
         if (MonologueManager.Instance != null)
             MonologueManager.Instance.OnMonologueFinished -= OnMonologueFinished;
+
+        PosterMission3Tracker.OnAnyProgressChanged -= OnPosterProgress;
     }
 
     private void Start()
@@ -79,11 +83,11 @@ public class MissionObjectiveUI : MonoBehaviour
             ShowMission(MissionManager.Instance.CurrentMission);
     }
 
-    /// <summary>Dipanggil saat monolog awal selesai. Menampilkan misi yang sudah diantrekan.</summary>
+    /// <summary>Dipanggil setiap kali sebuah monolog selesai. Menampilkan misi yang sudah diantrekan.</summary>
     private void OnMonologueFinished()
     {
-        if (MonologueManager.Instance != null)
-            MonologueManager.Instance.OnMonologueFinished -= OnMonologueFinished;
+        // Jangan unsubscribe di sini — lifecycle subscription dikelola oleh OnEnable/OnDisable.
+        // Self-unsubscribe akan membuat monolog ke-2 dst tidak memicu transisi misi berikutnya.
 
         if (_pendingMission != null)
         {
@@ -264,11 +268,32 @@ public class MissionObjectiveUI : MonoBehaviour
     private IEnumerator ShowMissionRoutine(MissionData data)
     {
         if (titleText != null) titleText.text = data.MissionTitle;
-        if (descriptionText != null) descriptionText.text = data.MissionDescription;
+        if (descriptionText != null) descriptionText.text = BuildDescription(data);
 
         SetupStrikethroughLines();
 
         yield return StartCoroutine(FadeIn());
+    }
+
+    /// <summary>Builds the description string, appending a live progress counter for the poster mission.</summary>
+    private string BuildDescription(MissionData data)
+    {
+        if (PosterMission3Tracker.Instance != null &&
+            MissionManager.Instance != null &&
+            MissionManager.Instance.CurrentMissionIndex == PosterMission3Tracker.Instance.TargetMissionIndex)
+        {
+            return $"{data.MissionDescription} {PosterMission3Tracker.Instance.ReadCount}/{PosterMission3Tracker.Instance.TotalPosters}";
+        }
+        return data.MissionDescription;
+    }
+
+    /// <summary>Updates the description text live each time a new poster is read.</summary>
+    private void OnPosterProgress(int readCount, int total)
+    {
+        if (descriptionText == null) return;
+        var mission = MissionManager.Instance?.CurrentMission;
+        if (mission == null) return;
+        descriptionText.text = $"{mission.MissionDescription} {readCount}/{total}";
     }
 
     private IEnumerator FadeIn()

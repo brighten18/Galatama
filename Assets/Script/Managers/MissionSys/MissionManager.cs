@@ -14,10 +14,15 @@ public class MissionManager : MonoBehaviour
     public event Action<MissionData> OnMissionStarted;
     public event Action OnAllMissionsCompleted;
 
+    /// <summary>Fired when a mission is completed. Parameter is the completed mission's index.</summary>
+    public event Action<int> OnMissionCompleted;
+
     public MissionData CurrentMission =>
         currentMissionIndex < missions.Count ? missions[currentMissionIndex] : null;
 
     public bool AllCompleted => currentMissionIndex >= missions.Count;
+
+    public int CurrentMissionIndex => currentMissionIndex;
 
     private void Awake()
     {
@@ -46,6 +51,8 @@ public class MissionManager : MonoBehaviour
 
         currentMissionIndex++;
         Debug.Log($"[MissionManager] Misi {missionIndex} selesai. Misi berikutnya: {currentMissionIndex}");
+
+        OnMissionCompleted?.Invoke(missionIndex);
 
         if (currentMissionIndex < missions.Count)
             OnMissionStarted?.Invoke(CurrentMission);

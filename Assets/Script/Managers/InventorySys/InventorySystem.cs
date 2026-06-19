@@ -118,6 +118,16 @@ public class InventorySystem : MonoBehaviour
         if (PauseManager.Instance != null && PauseManager.Instance.IsPaused)
             return;
 
+        // Blokir inventory saat monologue aktif agar tidak bisa dibuka
+        // dan tidak menimpa SetPlayerMovement milik MonologueManager.
+        if (MonologueManager.Instance != null && MonologueManager.Instance.IsPlaying)
+        {
+            if (PlayerInputManager.Instance != null)
+                PlayerInputManager.Instance.ResetInventoryInput();
+            inventoryPressedLastFrame = false;
+            return;
+        }
+
         bool inventoryPressed = PlayerInputManager.Instance != null && PlayerInputManager.Instance.Inventory;
 
         if (inventoryPressed && !inventoryPressedLastFrame)

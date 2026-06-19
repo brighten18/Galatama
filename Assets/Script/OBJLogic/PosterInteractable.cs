@@ -9,6 +9,9 @@ public class PosterInteractable : InteractableObject
     [Tooltip("Index of the mission to complete on interaction. Set to -1 to disable.")]
     [SerializeField] private int completeMissionIndex = -1;
 
+    [Tooltip("If true, reports this interaction to PosterMission3Tracker instead of directly completing a mission.")]
+    [SerializeField] private bool reportToMission3Tracker = false;
+
     private void Awake()
     {
         base.Awake();
@@ -38,8 +41,14 @@ public class PosterInteractable : InteractableObject
 
         PosterPopupManager.Instance.OpenPoster(posterData);
 
-        if (completeMissionIndex >= 0 && MissionManager.Instance != null)
+        if (reportToMission3Tracker)
+        {
+            PosterMission3Tracker.Instance?.RegisterRead(gameObject.GetInstanceID());
+        }
+        else if (completeMissionIndex >= 0 && MissionManager.Instance != null)
+        {
             MissionManager.Instance.CompleteMission(completeMissionIndex);
+        }
     }
 
     public override string GetItemName()

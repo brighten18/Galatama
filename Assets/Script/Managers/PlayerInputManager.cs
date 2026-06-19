@@ -55,12 +55,35 @@ public class PlayerInputManager : MonoBehaviour
              
     }
 
+    private bool _interactionBlocked;
+
+    /// <summary>
+    /// Memblokir semua input interaksi (Interact, InteractOBJ, Pause, Inventory, QuickSlots).
+    /// Dipakai saat monologue aktif agar pemain tidak bisa menekan tombol apapun.
+    /// </summary>
+    public void SetInteractionBlocked(bool blocked)
+    {
+        _interactionBlocked = blocked;
+    }
+
     private void LateUpdate()
     {
         if (_input == null) return;
 
         _input.Interact = false;
         _input.InteractOBJ = false;
+
+        if (_interactionBlocked)
+        {
+            _input.Pause = false;
+            _input.Inventory = false;
+            _input.QuickSlot1 = false;
+            _input.QuickSlot2 = false;
+            _input.QuickSlot3 = false;
+            _input.QuickSlot4 = false;
+            _input.QuickSlot5 = false;
+            _input.QuickSlot6 = false;
+        }
     }
 
     public void ResetInventoryInput()

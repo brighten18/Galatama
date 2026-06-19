@@ -17,6 +17,6 @@ MonoBehaviour:
   options:
   - Untuk memancing ikan agar memakan umpan
   - 'Mengeluarkan ikan dari celah karang tanpa merusaknya '
-  - Sebagai tiang penahan jaring pukat
+  - Menangkap ikan secara pilih-pilih
   - Untuk menusuk ikan target
-  correctIndex: 1
+  correctIndex: 2

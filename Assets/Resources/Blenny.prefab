@@ -116,7 +116,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemLogic
   isTrashable: 1
   thisName: Blenny
-  thisDescription: Blenny
+  thisDescription: Blenny memiliki mata besar menonjol dan mulut yang selalu terlihat
+    'tersenyum'. Dikenal juga sebagai ikan pemakan alga, blenny membantu menjaga
+    kebersihan akuarium.
   thisFunctionality: Blenny Cuy
   isEquippable: 1
   IsNowInsideQcSlot: 0

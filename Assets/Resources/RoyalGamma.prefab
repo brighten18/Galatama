@@ -116,7 +116,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemLogic
   isTrashable: 1
   thisName: RoyyalGamma
-  thisDescription: Royyal Gamma
+  thisDescription: "Ikan ini terkenal karena warnanya yang indah\u2014ungu di bagian
+    depan dan kuning di bagian belakang."
   thisFunctionality: Royyal Gamma Coy
   isEquippable: 1
   IsNowInsideQcSlot: 0

@@ -116,7 +116,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemLogic
   isTrashable: 1
   thisName: ClownFish
-  thisDescription: Clown Fish nih
+  thisDescription: 'Clownfish atau Ikan badut sangat populer di kalangan penghobi
+    akuarium karena warnanya yang mencolok dan perawatannya yang relatif mudah. '
   thisFunctionality: Clown
   isEquippable: 1
   IsNowInsideQcSlot: 0

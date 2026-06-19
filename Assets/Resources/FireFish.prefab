@@ -116,7 +116,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemLogic
   isTrashable: 1
   thisName: FireFish
-  thisDescription: FireFish ni
+  thisDescription: Firefish Goby tampil dengan gradasi warna putih  di bagian kepala
+    dan merah-oranye menyala menuju ujung ekor. Sirip punggung pertamanya yang memanjang
+    seperti antena menjadi ciri khas yang membuatnya mudah dikenali.
   thisFunctionality: Firee
   isEquippable: 1
   IsNowInsideQcSlot: 0

@@ -116,7 +116,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemLogic
   isTrashable: 1
   thisName: YellowTang
-  thisDescription: Yellow Tang Cuy
+  thisDescription: Ikan berwarna kuning cerah ini sangat aktif bergerak dan berperan
+    sebagai 'tukang bersih' alami dalam akuarium karena gemar memakan alga yang menempel
+    di kaca.
   thisFunctionality: Yellow Tang ni
   isEquippable: 1
   IsNowInsideQcSlot: 0

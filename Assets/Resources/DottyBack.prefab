@@ -116,7 +116,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemLogic
   isTrashable: 1
   thisName: DottyBack
-  thisDescription: DottyBack
+  thisDescription: Dottyback berwarna kuning menyala, hingga oranye yang mencolok
+    menjadikannya seperti permata hidup dalam akuarium.
   thisFunctionality: DottyBack Ni
   isEquippable: 1
   IsNowInsideQcSlot: 0

@@ -116,7 +116,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemLogic
   isTrashable: 1
   thisName: ChromisBlue
-  thisDescription: ChromisBlue ni
+  thisDescription: Ikan ini berwarna biru ini paling bahagia saat dipelihara dalam
+    kelompok, dan gerakannya yang serempak berkilauan biru-hijau terlihat seperti
+    disko bawah laut.
   thisFunctionality: ChromisBlue wow
   isEquippable: 1
   IsNowInsideQcSlot: 0

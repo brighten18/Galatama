@@ -116,7 +116,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemLogic
   isTrashable: 1
   thisName: Banggai
-  thisDescription: Banggai Cardinal
+  thisDescription: Ikan endemik Indonesia ini sangat cocok untuk akuarium karena
+    sifatnya yang tenang dan tidak agresif. Tubuhnya berhias pola hitam-putih elegan
+    dengan sirip memanjang seperti rumbai.
   thisFunctionality: Banggai Coy
   isEquippable: 1
   IsNowInsideQcSlot: 0

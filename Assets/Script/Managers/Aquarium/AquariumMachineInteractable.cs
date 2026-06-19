@@ -373,6 +373,18 @@ public class WorldSpaceCooldownUI : MonoBehaviour
         SetVisible(false);
     }
 
+    private void OnDestroy()
+    {
+        if (worldCanvas != null)
+            Destroy(worldCanvas.gameObject);
+    }
+
+    private void OnDisable()
+    {
+        if (worldCanvas != null)
+            worldCanvas.gameObject.SetActive(false);
+    }
+
     private void LateUpdate()
     {
         if (worldCanvas == null || !worldCanvas.gameObject.activeSelf)
@@ -386,7 +398,9 @@ public class WorldSpaceCooldownUI : MonoBehaviour
 
         Transform canvasTransform = worldCanvas.transform;
         canvasTransform.position = transform.position + worldOffset;
-        ApplyStableScale();
+
+        // Uniform world scale applied directly — no parent scale inheritance
+        canvasTransform.localScale = Vector3.one * worldScale;
 
         Vector3 direction = canvasTransform.position - targetCamera.transform.position;
         if (direction.sqrMagnitude > 0.001f)
@@ -456,10 +470,14 @@ public class WorldSpaceCooldownUI : MonoBehaviour
         if (worldCanvas == null)
             return;
 
+        // Detach from parent so inherited non-uniform scale cannot distort the UI
+        if (worldCanvas.transform.parent != null)
+            worldCanvas.transform.SetParent(null, false);
+
         worldCanvas.renderMode = RenderMode.WorldSpace;
         RectTransform canvasRect = worldCanvas.GetComponent<RectTransform>();
         canvasRect.sizeDelta = canvasSize;
-        ApplyStableScale();
+        canvasRect.localScale = Vector3.one * worldScale;
 
         if (fillImage == null)
         {
@@ -488,7 +506,8 @@ public class WorldSpaceCooldownUI : MonoBehaviour
     private void CreateCanvasHierarchy()
     {
         GameObject canvasObject = new GameObject("CooldownWorldCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-        canvasObject.transform.SetParent(transform, false);
+        // No parent — canvas lives at scene root to avoid scale inheritance
+        canvasObject.transform.SetParent(null);
 
         worldCanvas = canvasObject.GetComponent<Canvas>();
         worldCanvas.renderMode = RenderMode.WorldSpace;
@@ -502,7 +521,7 @@ public class WorldSpaceCooldownUI : MonoBehaviour
 
         RectTransform canvasRect = canvasObject.GetComponent<RectTransform>();
         canvasRect.sizeDelta = canvasSize;
-        ApplyStableScale();
+        canvasRect.localScale = Vector3.one * worldScale;
 
         GameObject backgroundObject = CreateImageObject("CooldownBackground", canvasObject.transform, false);
         backgroundImage = backgroundObject.GetComponent<Image>();
@@ -539,7 +558,7 @@ public class WorldSpaceCooldownUI : MonoBehaviour
             if (canvasRect != null)
             {
                 canvasRect.sizeDelta = canvasSize;
-                ApplyStableScale();
+                canvasRect.localScale = Vector3.one * worldScale;
             }
         }
 
@@ -595,26 +614,6 @@ public class WorldSpaceCooldownUI : MonoBehaviour
         image.sprite = GetCircleSprite();
         image.raycastTarget = false;
         return imageObject;
-    }
-
-    private void ApplyStableScale()
-    {
-        if (worldCanvas == null)
-            return;
-
-        RectTransform canvasRect = worldCanvas.GetComponent<RectTransform>();
-        if (canvasRect == null)
-            return;
-
-        Vector3 parentLossyScale = transform.lossyScale;
-        float safeX = Mathf.Abs(parentLossyScale.x) > 0.0001f ? Mathf.Abs(parentLossyScale.x) : 1f;
-        float safeY = Mathf.Abs(parentLossyScale.y) > 0.0001f ? Mathf.Abs(parentLossyScale.y) : 1f;
-        float safeZ = Mathf.Abs(parentLossyScale.z) > 0.0001f ? Mathf.Abs(parentLossyScale.z) : 1f;
-
-        canvasRect.localScale = new Vector3(
-            worldScale / safeX,
-            worldScale / safeY,
-            worldScale / safeZ);
     }
 
     private static Sprite GetCircleSprite()

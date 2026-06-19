@@ -192,8 +192,20 @@ public class InteractableObject : MonoBehaviour
             return;
 
         quickOutline = GetComponent<Outline>();
+
         if (quickOutline == null)
-            quickOutline = GetComponentInChildren<Outline>(true);
+        {
+            // Hanya ambil Outline dari child yang bukan milik InteractableObject lain,
+            // agar tidak mengambil Outline dari child interactable (misalnya mesin akuarium).
+            foreach (Outline outline in GetComponentsInChildren<Outline>(true))
+            {
+                if (outline.GetComponentInParent<InteractableObject>() == this)
+                {
+                    quickOutline = outline;
+                    break;
+                }
+            }
+        }
 
         if (quickOutline == null && autoAddOutlineIfMissing)
             quickOutline = gameObject.AddComponent<Outline>();
@@ -205,7 +217,7 @@ public class InteractableObject : MonoBehaviour
         quickOutline.OutlineColor = highlightColor;
         quickOutline.OutlineWidth = highlightWidth;
 
-        // Selalu matikan outline di awal â€” termasuk jika sudah aktif di Inspector
+        // Selalu matikan outline di awal - termasuk jika sudah aktif di Inspector
         quickOutline.enabled = false;
     }
 

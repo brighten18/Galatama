@@ -38,19 +38,9 @@ public class AquariumMachineInteractable : InteractableObject, IInteractCooldown
     [Tooltip("Radius pencarian AquariumSystem terdekat jika field tidak di-assign")]
     [SerializeField] private float searchRadius = 15f;
 
-    [Header("Cooldown World UI")]
-    [SerializeField] private bool showWorldCooldownUI = true;
-    [SerializeField] private Vector3 cooldownUIOffset = new Vector3(0f, 1.6f, 0f);
-    [SerializeField] private Vector2 cooldownUICanvasSize = new Vector2(60f, 60f);
-    [SerializeField] private float cooldownUIWorldScale = 0.006f;
-    [SerializeField, Range(0f, 0.45f)] private float cooldownUIInnerPadding = 0.08f;
-    [SerializeField] private Color cooldownUIFillColor = new Color(0.2f, 0.82f, 1f, 0.95f);
-    [SerializeField] private Color cooldownUIBackgroundColor = new Color(0f, 0f, 0f, 0.35f);
-    [SerializeField] private int cooldownUIFontSize = 18;
-
     private AquariumActionCooldowns cooldowns;
     private string cooldownKey;
-    private WorldSpaceCooldownUI worldCooldownUI;
+    private WorldSpaceCooldownUI machineWorldCooldownUI;
 
     // â”€â”€â”€ Unity lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â...
 
@@ -67,11 +57,11 @@ public class AquariumMachineInteractable : InteractableObject, IInteractCooldown
         if (cooldowns == null)
             cooldowns = gameObject.AddComponent<AquariumActionCooldowns>();
 
-        worldCooldownUI = GetComponent<WorldSpaceCooldownUI>();
-        if (showWorldCooldownUI && worldCooldownUI == null)
-            worldCooldownUI = gameObject.AddComponent<WorldSpaceCooldownUI>();
+        machineWorldCooldownUI = GetComponent<WorldSpaceCooldownUI>();
+        if (showWorldCooldownUI && machineWorldCooldownUI == null)
+            machineWorldCooldownUI = gameObject.AddComponent<WorldSpaceCooldownUI>();
 
-        if (worldCooldownUI != null)
+        if (machineWorldCooldownUI != null)
             ApplyWorldCooldownUISettings();
 
         cooldownKey = $"{machineRole}_{BuildPersistentObjectKey(transform)}";
@@ -80,21 +70,23 @@ public class AquariumMachineInteractable : InteractableObject, IInteractCooldown
 
     private void OnValidate()
     {
-        if (worldCooldownUI == null)
-            worldCooldownUI = GetComponent<WorldSpaceCooldownUI>();
+        if (machineWorldCooldownUI == null)
+            machineWorldCooldownUI = GetComponent<WorldSpaceCooldownUI>();
 
-        if (worldCooldownUI != null)
+        if (machineWorldCooldownUI != null)
             ApplyWorldCooldownUISettings();
     }
 
-    private void LateUpdate()
+    protected override void LateUpdate()
     {
-        if (!showWorldCooldownUI || worldCooldownUI == null)
+        base.LateUpdate();
+
+        if (!showWorldCooldownUI || machineWorldCooldownUI == null)
             return;
 
         float remaining = GetCooldownRemainingSeconds();
         bool shouldShow = isBeingLookedAt && remaining > 0f;
-        worldCooldownUI.SetCooldown(remaining, GetCooldownDurationSeconds(), shouldShow);
+        machineWorldCooldownUI.SetCooldown(remaining, GetCooldownDurationSeconds(), shouldShow);
     }
 
     // â”€â”€â”€ Interact â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”...
@@ -157,7 +149,7 @@ public class AquariumMachineInteractable : InteractableObject, IInteractCooldown
 
     private void ApplyWorldCooldownUISettings()
     {
-        worldCooldownUI.Configure(
+        machineWorldCooldownUI.Configure(
             cooldownUIOffset,
             cooldownUICanvasSize,
             cooldownUIWorldScale,

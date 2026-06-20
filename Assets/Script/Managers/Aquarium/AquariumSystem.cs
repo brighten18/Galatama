@@ -114,6 +114,13 @@ public class WaterQualityState
     }
 }
 
+[Serializable]
+public class WaterIndicatorText
+{
+    public string label;
+    public Text text;
+}
+
 [DefaultExecutionOrder(-50)]
 public class AquariumSystem : MonoBehaviour
 {
@@ -144,16 +151,25 @@ public class AquariumSystem : MonoBehaviour
     [SerializeField] private Text fishCountText;
     [SerializeField] private Text waterQualityText;
     [SerializeField] private Text warningText;
+    [SerializeField] private WaterIndicatorText ammoniaIndicator = new WaterIndicatorText { label = "Amonia" };
+    [SerializeField] private WaterIndicatorText oxygenIndicator = new WaterIndicatorText { label = "O2" };
+    [SerializeField] private WaterIndicatorText salinityIndicator = new WaterIndicatorText { label = "Salinitas" };
+    [SerializeField] private WaterIndicatorText phIndicator = new WaterIndicatorText { label = "pH" };
+    [SerializeField] private WaterIndicatorText temperatureIndicator = new WaterIndicatorText { label = "Temperatur" };
 
     [Header("RAS Simulation")]
     [SerializeField] private WaterQualityState waterQuality = new WaterQualityState();
     [Tooltip("1 = real-time. 0.5 = 2x lebih lambat. 0.25 = 4x lebih lambat.")]
     [SerializeField] private float rasTimeScale = 1f;
     [SerializeField] private float simulationTickSeconds = 5f;
-    [SerializeField] private float criticalOxygenWarning = 6f;
-    [SerializeField] private float criticalAmmoniaWarning = 1f;
-    [SerializeField] private Material deadFishMaterial;
-    [SerializeField] private Color deadFishColor = Color.gray;
+    [SerializeField] private Color safeIndicatorColor = new Color(0.2f, 0.85f, 0.35f);
+    [SerializeField] private Color dangerIndicatorColor = new Color(1f, 0.6f, 0.15f);
+    [SerializeField] private Color criticalIndicatorColor = new Color(0.9f, 0.2f, 0.2f);
+    [SerializeField] private float oxygenDangerMargin = 1f;
+    [SerializeField] private float ammoniaDangerMargin = 0.35f;
+    [SerializeField] private float temperatureDangerMargin = 1.5f;
+    [SerializeField] private float phDangerMargin = 0.4f;
+    [SerializeField] private float salinityDangerMargin = 3f;
 
     [Header("Aquarium Equipment")]
     [SerializeField] private List<EquipmentData> installedEquipment = new List<EquipmentData>();
@@ -170,6 +186,25 @@ public class AquariumSystem : MonoBehaviour
     private readonly List<GameObject> spawnedFish = new List<GameObject>();
     private readonly HashSet<int> consumedInventoryItemIds = new HashSet<int>();
     private float simulationTimer;
+
+    private enum WaterIndicatorSeverity
+    {
+        Safe,
+        Danger,
+        Critical
+    }
+
+    private struct WaterThresholdProfile
+    {
+        public float minOxygen;
+        public float maxAmmonia;
+        public float minTemperature;
+        public float maxTemperature;
+        public float minPh;
+        public float maxPh;
+        public float minSalinity;
+        public float maxSalinity;
+    }
 
     // â”€â”€â”€ RAS Galatama Subsystems â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”...
     private RasWaterSimulator rasSimulator;
@@ -757,18 +792,13 @@ public class AquariumSystem : MonoBehaviour
         waterQuality.ammonia *= Mathf.Lerp(1f, waterChangeAmmoniaMultiplier, intensity);
         waterQuality.oxygen = Mathf.Min(targetOxygen, waterQuality.oxygen + waterChangeOxygenRecovery * intensity);
         waterQuality.salinity = Mathf.Lerp(waterQuality.salinity, targetSalinity, intensity * 0.35f);
-        waterQuality.Clamp();
-        WaterQualityChanged?.Invoke(this, waterQuality);
-        RefreshUI();
+        CommitWaterQualityChange();
     }
 
     private void CommitWaterQualityChange()
     {
-        waterQuality.Clamp();
-        WaterQualityChanged?.Invoke(this, waterQuality);
+        CommitWaterQualityChange();
         // Hanya perbarui teks kualitas air, tidak re-spawn icon ikan
-        RefreshWaterQualityUI();
-        AquariumStateChanged?.Invoke(this);
     }
 
     private GameObject SpawnFish(GameObject prefab)
@@ -943,15 +973,7 @@ public class AquariumSystem : MonoBehaviour
 
         if (fishCountText != null)
             fishCountText.text = FishCount + " / " + maxFish;
-
-        if (waterQualityText != null)
-        {
-            waterQualityText.text =
-                $"NH3 {waterQuality.ammonia:0.00} | O2 {waterQuality.oxygen:0.0} | Temp {waterQuality.temperature:0.0} | pH {waterQuality.ph:0.0} | Sal {waterQuality.salinity:0.0}";
-        }
-
-        if (warningText != null)
-            warningText.text = BuildWarningText();
+        RefreshWaterQualityUI();
 
         if (fishSlots.Count < storedFish.Count)
             Debug.LogWarning("[Aquarium] Jumlah slot UI (" + fishSlots.Count + ") lebih sedikit dari jumlah ikan (" + storedFish.Count + "). Beberapa ikan tidak tampil.");
@@ -1037,12 +1059,9 @@ public class AquariumSystem : MonoBehaviour
     private void RunSimulationTick()
     {
         ApplyEquipmentEffects();
-        waterQuality.Clamp();
-        WaterQualityChanged?.Invoke(this, waterQuality);
+        CommitWaterQualityChange();
 
         // Hanya perbarui teks ringkasan air + warning â€” TIDAK re-spawn icon slot
-        RefreshWaterQualityUI();
-        AquariumStateChanged?.Invoke(this);
     }
 
     /// <summary>
@@ -1054,23 +1073,22 @@ public class AquariumSystem : MonoBehaviour
         if (fishCountText != null)
             fishCountText.text = FishCount + " / " + maxFish;
 
+        WaterThresholdProfile thresholds = GetWaterThresholdProfile();
+        UpdateWaterIndicator(ammoniaIndicator, waterQuality.ammonia, "{0}: {1:0.00}", EvaluateMaxValue(waterQuality.ammonia, thresholds.maxAmmonia, ammoniaDangerMargin));
+        UpdateWaterIndicator(oxygenIndicator, waterQuality.oxygen, "{0}: {1:0.0}", EvaluateMinValue(waterQuality.oxygen, thresholds.minOxygen, oxygenDangerMargin));
+        UpdateWaterIndicator(salinityIndicator, waterQuality.salinity, "{0}: {1:0.0}", EvaluateRangeValue(waterQuality.salinity, thresholds.minSalinity, thresholds.maxSalinity, salinityDangerMargin));
+        UpdateWaterIndicator(phIndicator, waterQuality.ph, "{0}: {1:0.0}", EvaluateRangeValue(waterQuality.ph, thresholds.minPh, thresholds.maxPh, phDangerMargin));
+        UpdateWaterIndicator(temperatureIndicator, waterQuality.temperature, "{0}: {1:0.0} C", EvaluateRangeValue(waterQuality.temperature, thresholds.minTemperature, thresholds.maxTemperature, temperatureDangerMargin));
+
         if (waterQualityText != null)
         {
-            waterQualityText.text =
-                $"NH3 {waterQuality.ammonia:0.00} | O2 {waterQuality.oxygen:0.0} | " +
-                $"Temp {waterQuality.temperature:0.0} | pH {waterQuality.ph:0.0} | Sal {waterQuality.salinity:0.0}";
+            waterQualityText.text = HasConfiguredSplitIndicators()
+                ? string.Empty
+                : $"NH3 {waterQuality.ammonia:0.00} | O2 {waterQuality.oxygen:0.0} | Temp {waterQuality.temperature:0.0} | pH {waterQuality.ph:0.0} | Sal {waterQuality.salinity:0.0}";
         }
 
         if (warningText != null)
             warningText.text = BuildWarningText();
-    }
-
-    private void SimulateFishNeeds()
-    {
-    }
-
-    private void SimulateWaterQuality(int livingFish)
-    {
     }
 
     private void ApplyEquipmentEffects()
@@ -1091,9 +1109,6 @@ public class AquariumSystem : MonoBehaviour
         }
     }
 
-    private void ApplyWaterStress()
-    {
-    }
 
     public void SetRewardUnlocked(bool unlocked)
     {
@@ -1165,44 +1180,6 @@ public class AquariumSystem : MonoBehaviour
         RefreshUI();
     }
 
-    private bool IsWaterStressfulForFish(AI_Fish_Data species)
-    {
-        float minOxygen = species != null ? species.minOxygen : 4f;
-        float maxAmmonia = species != null ? species.maxAmmonia : 1f;
-        float minTemperature = species != null ? species.minTemperature : 23f;
-        float maxTemperature = species != null ? species.maxTemperature : 30f;
-        float minPh = species != null ? species.minPh : 7.8f;
-        float maxPh = species != null ? species.maxPh : 8.5f;
-        float minSalinity = species != null ? species.minSalinity : 30f;
-        float maxSalinity = species != null ? species.maxSalinity : 38f;
-
-        return waterQuality.oxygen < minOxygen ||
-               waterQuality.ammonia > maxAmmonia ||
-               waterQuality.temperature < minTemperature ||
-               waterQuality.temperature > maxTemperature ||
-               waterQuality.ph < minPh ||
-               waterQuality.ph > maxPh ||
-               waterQuality.salinity < minSalinity ||
-               waterQuality.salinity > maxSalinity;
-    }
-
-    private void DamageFish(FishInstanceState fish, float amount, string reason)
-    {
-        if (fish == null || !fish.isAlive || amount <= 0f)
-            return;
-
-        fish.health = Mathf.Max(0f, fish.health - amount);
-        if (fish.health <= 0f)
-        {
-            fish.isAlive = false;
-            fish.isStressed = false;
-            Debug.Log($"[Aquarium] Ikan '{fish.itemName}' mati karena {reason}.");
-            FishDied?.Invoke(this, fish);
-        }
-
-        FishStateChanged?.Invoke(this, fish);
-    }
-
     private int CountLivingFish()
     {
         int count = 0;
@@ -1227,72 +1204,153 @@ public class AquariumSystem : MonoBehaviour
         return count;
     }
 
-    private void ApplyDeadFishVisual(int index)
-    {
-        if (index < 0 || index >= spawnedFish.Count)
-            return;
-
-        GameObject fishObject = spawnedFish[index];
-        if (fishObject == null)
-            return;
-
-        FishBrain brain = fishObject.GetComponent<FishBrain>();
-        if (brain != null)
-            brain.enabled = false;
-
-        FishMovement movement = fishObject.GetComponent<FishMovement>();
-        if (movement != null)
-            movement.enabled = false;
-
-        FishFlockingBehavior flocking = fishObject.GetComponent<FishFlockingBehavior>();
-        if (flocking != null)
-            flocking.enabled = false;
-
-        FishWanderBehavior wander = fishObject.GetComponent<FishWanderBehavior>();
-        if (wander != null)
-            wander.enabled = false;
-
-        foreach (Renderer renderer in fishObject.GetComponentsInChildren<Renderer>(true))
-        {
-            if (renderer == null)
-                continue;
-
-            if (deadFishMaterial != null)
-            {
-                renderer.material = deadFishMaterial;
-                continue;
-            }
-
-            foreach (Material material in renderer.materials)
-            {
-                if (material != null && material.HasProperty("_Color"))
-                    material.color = deadFishColor;
-            }
-        }
-    }
-
     private string BuildWarningText()
     {
         List<string> warnings = new List<string>();
-        if (waterQuality.oxygen <= criticalOxygenWarning)
-            warnings.Add("Oksigen rendah");
-        if (waterQuality.ammonia >= criticalAmmoniaWarning)
-            warnings.Add("Amonia tinggi");
+        WaterThresholdProfile thresholds = GetWaterThresholdProfile();
 
-        foreach (FishInstanceState fish in storedFish)
-        {
-            if (fish == null)
-                continue;
-
-            if (!fish.isAlive)
-                warnings.Add(fish.itemName + " mati");
-            else if (fish.HungerPercent <= 0.2f)
-                warnings.Add(fish.itemName + " lapar");
-            else if (fish.isStressed)
-                warnings.Add(fish.itemName + " stress");
-        }
+        AddWarningIfNeeded(warnings, "Amonia", EvaluateMaxValue(waterQuality.ammonia, thresholds.maxAmmonia, ammoniaDangerMargin), true);
+        AddWarningIfNeeded(warnings, "O2", EvaluateMinValue(waterQuality.oxygen, thresholds.minOxygen, oxygenDangerMargin), false);
+        AddWarningIfNeeded(warnings, "Salinitas", EvaluateRangeValue(waterQuality.salinity, thresholds.minSalinity, thresholds.maxSalinity, salinityDangerMargin), waterQuality.salinity > thresholds.maxSalinity);
+        AddWarningIfNeeded(warnings, "pH", EvaluateRangeValue(waterQuality.ph, thresholds.minPh, thresholds.maxPh, phDangerMargin), waterQuality.ph > thresholds.maxPh);
+        AddWarningIfNeeded(warnings, "Temperatur", EvaluateRangeValue(waterQuality.temperature, thresholds.minTemperature, thresholds.maxTemperature, temperatureDangerMargin), waterQuality.temperature > thresholds.maxTemperature);
 
         return warnings.Count == 0 ? string.Empty : string.Join("\n", warnings);
+    }
+
+    private void UpdateWaterIndicator(WaterIndicatorText indicator, float value, string format, WaterIndicatorSeverity severity)
+    {
+        if (indicator == null || indicator.text == null)
+            return;
+
+        string label = string.IsNullOrEmpty(indicator.label) ? "Water" : indicator.label;
+        indicator.text.text = string.Format(format, label, value);
+        indicator.text.color = GetIndicatorColor(severity);
+    }
+
+    private bool HasConfiguredSplitIndicators()
+    {
+        return (ammoniaIndicator != null && ammoniaIndicator.text != null) ||
+               (oxygenIndicator != null && oxygenIndicator.text != null) ||
+               (salinityIndicator != null && salinityIndicator.text != null) ||
+               (phIndicator != null && phIndicator.text != null) ||
+               (temperatureIndicator != null && temperatureIndicator.text != null);
+    }
+
+    private WaterThresholdProfile GetWaterThresholdProfile()
+    {
+        WaterThresholdProfile profile = new WaterThresholdProfile
+        {
+            minOxygen = 4f,
+            maxAmmonia = 1f,
+            minTemperature = 23f,
+            maxTemperature = 30f,
+            minPh = 7.8f,
+            maxPh = 8.5f,
+            minSalinity = 30f,
+            maxSalinity = 38f
+        };
+
+        bool foundSpeciesThreshold = false;
+
+        for (int i = 0; i < storedFish.Count; i++)
+        {
+            FishInstanceState fish = storedFish[i];
+            if (fish == null || !fish.isAlive)
+                continue;
+
+            AI_Fish_Data species = ResolveSpeciesData(fish.itemName);
+            if (species == null)
+                continue;
+
+            if (!foundSpeciesThreshold)
+            {
+                profile.minOxygen = species.minOxygen;
+                profile.maxAmmonia = species.maxAmmonia;
+                profile.minTemperature = species.minTemperature;
+                profile.maxTemperature = species.maxTemperature;
+                profile.minPh = species.minPh;
+                profile.maxPh = species.maxPh;
+                profile.minSalinity = species.minSalinity;
+                profile.maxSalinity = species.maxSalinity;
+                foundSpeciesThreshold = true;
+                continue;
+            }
+
+            profile.minOxygen = Mathf.Max(profile.minOxygen, species.minOxygen);
+            profile.maxAmmonia = Mathf.Min(profile.maxAmmonia, species.maxAmmonia);
+            profile.minTemperature = Mathf.Max(profile.minTemperature, species.minTemperature);
+            profile.maxTemperature = Mathf.Min(profile.maxTemperature, species.maxTemperature);
+            profile.minPh = Mathf.Max(profile.minPh, species.minPh);
+            profile.maxPh = Mathf.Min(profile.maxPh, species.maxPh);
+            profile.minSalinity = Mathf.Max(profile.minSalinity, species.minSalinity);
+            profile.maxSalinity = Mathf.Min(profile.maxSalinity, species.maxSalinity);
+        }
+
+        profile.maxAmmonia = Mathf.Max(0f, profile.maxAmmonia);
+        profile.minOxygen = Mathf.Max(0f, profile.minOxygen);
+        profile.minTemperature = Mathf.Min(profile.minTemperature, profile.maxTemperature);
+        profile.maxTemperature = Mathf.Max(profile.minTemperature, profile.maxTemperature);
+        profile.minPh = Mathf.Min(profile.minPh, profile.maxPh);
+        profile.maxPh = Mathf.Max(profile.minPh, profile.maxPh);
+        profile.minSalinity = Mathf.Min(profile.minSalinity, profile.maxSalinity);
+        profile.maxSalinity = Mathf.Max(profile.minSalinity, profile.maxSalinity);
+
+        return profile;
+    }
+
+    private WaterIndicatorSeverity EvaluateMinValue(float value, float safeMinimum, float dangerMargin)
+    {
+        if (value >= safeMinimum)
+            return WaterIndicatorSeverity.Safe;
+
+        return value >= safeMinimum - Mathf.Abs(dangerMargin)
+            ? WaterIndicatorSeverity.Danger
+            : WaterIndicatorSeverity.Critical;
+    }
+
+    private WaterIndicatorSeverity EvaluateMaxValue(float value, float safeMaximum, float dangerMargin)
+    {
+        if (value <= safeMaximum)
+            return WaterIndicatorSeverity.Safe;
+
+        return value <= safeMaximum + Mathf.Abs(dangerMargin)
+            ? WaterIndicatorSeverity.Danger
+            : WaterIndicatorSeverity.Critical;
+    }
+
+    private WaterIndicatorSeverity EvaluateRangeValue(float value, float safeMinimum, float safeMaximum, float dangerMargin)
+    {
+        if (value >= safeMinimum && value <= safeMaximum)
+            return WaterIndicatorSeverity.Safe;
+
+        float margin = Mathf.Abs(dangerMargin);
+        return value >= safeMinimum - margin && value <= safeMaximum + margin
+            ? WaterIndicatorSeverity.Danger
+            : WaterIndicatorSeverity.Critical;
+    }
+
+    private Color GetIndicatorColor(WaterIndicatorSeverity severity)
+    {
+        switch (severity)
+        {
+            case WaterIndicatorSeverity.Danger:
+                return dangerIndicatorColor;
+            case WaterIndicatorSeverity.Critical:
+                return criticalIndicatorColor;
+            default:
+                return safeIndicatorColor;
+        }
+    }
+
+    private void AddWarningIfNeeded(List<string> warnings, string label, WaterIndicatorSeverity severity, bool isHighDirection)
+    {
+        if (severity == WaterIndicatorSeverity.Safe)
+            return;
+
+        string level = severity == WaterIndicatorSeverity.Critical ? "kritikal" : "bahaya";
+        string direction = isHighDirection ? "tinggi" : "rendah";
+        warnings.Add($"{label} {direction} ({level})");
     }
 
     private AI_Fish_Data ResolveSpeciesData(string itemName)

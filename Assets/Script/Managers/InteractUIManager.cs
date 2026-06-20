@@ -8,7 +8,8 @@ public class InteractUIManager : MonoBehaviour
 
     [Header("UI Settings")]
     public GameObject interactionInfoUI;
-    private Text interactionText;
+    [SerializeField] private Text interactionText;
+    [SerializeField] private GameObject interactHintRow;
 
     [Header("Cooldown UI")]
     [SerializeField] private GameObject cooldownUIRoot;
@@ -40,10 +41,11 @@ public class InteractUIManager : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        if (interactionInfoUI != null)
-            interactionText = interactionInfoUI.GetComponent<Text>();
-        else
+        if (interactionInfoUI == null)
             Debug.LogError("interactionInfoUI belum diassign di Inspector!");
+
+        if (interactionText == null)
+            Debug.LogError("interactionText belum diassign di Inspector!");
 
         SetCooldownUIVisible(false);
         isReady = mainCamera != null && interactionText != null;

@@ -71,8 +71,8 @@ public class MissionObjectiveUI : MonoBehaviour
 
     private void Start()
     {
-        // Jika monolog sedang berjalan, tunda tampilan misi hingga monolog selesai
-        if (MonologueManager.Instance != null && MonologueManager.Instance.IsPlaying)
+        // Jika monolog sedang berjalan atau terjadwal, tunda tampilan misi hingga monolog selesai
+        if (MonologueManager.Instance != null && MonologueManager.Instance.IsActiveOrPending)
         {
             _pendingMission = MissionManager.Instance?.CurrentMission;
             return;
@@ -105,10 +105,15 @@ public class MissionObjectiveUI : MonoBehaviour
     {
         if (panel == null || data == null) return;
 
-        // Jika monolog masih berjalan, antrekan misi untuk ditampilkan nanti
-        if (MonologueManager.Instance != null && MonologueManager.Instance.IsPlaying)
+        // Jika monolog sedang berjalan atau terjadwal, antrekan misi dan sembunyikan panel aktif
+        if (MonologueManager.Instance != null && MonologueManager.Instance.IsActiveOrPending)
         {
             _pendingMission = data;
+            if (canvasGroup != null && canvasGroup.alpha > 0f)
+            {
+                if (activeFadeRoutine != null) StopCoroutine(activeFadeRoutine);
+                activeFadeRoutine = StartCoroutine(StrikethroughThenFadeOut(0f));
+            }
             return;
         }
 

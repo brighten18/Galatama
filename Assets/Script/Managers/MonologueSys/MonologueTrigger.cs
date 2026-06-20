@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -15,6 +16,9 @@ public class MonologueTrigger : MonoBehaviour
 
     [Tooltip("Jika true, monologue hanya akan diputar sekali.")]
     [SerializeField] private bool playOnce = true;
+
+    [Tooltip("Jeda (detik) setelah poster popup tertutup sebelum monologue diputar. Berguna jika misi selesai saat popup masih terbuka.")]
+    [SerializeField] private float postCloseDelay = 0f;
 
     private bool _hasPlayed;
     private bool _subscribed;
@@ -60,6 +64,22 @@ public class MonologueTrigger : MonoBehaviour
         }
 
         _hasPlayed = true;
-        MonologueManager.Instance.PlayMonologue(monologueKey);
+        MonologueManager.Instance.SetPending(true);
+        StartCoroutine(PlayAfterPopupClosed());
+    }
+
+    /// <summary>
+    /// Menunggu hingga PosterPopupManager selesai ditutup, lalu menunggu
+    /// postCloseDelay detik sebelum memainkan monologue.
+    /// </summary>
+    private IEnumerator PlayAfterPopupClosed()
+    {
+        while (PosterPopupManager.Instance != null && PosterPopupManager.Instance.IsOpen)
+            yield return null;
+
+        if (postCloseDelay > 0f)
+            yield return new WaitForSeconds(postCloseDelay);
+
+        MonologueManager.Instance?.PlayMonologue(monologueKey);
     }
 }

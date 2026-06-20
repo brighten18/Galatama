@@ -41,6 +41,13 @@ public class PosterInteractable : InteractableObject
 
         PosterPopupManager.Instance.OpenPoster(posterData);
 
+        PosterPopupManager.Instance.OnPosterClosed += OnPopupClosed;
+    }
+
+    private void OnPopupClosed()
+    {
+        PosterPopupManager.Instance.OnPosterClosed -= OnPopupClosed;
+
         if (reportToMission3Tracker)
         {
             PosterMission3Tracker.Instance?.RegisterRead(gameObject.GetInstanceID());

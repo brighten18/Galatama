@@ -30,18 +30,27 @@ MonoBehaviour:
   - title: Interaksi
     description: 'E: Interaksi Barang'
     illustration: {fileID: 21300000, guid: ad2ce335ef6c13a4ebfd2151929ade47, type: 3}
+  - title: Interaksi Aksi Objek
+    description: Tekan Mouse Kiri Untuk Aksi Barang
+    illustration: {fileID: 21300000, guid: cf786f8f74433734782ab31511176930, type: 3}
   - title: Gerak Kamera
     description: Gerakan Mouse Untuk Mengatur Arah Kamera
     illustration: {fileID: 21300000, guid: ac6e2a495aa6f1246b5baa544bfbc019, type: 3}
+  - title: Memunculkan Kursor
+    description: Gunakan Ctrl Untuk Memunculkan Kursor Mouse
+    illustration: {fileID: 21300000, guid: 2a662cb300d9c014f835414fcf05bc99, type: 3}
+  - title: Gerak Kamera Mode Kursor
+    description: Tekan Klik Kanan Mouse + Gerakkan Mouse Untuk Mengatur Arah Kamera
+    illustration: {fileID: 21300000, guid: 88fe7a593cd962b46a462bfbda79410f, type: 3}
+  - title: Jarak Kamera
+    description: Gunakan Scroll Mouse untuk mengatur jarak Kamera
+    illustration: {fileID: 21300000, guid: de8dd4d4ed22d5340a6b46fa0ac4b16b, type: 3}
   - title: Lompat
     description: Tekan Spasi Untuk Lompat
     illustration: {fileID: 21300000, guid: a5fb32c42c598bb418f219398621fa73, type: 3}
   - title: Lari
     description: Tekan Shift Untuk Lari
     illustration: {fileID: 21300000, guid: 9e57e17768f0acd4d9b10b259327133b, type: 3}
-  - title: Interaksi Aksi Objek
-    description: Tekan Mouse Kiri Untuk Aksi Barang
-    illustration: {fileID: 21300000, guid: cf786f8f74433734782ab31511176930, type: 3}
   - title: Penyimpanan
     description: Tekan I Untuk Membuka Penyimpanan
     illustration: {fileID: 21300000, guid: e6b954d8a7a0dfb458af65487eb59f7d, type: 3}
@@ -51,9 +60,3 @@ MonoBehaviour:
   - title: Pause
     description: Tekan tombol ESC untuk Berhenti Sejenak
     illustration: {fileID: 21300000, guid: 3f7087ca3e4baa44e9b58d386a12a3a3, type: 3}
-  - title: Jarak Kamera
-    description: Gunakan Scroll Mouse untuk menagut jarak Kamera
-    illustration: {fileID: 21300000, guid: de8dd4d4ed22d5340a6b46fa0ac4b16b, type: 3}
-  - title: Kontrol Cursor
-    description: Gunakan Ctrl Untuk Memunculkan Mouse
-    illustration: {fileID: 21300000, guid: 2a662cb300d9c014f835414fcf05bc99, type: 3}

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,9 @@ public class PosterPopupManager : MonoBehaviour
     private bool isOpen;
 
     public bool IsOpen => isOpen;
+
+    /// <summary>Fired whenever the poster popup is closed.</summary>
+    public event Action OnPosterClosed;
 
     private void Awake()
     {
@@ -83,6 +87,8 @@ public class PosterPopupManager : MonoBehaviour
             popupRoot.SetActive(false);
 
         isOpen = false;
+
+        OnPosterClosed?.Invoke();
 
         if (PlayerInputManager.Instance != null)
         {

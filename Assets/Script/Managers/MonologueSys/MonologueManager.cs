@@ -71,6 +71,14 @@ public class MonologueManager : MonoBehaviour
     /// <summary>True while the monologue sequence is on screen.</summary>
     public bool IsPlaying { get; private set; }
 
+    private bool _isPending;
+
+    /// <summary>True while a monologue is either scheduled to play or actively playing.</summary>
+    public bool IsActiveOrPending => IsPlaying || _isPending;
+
+    /// <summary>Marks a monologue as pending (scheduled but not yet started). Called by MonologueTrigger.</summary>
+    public void SetPending(bool pending) => _isPending = pending;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -187,6 +195,7 @@ public class MonologueManager : MonoBehaviour
 
     private IEnumerator PlayMonologueRoutine(MonologueData data)
     {
+        _isPending = false;
         _processedPanels = PreprocessPanels(data.Panels);
         _currentIndex = 0;
         IsPlaying = true;

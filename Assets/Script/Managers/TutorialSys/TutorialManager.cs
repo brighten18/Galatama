@@ -23,6 +23,8 @@ public class TutorialManager : MonoBehaviour
 
     [Header("Visuals")]
     [SerializeField] private Image illustrationImage;
+    [SerializeField] private float maxIllustrationWidth  = 500f;
+    [SerializeField] private float maxIllustrationHeight = 300f;
 
     [Header("Buttons")]
     [SerializeField] private Button previousButton;
@@ -185,7 +187,7 @@ public class TutorialManager : MonoBehaviour
         TutorialSequenceSO.TutorialStep step = _currentTutorial.Steps[_currentStepIndex];
 
         if (headerText != null)
-            headerText.text = _currentTutorial.DisplayName;
+            headerText.text = $"{_currentTutorial.DisplayName} ({_currentStepIndex + 1}/{_currentTutorial.StepCount})";
 
         if (titleText != null)
             titleText.text = step != null ? step.Title : string.Empty;
@@ -201,6 +203,9 @@ public class TutorialManager : MonoBehaviour
         {
             illustrationImage.sprite = hasImage ? step.Illustration : null;
             illustrationImage.enabled = hasImage;
+
+            if (hasImage)
+                FitIllustrationToSprite(step.Illustration);
         }
 
         if (imageContainer != null)
@@ -242,6 +247,30 @@ public class TutorialManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
+    }
+
+    /// <summary>
+    /// Menyesuaikan ukuran IlustrasionImage agar fit ke dalam container parent
+    /// sambil mempertahankan rasio asli sprite.
+    /// </summary>
+    private void FitIllustrationToSprite(Sprite sprite)
+    {
+        if (illustrationImage == null || sprite == null)
+            return;
+
+        RectTransform rt = illustrationImage.rectTransform;
+        float aspectRatio = (float)sprite.texture.width / sprite.texture.height;
+
+        float width  = maxIllustrationWidth;
+        float height = width / aspectRatio;
+
+        if (height > maxIllustrationHeight)
+        {
+            height = maxIllustrationHeight;
+            width  = height * aspectRatio;
+        }
+
+        rt.sizeDelta = new Vector2(width, height);
     }
 
     private static string GetPlayerPrefsKey(TutorialSequenceSO tutorial)

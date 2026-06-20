@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d85f838480629ca47aa3f9b2ddc1c7fc, type: 3}
+  m_Name: PostMisi3Monologue
+  m_EditorClassIdentifier: Assembly-CSharp::MonologueData
+  panels:
+  - Yah... setelah membaca poster-poster itu, setidaknya ingatanku tentang fungsi
+    komponen penyaring ini sedikit membaik. mungkin...
+  - Dan aku yakin, informasi di poster itu pasti akan sangat berguna nantinya, terutama
+    saat aku harus mengatur kualitas air nanti.
+  - Oke, fasilitas sudah siap! Langkah selanjutnya, aku harus mulai pergi ke **Area
+    Laut** untuk menangkap ikan hias.
+  - Tapi sebelum berangkat, aku harus mengambil jaring(serokan) di depan gudang ini
+    terlebih dahulu.
+  - Dengan alat tangkap yang ramah lingkungan itu, aku bisa menangkap ikan hias secara
+    pilih-pilih.

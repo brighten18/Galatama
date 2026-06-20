@@ -1,9 +1,13 @@
+using System;
 using UnityEngine;
 
 public class FishBase : MonoBehaviour
 {
     [Header("Fish Data")]
     public AI_Fish_Data fishData;
+
+    /// <summary>Fired whenever any fish is successfully caught and added to the inventory.</summary>
+    public static event Action OnAnyFishCaught;
 
     // dipanggil oleh FishingNet saat ikan tertangkap
     public virtual void GetCaught()
@@ -28,6 +32,7 @@ public class FishBase : MonoBehaviour
         }
 
         Debug.Log("[FishBase] Ikan tertangkap: " + fishData.ItemName);
+        OnAnyFishCaught?.Invoke();
 
         OnCaughtBehavior();
         Destroy(gameObject);

@@ -177,6 +177,8 @@ public class AquariumSystem : MonoBehaviour
 
     public static AquariumSystem CurrentOpen { get; private set; }
     public event Action<AquariumSystem> AquariumStateChanged;
+    /// <summary>Fired whenever any fish is successfully placed into any aquarium.</summary>
+    public static event Action OnFishPlacedInAquarium;
     public event Action<AquariumSystem, WaterQualityState> WaterQualityChanged;
     public event Action<AquariumSystem, FishInstanceState> FishStateChanged;
     public event Action<AquariumSystem, FishInstanceState> FishDied;
@@ -431,6 +433,7 @@ public class AquariumSystem : MonoBehaviour
         rasFishManager?.RegisterFish(fishState);
         RefreshUI();
         AquariumStateChanged?.Invoke(this);
+        OnFishPlacedInAquarium?.Invoke();
         return true;
     }
 

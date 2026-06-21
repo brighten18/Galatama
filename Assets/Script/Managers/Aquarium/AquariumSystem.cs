@@ -791,11 +791,6 @@ public class AquariumSystem : MonoBehaviour
             if (state == null || fishObject == null || !state.isAlive)
                 continue;
 
-            float hungerValue = state.hunger;
-            float chaseChance = hungerValue <= 40f ? 1f : 0.35f;
-            if (UnityEngine.Random.value > chaseChance)
-                continue;
-
             FishBrain brain = fishObject.GetComponent<FishBrain>();
             if (brain != null)
                 brain.SetFoodTarget(food.transform, 0.45f);

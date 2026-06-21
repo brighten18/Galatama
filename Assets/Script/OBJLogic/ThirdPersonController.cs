@@ -128,8 +128,11 @@ namespace StarterAssets
         private float _jumpGroundCooldown = 0f;
         private const float JumpGroundCooldownDuration = 0.15f;
 
-        // Digunakan untuk mendeteksi transisi dari grounded ke not-grounded tanpa lompat
-        private bool _wasGrounded = true;
+        // Latch flag: true saat fall velocity sudah diinisialisasi untuk sesi jatuh ini.
+        // Hanya di-reset setelah player grounded selama >= 2 frame berturut-turut,
+        // sehingga Grounded flickering di tepian tidak memicu reset velocity berulang kali.
+        private bool _fallVelocityInitialized = false;
+        private int _groundedFrameCount = 0;
 
         // Audio
         private AudioSource _audioSource;
@@ -577,13 +580,26 @@ namespace StarterAssets
                 _input.jump = false;
             }
 
+            // Lacak berapa frame berturut-turut player grounded/ungrounded.
+            // Saat grounded selama >= 2 frame, buka kunci latch agar fall berikutnya
+            // bisa diinisialisasi. Ini mencegah Grounded flickering di tepian platform
+            // dari memicu reset velocity berulang kali.
+            if (Grounded)
+                _groundedFrameCount++;
+            else
+                _groundedFrameCount = 0;
+
+            if (_groundedFrameCount >= 2)
+                _fallVelocityInitialized = false;
+
             // Saat pertama kali meninggalkan tanah tanpa lompat (melangkah dari tepian),
             // reset vertical velocity ke 0 agar akselerasi jatuh konsisten dengan
             // kondisi apex setelah lompat (keduanya mulai dari v=0 saat mulai jatuh).
-            if (!Grounded && _wasGrounded && _jumpGroundCooldown == 0f && _verticalVelocity < 0f)
+            if (!Grounded && !_fallVelocityInitialized && _jumpGroundCooldown == 0f && _verticalVelocity < 0f)
+            {
                 _verticalVelocity = 0f;
-
-            _wasGrounded = Grounded;
+                _fallVelocityInitialized = true;
+            }
 
             if (Grounded)
             {
@@ -611,6 +627,10 @@ namespace StarterAssets
 
                     // Aktifkan cooldown agar GroundedCheck tidak langsung menghentikan lompatan
                     _jumpGroundCooldown = JumpGroundCooldownDuration;
+
+                    // Tandai fall velocity sebagai terinisialisasi agar reset walk-off
+                    // tidak menembak saat velocity menyeberangi nol di puncak lompatan.
+                    _fallVelocityInitialized = true;
 
                     // Reset jump timeout so the player cannot jump again immediately
                     _jumpTimeoutDelta = JumpTimeout;

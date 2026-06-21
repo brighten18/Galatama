@@ -46,7 +46,11 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
         // --- Pop_Up-FishStatus ---
         FishRuntimeData fishData = GetComponent<FishRuntimeData>();
         if (fishData != null && fishData.State != null)
-            ShowFishStatusUI(thisName, fishData.State);
+        {
+            // Ambil sprite langsung dari Image komponen item ini agar gambar selalu sesuai
+            Image itemImage = GetComponent<Image>();
+            ShowFishStatusUI(thisName, fishData.State, itemImage != null ? itemImage.sprite : null);
+        }
         else
             HideFishStatusUI();
     }
@@ -67,8 +71,10 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
     /// Isi dan tampilkan Pop_Up-FishStatus menggunakan field yang sudah ter-assign
     /// di InventorySystem Inspector. Dijadikan static agar bisa dipanggil dari
     /// AquariumFishSlotUI tanpa perlu instance InventoryItemLogic.
+    /// Parameter <paramref name="icon"/> opsional — jika diisi, sprite FishImage diperbarui
+    /// sehingga gambar selalu sesuai ikan yang sedang di-hover.
     /// </summary>
-    public static void ShowFishStatusUI(string fishName, FishInstanceState state)
+    public static void ShowFishStatusUI(string fishName, FishInstanceState state, Sprite icon = null)
     {
         InventorySystem inv = InventorySystem.Instance;
         if (inv == null || inv.FishThingsUI == null) return;
@@ -76,6 +82,10 @@ public class InventoryItemLogic : MonoBehaviour, IPointerEnterHandler, IPointerE
         // Isi teks sebelum SetActive agar tidak ada frame flickering
         if (inv.FishName != null)
             inv.FishName.text = fishName;
+
+        // Perbarui gambar ikan agar sesuai dengan ikan yang sedang di-hover
+        if (inv.FishImage != null && icon != null)
+            inv.FishImage.sprite = icon;
 
         if (inv.FishHunger != null)
             inv.FishHunger.text = $"Kenyang: {state.hunger:0}/{state.maxHunger:0}";

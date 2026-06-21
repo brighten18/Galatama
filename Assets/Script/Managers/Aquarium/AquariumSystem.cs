@@ -274,8 +274,14 @@ public class AquariumSystem : MonoBehaviour
     [SerializeField] private bool startLockedUntilRewardUnlock = false;
     [SerializeField] private string persistentAquariumId = string.Empty;
 
+    [Header("Feeding")]
+    [Tooltip("Jeda singkat agar satu ikan tidak memakan beberapa pelet sekaligus saat collider bertumpuk.")]
+    [SerializeField] private float fishEatCooldownSeconds = 0.35f;
+
     private readonly List<FishInstanceState> storedFish = new List<FishInstanceState>();
     private readonly List<GameObject> spawnedFish = new List<GameObject>();
+    private readonly List<AquariumFoodPellet> activeFoodPellets = new List<AquariumFoodPellet>();
+    private readonly Dictionary<string, float> fishEatCooldownUntil = new Dictionary<string, float>();
     private readonly HashSet<int> consumedInventoryItemIds = new HashSet<int>();
     private float simulationTimer;
 
@@ -784,17 +790,10 @@ public class AquariumSystem : MonoBehaviour
         if (food == null)
             return;
 
-        for (int i = 0; i < storedFish.Count && i < spawnedFish.Count; i++)
-        {
-            FishInstanceState state = storedFish[i];
-            GameObject fishObject = spawnedFish[i];
-            if (state == null || fishObject == null || !state.isAlive)
-                continue;
+        if (!activeFoodPellets.Contains(food))
+            activeFoodPellets.Add(food);
 
-            FishBrain brain = fishObject.GetComponent<FishBrain>();
-            if (brain != null)
-                brain.SetFoodTarget(food.transform, 0.45f);
-        }
+        ReassignFoodTargets();
     }
 
     public bool TryConsumeFood(AquariumFoodPellet food, FishBrain eater)
@@ -807,6 +806,20 @@ public class AquariumSystem : MonoBehaviour
         if (fishIndex < 0 || fishIndex >= storedFish.Count)
             return false;
 
+        FishInstanceState fishState = storedFish[fishIndex];
+        if (fishState == null || !fishState.isAlive)
+            return false;
+
+        if (fishState.hunger >= fishState.maxHunger)
+            return false;
+
+        if (!string.IsNullOrEmpty(fishState.instanceId) &&
+            fishEatCooldownUntil.TryGetValue(fishState.instanceId, out float cooldownUntil) &&
+            Time.time < cooldownUntil)
+        {
+            return false;
+        }
+
         // Kurangi food load saat pellet dimakan ikan
         // Diagram: saat Pakan dikonsumsi, efek NH3/pH dari pakan berkurang
         rasSimulator?.ConsumeFoodLoad(1f);
@@ -817,19 +830,20 @@ public class AquariumSystem : MonoBehaviour
         FeedFish(fishIndex, baseReduction * efficiency);
         rasSimulator?.RegisterFedFish();
 
-        for (int i = 0; i < spawnedFish.Count; i++)
-        {
-            GameObject fishObject = spawnedFish[i];
-            if (fishObject == null)
-                continue;
-
-            FishBrain brain = fishObject.GetComponent<FishBrain>();
-            if (brain != null)
-                brain.ClearFoodTarget(food.transform);
-        }
+        if (!string.IsNullOrEmpty(fishState.instanceId))
+            fishEatCooldownUntil[fishState.instanceId] = Time.time + Mathf.Max(0f, fishEatCooldownSeconds);
 
         Destroy(food.gameObject);
         return true;
+    }
+
+    public void NotifyFoodRemoved(AquariumFoodPellet food)
+    {
+        if (food == null)
+            return;
+
+        if (activeFoodPellets.Remove(food))
+            ReassignFoodTargets();
     }
 
     public bool InstallEquipment(EquipmentData equipment)
@@ -1021,6 +1035,8 @@ public class AquariumSystem : MonoBehaviour
 
         FishInstanceState fish = storedFish[index];
         rasFishManager?.UnregisterFish(fish);
+        if (fish != null && !string.IsNullOrEmpty(fish.instanceId))
+            fishEatCooldownUntil.Remove(fish.instanceId);
 
         if (index < spawnedFish.Count && spawnedFish[index] != null)
             Destroy(spawnedFish[index]);
@@ -1030,6 +1046,7 @@ public class AquariumSystem : MonoBehaviour
         if (index < spawnedFish.Count)
             spawnedFish.RemoveAt(index);
 
+        ReassignFoodTargets();
         RefreshUI();
         AquariumStateChanged?.Invoke(this);
     }
@@ -1454,6 +1471,9 @@ public class AquariumSystem : MonoBehaviour
 
     private void ClearAquariumForRestore()
     {
+        activeFoodPellets.Clear();
+        fishEatCooldownUntil.Clear();
+
         for (int i = spawnedFish.Count - 1; i >= 0; i--)
         {
             if (spawnedFish[i] != null)
@@ -1483,5 +1503,77 @@ public class AquariumSystem : MonoBehaviour
         }
 
         return builder.ToString();
+    }
+
+    private void ReassignFoodTargets()
+    {
+        activeFoodPellets.RemoveAll(food => food == null);
+
+        var availablePellets = new List<AquariumFoodPellet>(activeFoodPellets.Count);
+        foreach (AquariumFoodPellet pellet in activeFoodPellets)
+        {
+            if (pellet != null)
+                availablePellets.Add(pellet);
+        }
+
+        var prioritizedFishIndices = new List<int>(Mathf.Min(storedFish.Count, spawnedFish.Count));
+        for (int i = 0; i < storedFish.Count && i < spawnedFish.Count; i++)
+            prioritizedFishIndices.Add(i);
+
+        // Ikan yang paling lapar diprioritaskan memilih pelet lebih dulu
+        // agar respons makan terasa lebih agresif saat pakan baru ditebar.
+        prioritizedFishIndices.Sort((left, right) =>
+        {
+            FishInstanceState leftFish = storedFish[left];
+            FishInstanceState rightFish = storedFish[right];
+
+            float leftPercent = leftFish != null ? leftFish.HungerPercent : 1f;
+            float rightPercent = rightFish != null ? rightFish.HungerPercent : 1f;
+            return leftPercent.CompareTo(rightPercent);
+        });
+
+        for (int orderIndex = 0; orderIndex < prioritizedFishIndices.Count; orderIndex++)
+        {
+            int i = prioritizedFishIndices[orderIndex];
+            FishInstanceState state = storedFish[i];
+            GameObject fishObject = spawnedFish[i];
+            if (state == null || fishObject == null)
+                continue;
+
+            FishBrain brain = fishObject.GetComponent<FishBrain>();
+            if (brain == null)
+                continue;
+
+            if (!state.isAlive || state.hunger >= state.maxHunger || availablePellets.Count == 0)
+            {
+                brain.ClearFoodTarget();
+                continue;
+            }
+
+            AquariumFoodPellet nearestPellet = null;
+            float nearestSqrDistance = float.MaxValue;
+            Vector3 fishPosition = fishObject.transform.position;
+
+            for (int pelletIndex = 0; pelletIndex < availablePellets.Count; pelletIndex++)
+            {
+                AquariumFoodPellet pellet = availablePellets[pelletIndex];
+                float sqrDistance = (pellet.transform.position - fishPosition).sqrMagnitude;
+                if (sqrDistance < nearestSqrDistance)
+                {
+                    nearestSqrDistance = sqrDistance;
+                    nearestPellet = pellet;
+                }
+            }
+
+            if (nearestPellet != null)
+            {
+                brain.SetFoodTarget(nearestPellet.transform, 0.05f);
+                availablePellets.Remove(nearestPellet);
+            }
+            else
+            {
+                brain.ClearFoodTarget();
+            }
+        }
     }
 }

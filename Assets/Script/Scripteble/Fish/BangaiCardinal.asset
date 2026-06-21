@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FishData
   itemName: Bangai
   weight: 0.1
-  swimSpeed: 1
+  swimSpeed: 1.5

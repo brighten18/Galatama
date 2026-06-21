@@ -370,6 +370,7 @@ MonoBehaviour:
   aquariumBoundaryWeight: 0.5
   aquariumSpeedMultiplier: 0.65
   terrainAvoidanceWeight: 3
+  foodChaseSpeedMultiplier: 1.5
 --- !u!114 &4885688241524479797
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,6 +391,7 @@ MonoBehaviour:
   boundarySteerWeight: 2
   lockYPosition: 0
   fixedYPosition: 2
+  directionSmoothing: 8
   terrainOffset: 0.5
   terrainAvoidanceDistance: 2
 --- !u!114 &315232098565033112
@@ -443,8 +445,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e6c8e41aa6e5c4449c4e4e9139136e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishPushResponse
-  drag: 8
-  maxPushSpeed: 2
+  drag: 6
+  maxPushSpeed: 10
 --- !u!205 &1316417303821155450
 LODGroup:
   m_ObjectHideFlags: 0

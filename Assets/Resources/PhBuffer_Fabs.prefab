@@ -111,31 +111,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a394580744713439aa13be48d8eafa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 55.094
+      value: 55.254
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a394580744713439aa13be48d8eafa, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.36
+      value: 1.298
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a394580744713439aa13be48d8eafa, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 41.464
+      value: 41.444
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a394580744713439aa13be48d8eafa, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 0.70710677
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a394580744713439aa13be48d8eafa, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: -0.7071069
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a394580744713439aa13be48d8eafa, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.7071068
+      value: -0.00000015646219
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a394580744713439aa13be48d8eafa, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.7071068
+      value: -0.00000018086963
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a394580744713439aa13be48d8eafa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -147,7 +147,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a394580744713439aa13be48d8eafa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -180
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f2a394580744713439aa13be48d8eafa, type: 3}
       propertyPath: m_ConstrainProportionsScale
@@ -242,7 +242,7 @@ MonoBehaviour:
   highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   highlightWidth: 4
   showWorldCooldownUI: 1
-  cooldownUIOffset: {x: 0, y: 1.6, z: 0}
+  cooldownUIOffset: {x: 0, y: 0.4, z: 0}
   cooldownUICanvasSize: {x: 60, y: 60}
   cooldownUIWorldScale: 0.006
   cooldownUIInnerPadding: 0.08

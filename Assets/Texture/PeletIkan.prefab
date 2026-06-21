@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8977103614957878420}
   - component: {fileID: 1544880597179065631}
   - component: {fileID: 1990657758846154643}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PeletIkan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -124,6 +124,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3496a0e782ad4210823ed2056d8ba9f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AquariumFoodPellet
-  sinkSpeed: 0.2
+  sinkSpeed: 0.05
   lifeTime: 10
   bottomOffset: 0.1

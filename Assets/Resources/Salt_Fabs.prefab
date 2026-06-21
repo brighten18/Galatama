@@ -99,47 +99,47 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_LocalScale.x
-      value: 12.1319
+      value: 6.06036
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_LocalScale.y
-      value: 6.64873
+      value: 3.3331978
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_LocalScale.z
-      value: 20
+      value: 10.100599
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 68.203995
+      value: 52.839
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.71
+      value: 1.271
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 41.969997
+      value: 41.494
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 0.70710665
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: -0.707107
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
-      propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.000000016604128
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -151,7 +151,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: b0add93c3bf350f4091ea81f0513a542, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -207,12 +207,20 @@ MonoBehaviour:
   itemName: Garam
   keepInWorldAfterInteract: 0
   respawnAfterPickup: 1
-  respawnCooldownSeconds: 10
+  respawnCooldownSeconds: 20
   useHighlight: 1
   autoAddOutlineIfMissing: 0
   highlightMode: 1
   highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   highlightWidth: 4
+  showWorldCooldownUI: 1
+  cooldownUIOffset: {x: 0, y: 0.4, z: 0}
+  cooldownUICanvasSize: {x: 60, y: 60}
+  cooldownUIWorldScale: 0.006
+  cooldownUIInnerPadding: 0.08
+  cooldownUIFillColor: {r: 0.2, g: 0.82, b: 1, a: 0.95}
+  cooldownUIBackgroundColor: {r: 0, g: 0, b: 0, a: 0.35}
+  cooldownUIFontSize: 18
 --- !u!65 &3258935968737186166
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -247,7 +255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Outline
   outlineMode: 0
-  outlineColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+  outlineColor: {r: 1, g: 0.85098046, b: 0.20000002, a: 1}
   outlineWidth: 1
   precomputeOutline: 0
   bakeKeys: []

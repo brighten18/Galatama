@@ -40,6 +40,8 @@ public class AquariumFishSlotUI : MonoBehaviour,
 
     private string currentFishName;
     private FishInstanceState currentFishState;
+    // Sprite ikan yang sedang ditampilkan -- diperbarui tiap RefreshIconItem
+    private Sprite currentFishSprite;
 
     // Icon visual prefab yang di-spawn sebagai child
     private GameObject spawnedIconItem;
@@ -144,7 +146,7 @@ public class AquariumFishSlotUI : MonoBehaviour,
 
         // Pop_Up-FishStatus
         if (currentFishState != null)
-            InventoryItemLogic.ShowFishStatusUI(currentFishName, currentFishState);
+            InventoryItemLogic.ShowFishStatusUI(currentFishName, currentFishState, currentFishSprite);
     }
 
     /// <summary>
@@ -318,6 +320,8 @@ public class AquariumFishSlotUI : MonoBehaviour,
             {
                 Destroy(spawnedIconItem);
                 spawnedIconItem = null;
+                currentFishSprite = null;
+
                 spawnedPrefabName = null;
             }
             return;
@@ -332,6 +336,8 @@ public class AquariumFishSlotUI : MonoBehaviour,
         {
             Destroy(spawnedIconItem);
             spawnedIconItem = null;
+            currentFishSprite = null;
+
             spawnedPrefabName = null;
         }
 
@@ -346,6 +352,10 @@ public class AquariumFishSlotUI : MonoBehaviour,
         spawnedIconItem.transform.localPosition = Vector3.zero;
         spawnedIconItem.name = itemName;
         spawnedPrefabName = itemName;
+
+        // Cache sprite agar bisa diteruskan ke ShowFishStatusUI saat hover
+        Image spawnedImg = spawnedIconItem.GetComponent<Image>();
+        currentFishSprite = spawnedImg != null ? spawnedImg.sprite : null;
 
         DisableIconItemComponents(spawnedIconItem);
         Debug.Log($"[AquariumSlot] Slot {fishIndex} â€” icon '{itemName}' di-spawn.");

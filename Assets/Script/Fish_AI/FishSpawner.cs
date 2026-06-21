@@ -9,6 +9,8 @@ public class FishSpawner : MonoBehaviour
     [SerializeField] private FishZone spawnZone;
     [SerializeField] private bool parentSpawnedFish = true;
     [SerializeField] private float spawnPadding = 2f;
+    [SerializeField] private float initialSpawnSeparation = 1.5f;
+    [SerializeField] private int spawnSearchAttempts = 12;
 
     [Header("Population")]
     [SerializeField] private int maxPopulation = 200;
@@ -31,6 +33,7 @@ public class FishSpawner : MonoBehaviour
     private float totalSpeciesWeight = 0f;
     private WaitForSeconds respawnWait;
     private WaitForSeconds waveWait;
+    private readonly List<Vector3> recentSpawnPositions = new List<Vector3>();
 
     void Awake()
     {
@@ -106,6 +109,7 @@ public class FishSpawner : MonoBehaviour
     private void SpawnInitialFish()
     {
         int spawnCount = Mathf.Min(initialSpawnCount, maxPopulation);
+        recentSpawnPositions.Clear();
 
         for (int i = 0; i < spawnCount; i++)
         {
@@ -151,7 +155,7 @@ public class FishSpawner : MonoBehaviour
         GameObject selectedPrefab = GetRandomFishPrefab();
         if (selectedPrefab == null) return null;
 
-        Vector3 spawnPos = spawnZone.GetRandomPointInZone(spawnPadding);
+        Vector3 spawnPos = GetSpawnPosition();
         Quaternion spawnRot = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
         GameObject fishObj = Instantiate(selectedPrefab, spawnPos, spawnRot);
@@ -164,6 +168,7 @@ public class FishSpawner : MonoBehaviour
         if (fishBrain != null)
         {
             fishBrain.SetSpawner(this);
+            fishBrain.SetZoneType(spawnZone.ZoneType);
             fishBrain.SetBoundary(spawnZone.GetCollider());
         }
         else
@@ -171,6 +176,7 @@ public class FishSpawner : MonoBehaviour
             Debug.LogWarning($"[FishSpawner] {fishObj.name} tidak punya FishBrain, boundary AI tidak diterapkan.");
         }
 
+        recentSpawnPositions.Add(spawnPos);
         currentPopulation++;
         return fishObj;
     }
@@ -195,6 +201,48 @@ public class FishSpawner : MonoBehaviour
         }
 
         return fishPrefabs[0];
+    }
+
+    private Vector3 GetSpawnPosition()
+    {
+        Vector3 fallback = spawnZone.GetRandomPointInZone(spawnPadding);
+        if (recentSpawnPositions.Count == 0 || initialSpawnSeparation <= 0f)
+            return fallback;
+
+        Vector3 bestCandidate = fallback;
+        float bestDistanceScore = float.NegativeInfinity;
+        int attempts = Mathf.Max(1, spawnSearchAttempts);
+
+        for (int i = 0; i < attempts; i++)
+        {
+            Vector3 candidate = spawnZone.GetRandomPointInZone(spawnPadding);
+            float nearestSqrDistance = GetNearestSpawnSqrDistance(candidate);
+
+            if (nearestSqrDistance >= initialSpawnSeparation * initialSpawnSeparation)
+                return candidate;
+
+            if (nearestSqrDistance > bestDistanceScore)
+            {
+                bestDistanceScore = nearestSqrDistance;
+                bestCandidate = candidate;
+            }
+        }
+
+        return bestCandidate;
+    }
+
+    private float GetNearestSpawnSqrDistance(Vector3 candidate)
+    {
+        float nearest = float.MaxValue;
+
+        for (int i = 0; i < recentSpawnPositions.Count; i++)
+        {
+            float sqrDistance = (candidate - recentSpawnPositions[i]).sqrMagnitude;
+            if (sqrDistance < nearest)
+                nearest = sqrDistance;
+        }
+
+        return nearest;
     }
 
     public void OnFishCaptured()

@@ -754,13 +754,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 11310293}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 53.5999, y: 1.3971, z: 40.958}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.0000002533197}
+  m_LocalPosition: {x: -2.5152953, y: 1.2571001, z: 4.3031144}
   m_LocalScale: {x: 0.4884929, y: 0.4884929, z: 0.4884929}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1494797813}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1469888958114970891}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &14025938
 GameObject:
@@ -5337,18 +5337,20 @@ MonoBehaviour:
   - {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - {fileID: 674187241369659107, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
   - {fileID: 766161267746236237, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
-  - {fileID: 8181153804570199710, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+  - {fileID: 9191835647224072211, guid: bc28b024c73d2f545b5bed98f0020ebf, type: 3}
   spawnZone: {fileID: 1710106782}
   parentSpawnedFish: 1
   spawnPadding: 1
-  maxPopulation: 15
-  initialSpawnCount: 15
+  initialSpawnSeparation: 3
+  spawnSearchAttempts: 3
+  maxPopulation: 12
+  initialSpawnCount: 3
   autoRespawn: 1
   respawnDelay: 1
   spawnInWaves: 1
-  fishPerWave: 10
-  delayBetweenWaves: 2
-  useSpeciesWeights: 1
+  fishPerWave: 3
+  delayBetweenWaves: 1
+  useSpeciesWeights: 0
   speciesWeights:
   - 5
   - 6
@@ -9129,13 +9131,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 133795296}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 55.2828, y: 1.481, z: 40.958}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.0000002533197}
+  m_LocalPosition: {x: -4.198195, y: 1.3410001, z: 4.303114}
   m_LocalScale: {x: 0.6564, y: 0.6564, z: 0.6564}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 403806087}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1469888958114970891}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &135216194
 GameObject:
@@ -10751,8 +10753,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 152265708}
-  - component: {fileID: 152265712}
-  - component: {fileID: 152265711}
   - component: {fileID: 152265710}
   - component: {fileID: 152265709}
   m_Layer: 8
@@ -10813,61 +10813,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 23.69873, y: 0.56610394, z: 16.094814}
   m_Center: {x: -7.424629, y: -0.29060322, z: 3.175108}
---- !u!23 &152265711
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 152265707}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials: []
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &152265712
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 152265707}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &154093311
 GameObject:
   m_ObjectHideFlags: 0
@@ -21219,12 +21164,14 @@ MonoBehaviour:
   - {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - {fileID: 674187241369659107, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
   - {fileID: 766161267746236237, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
-  - {fileID: 8181153804570199710, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+  - {fileID: 1118033327864132365, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
   spawnZone: {fileID: 1277609477}
   parentSpawnedFish: 1
   spawnPadding: 1
-  maxPopulation: 80
-  initialSpawnCount: 60
+  initialSpawnSeparation: 10
+  spawnSearchAttempts: 12
+  maxPopulation: 40
+  initialSpawnCount: 30
   autoRespawn: 1
   respawnDelay: 1
   spawnInWaves: 1
@@ -24503,7 +24450,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -6.71, y: 4.659, z: 18.468096}
+  m_LocalPosition: {x: 52.100002, y: 4.659, z: 20.875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -26786,12 +26733,14 @@ MonoBehaviour:
   - {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - {fileID: 674187241369659107, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
   - {fileID: 766161267746236237, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
-  - {fileID: 8181153804570199710, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+  - {fileID: 1118033327864132365, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
   spawnZone: {fileID: 2138056540}
   parentSpawnedFish: 1
   spawnPadding: 1
-  maxPopulation: 20
-  initialSpawnCount: 20
+  initialSpawnSeparation: 10
+  spawnSearchAttempts: 8
+  maxPopulation: 15
+  initialSpawnCount: 5
   autoRespawn: 1
   respawnDelay: 1
   spawnInWaves: 1
@@ -35155,7 +35104,7 @@ MonoBehaviour:
   parentSpawnedFishToContainer: 1
   fishPrefabs:
   - itemName: BlueTang
-    aquariumPrefab: {fileID: 6976029486548460483, guid: c380eca042cf96f42a3afb66b68afcf4, type: 3}
+    aquariumPrefab: {fileID: 4246514473322428647, guid: 68087a7004710494096f0db9e94c942a, type: 3}
   - itemName: DottyBack
     aquariumPrefab: {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - itemName: Mandarin
@@ -35280,6 +35229,7 @@ MonoBehaviour:
   targetSalinity: 33
   startLockedUntilRewardUnlock: 0
   persistentAquariumId: 
+  fishEatCooldownSeconds: 0.35
 --- !u!114 &466570437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39795,7 +39745,7 @@ MonoBehaviour:
   parentSpawnedFishToContainer: 1
   fishPrefabs:
   - itemName: BlueTang
-    aquariumPrefab: {fileID: 6976029486548460483, guid: c380eca042cf96f42a3afb66b68afcf4, type: 3}
+    aquariumPrefab: {fileID: 4246514473322428647, guid: 68087a7004710494096f0db9e94c942a, type: 3}
   - itemName: DottyBack
     aquariumPrefab: {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - itemName: Mandarin
@@ -39920,6 +39870,7 @@ MonoBehaviour:
   targetSalinity: 33
   startLockedUntilRewardUnlock: 0
   persistentAquariumId: 
+  fishEatCooldownSeconds: 0.35
 --- !u!114 &519874429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43743,7 +43694,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.71
+      value: 52.100002
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.y
@@ -43751,7 +43702,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18.468096
+      value: 20.875
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalRotation.w
@@ -55730,7 +55681,7 @@ MonoBehaviour:
   parentSpawnedFishToContainer: 1
   fishPrefabs:
   - itemName: BlueTang
-    aquariumPrefab: {fileID: 6976029486548460483, guid: c380eca042cf96f42a3afb66b68afcf4, type: 3}
+    aquariumPrefab: {fileID: 4246514473322428647, guid: 68087a7004710494096f0db9e94c942a, type: 3}
   - itemName: DottyBack
     aquariumPrefab: {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - itemName: Mandarin
@@ -55855,6 +55806,7 @@ MonoBehaviour:
   targetSalinity: 33
   startLockedUntilRewardUnlock: 0
   persistentAquariumId: 
+  fishEatCooldownSeconds: 0.35
 --- !u!114 &716681155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58514,13 +58466,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 758398220}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 54.531, y: 1.459, z: 40.958}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.0000002533197}
+  m_LocalPosition: {x: -3.4463942, y: 1.3190001, z: 4.303114}
   m_LocalScale: {x: 0.61248684, y: 0.61248684, z: 0.61248684}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1670887292}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1469888958114970891}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &759649592
 GameObject:
@@ -64632,7 +64584,7 @@ GameObject:
   - component: {fileID: 845938148}
   - component: {fileID: 845938150}
   m_Layer: 0
-  m_Name: ManagerInventorySytem
+  m_Name: InventorySytemManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -71072,8 +71024,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 926655463}
-  - component: {fileID: 926655467}
-  - component: {fileID: 926655466}
   - component: {fileID: 926655465}
   - component: {fileID: 926655464}
   m_Layer: 8
@@ -71134,61 +71084,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 16.141066, y: 0.56610394, z: 9.795759}
   m_Center: {x: -0.59982204, y: 0, z: -8.806308}
---- !u!23 &926655466
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 926655462}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials: []
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &926655467
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 926655462}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1001 &927746123
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -83655,12 +83550,14 @@ MonoBehaviour:
   - {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - {fileID: 674187241369659107, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
   - {fileID: 766161267746236237, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
-  - {fileID: 8181153804570199710, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+  - {fileID: 1118033327864132365, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
   spawnZone: {fileID: 1443003755}
   parentSpawnedFish: 1
-  spawnPadding: 1
-  maxPopulation: 60
-  initialSpawnCount: 50
+  spawnPadding: 2
+  initialSpawnSeparation: 10
+  spawnSearchAttempts: 12
+  maxPopulation: 30
+  initialSpawnCount: 10
   autoRespawn: 1
   respawnDelay: 1
   spawnInWaves: 1
@@ -96256,13 +96153,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1271391224}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 52.7747, y: 1.4432, z: 40.958}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.0000002533197}
+  m_LocalPosition: {x: -1.6900961, y: 1.3032001, z: 4.303115}
   m_LocalScale: {x: 0.580914, y: 0.580914, z: 0.580914}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 691857956}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1469888958114970891}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1272361942
 GameObject:
@@ -96510,6 +96407,8 @@ MonoBehaviour:
   spawnZone: {fileID: 2071227019}
   parentSpawnedFish: 1
   spawnPadding: 1
+  initialSpawnSeparation: 1.5
+  spawnSearchAttempts: 12
   maxPopulation: 30
   initialSpawnCount: 15
   autoRespawn: 1
@@ -96580,8 +96479,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1277609476}
-  - component: {fileID: 1277609480}
-  - component: {fileID: 1277609479}
   - component: {fileID: 1277609478}
   - component: {fileID: 1277609477}
   m_Layer: 8
@@ -96642,61 +96539,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 46.28975, y: 1.4164197, z: 37.821472}
   m_Center: {x: 14.474518, y: -0.4251579, z: 2.8986664}
---- !u!23 &1277609479
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1277609475}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials: []
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &1277609480
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1277609475}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1277644991
 GameObject:
   m_ObjectHideFlags: 0
@@ -98423,12 +98265,14 @@ MonoBehaviour:
   - {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - {fileID: 674187241369659107, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
   - {fileID: 766161267746236237, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
-  - {fileID: 8181153804570199710, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+  - {fileID: 1118033327864132365, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
   spawnZone: {fileID: 926655464}
   parentSpawnedFish: 1
   spawnPadding: 1
-  maxPopulation: 30
-  initialSpawnCount: 30
+  initialSpawnSeparation: 10
+  spawnSearchAttempts: 10
+  maxPopulation: 20
+  initialSpawnCount: 1
   autoRespawn: 1
   respawnDelay: 1
   spawnInWaves: 1
@@ -102221,7 +102065,9 @@ MonoBehaviour:
   - {fileID: 766161267746236237, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
   spawnZone: {fileID: 1784833552}
   parentSpawnedFish: 1
-  spawnPadding: 3
+  spawnPadding: 2
+  initialSpawnSeparation: 10
+  spawnSearchAttempts: 12
   maxPopulation: 400
   initialSpawnCount: 400
   autoRespawn: 1
@@ -109620,8 +109466,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1443003754}
-  - component: {fileID: 1443003758}
-  - component: {fileID: 1443003757}
   - component: {fileID: 1443003756}
   - component: {fileID: 1443003755}
   m_Layer: 8
@@ -109680,63 +109524,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 52.44719, y: 2.943523, z: 35.513588}
-  m_Center: {x: 17.553238, y: -1.1887095, z: 4.0526085}
---- !u!23 &1443003757
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1443003753}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials: []
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &1443003758
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1443003753}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Size: {x: 50.87892, y: 2.943523, z: 35.513588}
+  m_Center: {x: 18.337372, y: -1.1887095, z: 4.0526085}
 --- !u!1 &1444810026
 GameObject:
   m_ObjectHideFlags: 0
@@ -121129,7 +120918,7 @@ MonoBehaviour:
   parentSpawnedFishToContainer: 1
   fishPrefabs:
   - itemName: BlueTang
-    aquariumPrefab: {fileID: 6976029486548460483, guid: c380eca042cf96f42a3afb66b68afcf4, type: 3}
+    aquariumPrefab: {fileID: 4246514473322428647, guid: 68087a7004710494096f0db9e94c942a, type: 3}
   - itemName: DottyBack
     aquariumPrefab: {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - itemName: Mandarin
@@ -121254,6 +121043,7 @@ MonoBehaviour:
   targetSalinity: 33
   startLockedUntilRewardUnlock: 0
   persistentAquariumId: 
+  fishEatCooldownSeconds: 0.35
 --- !u!114 &1593392012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129593,11 +129383,13 @@ MonoBehaviour:
   - {fileID: 8181153804570199710, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
   - {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - {fileID: 674187241369659107, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+  - {fileID: 1118033327864132365, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
   - {fileID: 766161267746236237, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
-  - {fileID: 8181153804570199710, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
   spawnZone: {fileID: 152265709}
   parentSpawnedFish: 1
-  spawnPadding: 1
+  spawnPadding: 2
+  initialSpawnSeparation: 10
+  spawnSearchAttempts: 12
   maxPopulation: 20
   initialSpawnCount: 20
   autoRespawn: 1
@@ -130483,8 +130275,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1710106781}
-  - component: {fileID: 1710106785}
-  - component: {fileID: 1710106784}
   - component: {fileID: 1710106783}
   - component: {fileID: 1710106782}
   m_Layer: 8
@@ -130543,63 +130333,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10.5131645, y: 0.56610394, z: 5.439041}
-  m_Center: {x: 0, y: 0, z: -6.1816063}
---- !u!23 &1710106784
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1710106780}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials: []
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &1710106785
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1710106780}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Size: {x: 13.699549, y: 0.56610394, z: 5.828583}
+  m_Center: {x: -1.5931921, y: 0, z: -7.311157}
 --- !u!1 &1710307668
 GameObject:
   m_ObjectHideFlags: 0
@@ -136049,8 +135784,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1784833551}
-  - component: {fileID: 1784833550}
-  - component: {fileID: 1784833549}
   - component: {fileID: 1784833548}
   - component: {fileID: 1784833552}
   m_Layer: 8
@@ -136081,61 +135814,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 49.511314, y: 2.435081, z: 166.16943}
   m_Center: {x: 10.254566, y: -1.5568211, z: -40.56714}
---- !u!23 &1784833549
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1784833546}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials: []
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &1784833550
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1784833546}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &1784833551
 Transform:
   m_ObjectHideFlags: 0
@@ -145875,7 +145553,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1293029876712600392, guid: 2553cec8fdb3eb643bbe9f2ec880c472, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.91
+      value: 52.9
       objectReference: {fileID: 0}
     - target: {fileID: 1293029876712600392, guid: 2553cec8fdb3eb643bbe9f2ec880c472, type: 3}
       propertyPath: m_LocalPosition.y
@@ -155636,7 +155314,7 @@ MonoBehaviour:
   parentSpawnedFishToContainer: 1
   fishPrefabs:
   - itemName: BlueTang
-    aquariumPrefab: {fileID: 6976029486548460483, guid: c380eca042cf96f42a3afb66b68afcf4, type: 3}
+    aquariumPrefab: {fileID: 4246514473322428647, guid: 68087a7004710494096f0db9e94c942a, type: 3}
   - itemName: DottyBack
     aquariumPrefab: {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - itemName: Mandarin
@@ -155761,6 +155439,7 @@ MonoBehaviour:
   targetSalinity: 33
   startLockedUntilRewardUnlock: 0
   persistentAquariumId: 
+  fishEatCooldownSeconds: 0.35
 --- !u!114 &2046010122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162277,8 +161956,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2138056539}
-  - component: {fileID: 2138056543}
-  - component: {fileID: 2138056542}
   - component: {fileID: 2138056541}
   - component: {fileID: 2138056540}
   m_Layer: 8
@@ -162339,61 +162016,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 17.34071, y: 0.56610394, z: 8.857212}
   m_Center: {x: 0, y: 0, z: -10.029711}
---- !u!23 &2138056542
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2138056538}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials: []
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &2138056543
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2138056538}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &2138176926
 GameObject:
   m_ObjectHideFlags: 0
@@ -163763,17 +163385,77 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 511144127443179487, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: wanderWeight
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 511144127443179487, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: boundaryWeight
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 511144127443179487, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: flockingWeight
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 511144127443179487, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: decisionIntervalMax
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 511144127443179487, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: decisionIntervalMin
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 511144127443179487, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: oceanAntiCrowdWeight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 674187241369659107, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
       propertyPath: m_Name
       value: ClownFish_Fabs
       objectReference: {fileID: 0}
-    - target: {fileID: 705520102886680786, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
-      propertyPath: drag
-      value: 6
+    - target: {fileID: 1757409433051751374, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: maxNeighbors
+      value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 705520102886680786, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
-      propertyPath: maxPushSpeed
-      value: 10
+    - target: {fileID: 1757409433051751374, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: maxFishInArea
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1757409433051751374, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: detectionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1757409433051751374, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: refreshInterval
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1757409433051751374, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: separationWeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1757409433051751374, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: minSeparationDistance
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2908723169043092167, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: boundaryTurnDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2908723169043092167, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: boundaryCenterPullWeight
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3711377971783933703, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: oceanAnchorBias
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3711377971783933703, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: oceanPatrolRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3711377971783933703, guid: 92fb0d31251d1ed4fbe72ca52c19759f, type: 3}
+      propertyPath: changeTargetInterval
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -165111,6 +164793,38 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1682050574}
     m_Modifications:
+    - target: {fileID: 115055413950019443, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: boundaryTurnDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 115055413950019443, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: boundaryCenterPullWeight
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167494639003397426, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: wanderWeight
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167494639003397426, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: boundaryWeight
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167494639003397426, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: flockingWeight
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167494639003397426, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: decisionIntervalMax
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167494639003397426, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: decisionIntervalMin
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167494639003397426, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: oceanAntiCrowdWeight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
       propertyPath: m_Name
       value: DottyBack_Fabs
@@ -165155,13 +164869,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6822401251788019591, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
-      propertyPath: drag
-      value: 6
+    - target: {fileID: 5331795693769883812, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: maxNeighbors
+      value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 6822401251788019591, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
-      propertyPath: maxPushSpeed
-      value: 10
+    - target: {fileID: 5331795693769883812, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: maxFishInArea
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331795693769883812, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: detectionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331795693769883812, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: refreshInterval
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331795693769883812, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: separationWeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5331795693769883812, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: minSeparationDistance
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165482143309999497, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: oceanAnchorBias
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165482143309999497, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: oceanPatrolRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165482143309999497, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
+      propertyPath: changeTargetInterval
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -165335,6 +165077,10 @@ Transform:
   - {fileID: 188496880}
   - {fileID: 798749850}
   - {fileID: 118143115}
+  - {fileID: 133795300}
+  - {fileID: 758398224}
+  - {fileID: 11310297}
+  - {fileID: 1271391228}
   m_Father: {fileID: 526451505}
   m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!33 &1491879425714059081
@@ -165622,20 +165368,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4675366631890882825, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675366631890882825, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675366631890882825, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4675366631890882825, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 53.599
+      value: 53.636
       objectReference: {fileID: 0}
     - target: {fileID: 4675366631890882825, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
       propertyPath: m_LocalPosition.y
@@ -165643,7 +165377,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4675366631890882825, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 41.458
+      value: 41.386
       objectReference: {fileID: 0}
     - target: {fileID: 4675366631890882825, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
       propertyPath: m_LocalRotation.w
@@ -165673,33 +165407,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -360
       objectReference: {fileID: 0}
-    - target: {fileID: 4675366631890882825, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7958170196623460812, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
-      propertyPath: cooldownUIOffset.y
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7958170196623460812, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
-      propertyPath: respawnCooldownSeconds
-      value: 180
-      objectReference: {fileID: 0}
     - target: {fileID: 8412692675395896954, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
       propertyPath: m_Name
       value: Pelets_Fabs
-      objectReference: {fileID: 0}
-    - target: {fileID: 8621115866174894597, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
-      propertyPath: outlineColor.b
-      value: 0.20000002
-      objectReference: {fileID: 0}
-    - target: {fileID: 8621115866174894597, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
-      propertyPath: outlineColor.g
-      value: 0.85098046
-      objectReference: {fileID: 0}
-    - target: {fileID: 8621115866174894597, guid: 4bc0d04c184282b419eab67cc2e54856, type: 3}
-      propertyPath: outlineColor.r
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -167554,10 +167264,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3660015111835177311, guid: 324266391f7409149a694b2186be2308, type: 3}
-      propertyPath: cooldownUIOffset.y
-      value: 0.4
-      objectReference: {fileID: 0}
     - target: {fileID: 8087463658417668756, guid: 324266391f7409149a694b2186be2308, type: 3}
       propertyPath: m_Name
       value: PhBuffer_Fabs
@@ -169031,6 +168737,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1682050574}
     m_Modifications:
+    - target: {fileID: 315232098565033112, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: maxNeighbors
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 315232098565033112, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: maxFishInArea
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 315232098565033112, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: detectionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 315232098565033112, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: refreshInterval
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 315232098565033112, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: separationWeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 315232098565033112, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: minSeparationDistance
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 315232098565033112, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: crowdRepulsionStrength
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 3577396073959809629, guid: 68087a7004710494096f0db9e94c942a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7
@@ -169075,13 +168809,49 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlueTang_Fabs
       objectReference: {fileID: 0}
-    - target: {fileID: 7000414203473803881, guid: 68087a7004710494096f0db9e94c942a, type: 3}
-      propertyPath: drag
-      value: 6
+    - target: {fileID: 4628763541826464743, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: oceanAnchorBias
+      value: 0.15
       objectReference: {fileID: 0}
-    - target: {fileID: 7000414203473803881, guid: 68087a7004710494096f0db9e94c942a, type: 3}
-      propertyPath: maxPushSpeed
-      value: 10
+    - target: {fileID: 4628763541826464743, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: oceanPatrolRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628763541826464743, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: changeTargetInterval
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885688241524479797, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: boundaryTurnDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885688241524479797, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: boundaryCenterPullWeight
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5640677874438068200, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: wanderWeight
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5640677874438068200, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: boundaryWeight
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5640677874438068200, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: flockingWeight
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5640677874438068200, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: decisionIntervalMax
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 5640677874438068200, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: decisionIntervalMin
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5640677874438068200, guid: 68087a7004710494096f0db9e94c942a, type: 3}
+      propertyPath: oceanAntiCrowdWeight
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -170274,38 +170044,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3309716728568090963, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
-      propertyPath: cooldownUIOffset.y
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3309716728568090963, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
-      propertyPath: respawnCooldownSeconds
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 3464798614822109881, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
-      propertyPath: outlineColor.b
-      value: 0.20000002
-      objectReference: {fileID: 0}
-    - target: {fileID: 3464798614822109881, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
-      propertyPath: outlineColor.g
-      value: 0.85098046
-      objectReference: {fileID: 0}
-    - target: {fileID: 3464798614822109881, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
-      propertyPath: outlineColor.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7144563113694211989, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 6.06036
-      objectReference: {fileID: 0}
-    - target: {fileID: 7144563113694211989, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 3.3331978
-      objectReference: {fileID: 0}
-    - target: {fileID: 7144563113694211989, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 10.100599
-      objectReference: {fileID: 0}
     - target: {fileID: 7144563113694211989, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 52.839
@@ -170346,10 +170084,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7144563113694211989, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7524748484481283375, guid: 222ddfb51f9c5574783b41e3060a42d6, type: 3}
       propertyPath: m_Name
       value: Salt_Fabs
@@ -170375,13 +170109,73 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1682050574}
     m_Modifications:
-    - target: {fileID: 2606722245451373947, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
-      propertyPath: drag
-      value: 6
+    - target: {fileID: 764352412420708614, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: wanderWeight
+      value: 0.8
       objectReference: {fileID: 0}
-    - target: {fileID: 2606722245451373947, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
-      propertyPath: maxPushSpeed
-      value: 10
+    - target: {fileID: 764352412420708614, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: boundaryWeight
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 764352412420708614, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: flockingWeight
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 764352412420708614, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: decisionIntervalMax
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 764352412420708614, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: decisionIntervalMin
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 764352412420708614, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: oceanAntiCrowdWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641661465047660008, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: oceanAnchorBias
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641661465047660008, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: oceanPatrolRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1641661465047660008, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: changeTargetInterval
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3167734085340893703, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: maxNeighbors
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3167734085340893703, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: maxFishInArea
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3167734085340893703, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: detectionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3167734085340893703, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: refreshInterval
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3167734085340893703, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: separationWeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3167734085340893703, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: minSeparationDistance
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3545627741504548536, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: boundaryTurnDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3545627741504548536, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
+      propertyPath: boundaryCenterPullWeight
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 3803750212378780342, guid: 89f46c1c99b09b24e90e9439e038b31b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -170488,13 +170282,73 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1682050574}
     m_Modifications:
-    - target: {fileID: 7621251573936665603, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
-      propertyPath: drag
-      value: 6
+    - target: {fileID: 2084443811724268477, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: boundaryTurnDistance
+      value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 7621251573936665603, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
-      propertyPath: maxPushSpeed
-      value: 10
+    - target: {fileID: 2084443811724268477, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: boundaryCenterPullWeight
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4271098766409603451, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: wanderWeight
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4271098766409603451, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: boundaryWeight
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4271098766409603451, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: flockingWeight
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4271098766409603451, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: decisionIntervalMax
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 4271098766409603451, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: decisionIntervalMin
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4271098766409603451, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: oceanAntiCrowdWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4487507387085075391, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: oceanAnchorBias
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4487507387085075391, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: oceanPatrolRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4487507387085075391, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: changeTargetInterval
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5525550230837717536, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: maxNeighbors
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5525550230837717536, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: maxFishInArea
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5525550230837717536, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: detectionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5525550230837717536, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: refreshInterval
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5525550230837717536, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: separationWeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5525550230837717536, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
+      propertyPath: minSeparationDistance
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8181153804570199710, guid: 2970c4d1fc778494e9b3dd93ca378ca9, type: 3}
       propertyPath: m_Name
@@ -170553,13 +170407,73 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1682050574}
     m_Modifications:
-    - target: {fileID: 3455957692724435295, guid: c211b26d825192743b569baf361b0240, type: 3}
-      propertyPath: drag
-      value: 6
+    - target: {fileID: 39859460805867488, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: wanderWeight
+      value: 0.8
       objectReference: {fileID: 0}
-    - target: {fileID: 3455957692724435295, guid: c211b26d825192743b569baf361b0240, type: 3}
-      propertyPath: maxPushSpeed
-      value: 10
+    - target: {fileID: 39859460805867488, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: boundaryWeight
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 39859460805867488, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: flockingWeight
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 39859460805867488, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: decisionIntervalMax
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 39859460805867488, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: decisionIntervalMin
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 39859460805867488, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: oceanAntiCrowdWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 323772419780066209, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: maxNeighbors
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 323772419780066209, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: maxFishInArea
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 323772419780066209, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: detectionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 323772419780066209, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: refreshInterval
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 323772419780066209, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: separationWeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 323772419780066209, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: minSeparationDistance
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 449182542305361940, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: oceanAnchorBias
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 449182542305361940, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: oceanPatrolRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 449182542305361940, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: changeTargetInterval
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1990319480770133505, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: boundaryTurnDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1990319480770133505, guid: c211b26d825192743b569baf361b0240, type: 3}
+      propertyPath: boundaryCenterPullWeight
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 3501666347959320421, guid: c211b26d825192743b569baf361b0240, type: 3}
       propertyPath: m_LocalPosition.x
@@ -170819,17 +170733,77 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 350925499311475573, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: boundaryTurnDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 350925499311475573, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: boundaryCenterPullWeight
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 1118033327864132365, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
       propertyPath: m_Name
       value: FireFish_Fabs
       objectReference: {fileID: 0}
-    - target: {fileID: 2854543861165294891, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
-      propertyPath: drag
-      value: 6
+    - target: {fileID: 1337328340016497168, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: wanderWeight
+      value: 0.8
       objectReference: {fileID: 0}
-    - target: {fileID: 2854543861165294891, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
-      propertyPath: maxPushSpeed
-      value: 10
+    - target: {fileID: 1337328340016497168, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: boundaryWeight
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1337328340016497168, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: flockingWeight
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1337328340016497168, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: decisionIntervalMax
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1337328340016497168, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: decisionIntervalMin
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1337328340016497168, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: oceanAntiCrowdWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8363101562126533784, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: oceanAnchorBias
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8363101562126533784, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: oceanPatrolRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8363101562126533784, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: changeTargetInterval
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8527687313248434530, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: maxNeighbors
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8527687313248434530, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: maxFishInArea
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8527687313248434530, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: detectionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8527687313248434530, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: refreshInterval
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8527687313248434530, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: separationWeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8527687313248434530, guid: 09b4aa8a0c0484a46b89bba4e2c67623, type: 3}
+      propertyPath: minSeparationDistance
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -171424,13 +171398,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1682050574}
     m_Modifications:
-    - target: {fileID: 2523805593771503384, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
-      propertyPath: drag
-      value: 6
+    - target: {fileID: 936193965797327690, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: wanderWeight
+      value: 0.8
       objectReference: {fileID: 0}
-    - target: {fileID: 2523805593771503384, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
-      propertyPath: maxPushSpeed
-      value: 10
+    - target: {fileID: 936193965797327690, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: boundaryWeight
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 936193965797327690, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: flockingWeight
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 936193965797327690, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: decisionIntervalMax
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 936193965797327690, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: decisionIntervalMin
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 936193965797327690, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: oceanAntiCrowdWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3177821353759270990, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: oceanAnchorBias
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3177821353759270990, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: oceanPatrolRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3177821353759270990, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: changeTargetInterval
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4644784041148861912, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -171475,6 +171477,38 @@ PrefabInstance:
     - target: {fileID: 5421848884016355170, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
       propertyPath: m_Name
       value: Blenny_Fabs
+      objectReference: {fileID: 0}
+    - target: {fileID: 6823577479250431255, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: boundaryTurnDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6823577479250431255, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: boundaryCenterPullWeight
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7528491241015105251, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: maxNeighbors
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7528491241015105251, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: maxFishInArea
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7528491241015105251, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: detectionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7528491241015105251, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: refreshInterval
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7528491241015105251, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: separationWeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7528491241015105251, guid: dfe6ddf4e26491c4f8523997436c235d, type: 3}
+      propertyPath: minSeparationDistance
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -172048,13 +172082,73 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChromisBlue_Fabs
       objectReference: {fileID: 0}
-    - target: {fileID: 1019101742493579294, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
-      propertyPath: drag
-      value: 6
+    - target: {fileID: 2386846220221068890, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: maxNeighbors
+      value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 1019101742493579294, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
-      propertyPath: maxPushSpeed
-      value: 10
+    - target: {fileID: 2386846220221068890, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: maxFishInArea
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2386846220221068890, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: detectionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2386846220221068890, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: refreshInterval
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2386846220221068890, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: separationWeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2386846220221068890, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: minSeparationDistance
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5065591799762655641, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: boundaryTurnDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5065591799762655641, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: boundaryCenterPullWeight
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7163966027204818944, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: oceanAnchorBias
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7163966027204818944, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: oceanPatrolRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7163966027204818944, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: changeTargetInterval
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7313125074403949073, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: wanderWeight
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7313125074403949073, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: boundaryWeight
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7313125074403949073, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: flockingWeight
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7313125074403949073, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: decisionIntervalMax
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 7313125074403949073, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: decisionIntervalMin
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7313125074403949073, guid: 97190e0fdaa491d41b644e16c9ca6072, type: 3}
+      propertyPath: oceanAntiCrowdWeight
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -172848,7 +172942,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6353831916979573382, guid: 5deb3045d1221f14a8bd4098c5374708, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 54.497
+      value: 54.476
       objectReference: {fileID: 0}
     - target: {fileID: 6353831916979573382, guid: 5deb3045d1221f14a8bd4098c5374708, type: 3}
       propertyPath: m_LocalPosition.y
@@ -172885,10 +172979,6 @@ PrefabInstance:
     - target: {fileID: 6353831916979573382, guid: 5deb3045d1221f14a8bd4098c5374708, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7983738434047934027, guid: 5deb3045d1221f14a8bd4098c5374708, type: 3}
-      propertyPath: cooldownUIOffset.y
-      value: 0.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -173255,13 +173345,37 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1682050574}
     m_Modifications:
-    - target: {fileID: 1650442908544365500, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
-      propertyPath: drag
-      value: 6
+    - target: {fileID: 777348136789591862, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: boundaryTurnDistance
+      value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 1650442908544365500, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
-      propertyPath: maxPushSpeed
-      value: 10
+    - target: {fileID: 777348136789591862, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: boundaryCenterPullWeight
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1592936956524820952, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: maxNeighbors
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1592936956524820952, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: maxFishInArea
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1592936956524820952, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: detectionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1592936956524820952, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: refreshInterval
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1592936956524820952, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: separationWeight
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1592936956524820952, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: minSeparationDistance
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2326548766267563354, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
       propertyPath: m_LocalPosition.x
@@ -173303,9 +173417,45 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2620556332263435219, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: oceanAnchorBias
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2620556332263435219, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: oceanPatrolRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2620556332263435219, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: changeTargetInterval
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 3099144403071010784, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
       propertyPath: m_Name
       value: MandarinFish_Fabs
+      objectReference: {fileID: 0}
+    - target: {fileID: 6764231655721127040, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: wanderWeight
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6764231655721127040, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: boundaryWeight
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6764231655721127040, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: flockingWeight
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6764231655721127040, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: decisionIntervalMax
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 6764231655721127040, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: decisionIntervalMin
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6764231655721127040, guid: 0d4194924249f5240a87819cb976c6ba, type: 3}
+      propertyPath: oceanAntiCrowdWeight
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -175111,7 +175261,7 @@ MonoBehaviour:
   parentSpawnedFishToContainer: 1
   fishPrefabs:
   - itemName: BlueTang
-    aquariumPrefab: {fileID: 6976029486548460483, guid: c380eca042cf96f42a3afb66b68afcf4, type: 3}
+    aquariumPrefab: {fileID: 4246514473322428647, guid: 68087a7004710494096f0db9e94c942a, type: 3}
   - itemName: DottyBack
     aquariumPrefab: {fileID: 1446426297060681641, guid: 58b7181233b15f04f8ffd34962098e9f, type: 3}
   - itemName: Mandarin
@@ -175236,6 +175386,7 @@ MonoBehaviour:
   targetSalinity: 33
   startLockedUntilRewardUnlock: 0
   persistentAquariumId: 
+  fishEatCooldownSeconds: 0.35
 --- !u!114 &8326309825565251787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176527,8 +176678,4 @@ SceneRoots:
   - {fileID: 321166833}
   - {fileID: 1582309631}
   - {fileID: 544276314}
-  - {fileID: 133795300}
-  - {fileID: 758398224}
-  - {fileID: 11310297}
-  - {fileID: 1271391228}
   - {fileID: 1223588075}

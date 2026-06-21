@@ -288,8 +288,10 @@ MonoBehaviour:
   boundaryPadding: 0.1
   boundaryTurnDistance: 0.2
   boundarySteerWeight: 2
+  boundaryCenterPullWeight: 1.6
   lockYPosition: 0
   fixedYPosition: 2
+  directionSmoothing: 8
   terrainOffset: 0.5
   terrainAvoidanceDistance: 2
 --- !u!114 &1757409433051751374
@@ -304,14 +306,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bea26af264d29f44aaed217c85ba01b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishFlockingBehavior
-  detectionRadius: 0.5
+  detectionRadius: 5
   fishLayer:
     serializedVersion: 2
     m_Bits: 256
   cohesionWeight: 0.4
-  separationWeight: 0.8
+  separationWeight: 2
   alignmentWeight: 1.2
-  minSeparationDistance: 0.8
+  minSeparationDistance: 4
+  maxFishInArea: 3
+  crowdRepulsionStrength: 4
+  maxNeighbors: 12
+  refreshInterval: 0.15
 --- !u!114 &3711377971783933703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,6 +337,12 @@ MonoBehaviour:
   aquariumVerticalScale: 0.55
   individualBiasStrength: 0.2
   biasRefreshInterval: 8
+  oceanPatrolRadius: 15
+  oceanTargetReachDistance: 3
+  aquariumInteriorPadding: 0.35
+  aquariumCenterBias: 0.65
+  aquariumForwardPreference: 0.55
+  aquariumTargetReachDistance: 0.6
 --- !u!114 &511144127443179487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,14 +355,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6196f52651d48a489a34f2cbff9fe78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishBrain
-  flockingWeight: 0.5
-  wanderWeight: 0.4
-  boundaryWeight: 0.8
+  flockingWeight: 0.4
+  wanderWeight: 0.8
+  boundaryWeight: 0.15
+  disableFlockingInOcean: 0
+  oceanSeparationOnly: 1
   disableFlockingInAquarium: 1
   aquariumWanderWeight: 1
   aquariumBoundaryWeight: 0.5
   aquariumSpeedMultiplier: 0.65
   terrainAvoidanceWeight: 3
+  foodChaseSpeedMultiplier: 1.5
+  decisionIntervalMin: 0.1
+  decisionIntervalMax: 0.35
 --- !u!114 &705520102886680786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -363,8 +380,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e6c8e41aa6e5c4449c4e4e9139136e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FishPushResponse
-  drag: 8
-  maxPushSpeed: 2
+  drag: 6
+  maxPushSpeed: 10
 --- !u!205 &1683804079753150695
 LODGroup:
   m_ObjectHideFlags: 0

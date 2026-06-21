@@ -19,23 +19,43 @@ public class FishWanderBehavior : MonoBehaviour
     [Tooltip("Seberapa sering bias individu diperbarui (detik)")]
     [SerializeField] private float biasRefreshInterval = 8f;
 
-    private Vector3 wanderTarget;
+    [Header("Ocean Patrol")]
+    [Tooltip("Jarak maksimum dari posisi saat ini ke titik patrol baru di ocean.")]
+    [SerializeField] private float oceanPatrolRadius = 15f;
 
-    // Bias individu â€” diperbarui secara berkala agar tiap ikan punya arah favorit yang berbeda
+    [Tooltip("Jarak ke titik patrol ocean saat dianggap 'sampai' dan target baru dipilih.")]
+    [SerializeField] private float oceanTargetReachDistance = 3f;
+
+    [Header("Aquarium Pathing")]
+    [Tooltip("Padding aman dari dinding aquarium saat memilih target baru.")]
+    [SerializeField] private float aquariumInteriorPadding = 0.35f;
+
+    [Tooltip("Bias ke tengah aquarium agar ikan tidak terus menyisir pinggir.")]
+    [SerializeField] [Range(0f, 1f)] private float aquariumCenterBias = 0.65f;
+
+    [Tooltip("Preferensi memilih target yang masih searah gerak saat ini.")]
+    [SerializeField] [Range(0f, 1f)] private float aquariumForwardPreference = 0.55f;
+
+    [Tooltip("Jika sudah dekat target aquarium, segera pilih target baru.")]
+    [SerializeField] private float aquariumTargetReachDistance = 0.6f;
+
+    private Vector3 oceanTargetPoint;
+    private bool hasOceanTargetPoint;
+    private Vector3 wanderTarget;
     private Vector3 individualBias;
     private float biasRefreshTimer;
-
     private float changeTimer;
     private float intervalOffset;
     private bool aquariumMode;
-
-    // Simpan referensi bounds agar target bisa dihasilkan di dalam aquarium
     private bool hasBounds;
     private Bounds cachedBounds;
+    private Vector3 aquariumTargetPoint;
+    private bool hasAquariumTargetPoint;
+    private FishMovement movement;
 
     void Awake()
     {
-        // Offset acak agar semua ikan tidak ganti target secara bersamaan
+        movement = GetComponent<FishMovement>();
         intervalOffset = Random.Range(0f, changeTargetInterval);
         RefreshIndividualBias();
     }
@@ -58,7 +78,6 @@ public class FishWanderBehavior : MonoBehaviour
             changeTimer = GetNextChangeInterval();
         }
 
-        // Perbarui bias individu secara berkala agar arah tiap ikan bervariasi dari waktu ke waktu
         biasRefreshTimer -= dt;
         if (biasRefreshTimer <= 0f)
         {
@@ -67,33 +86,60 @@ public class FishWanderBehavior : MonoBehaviour
         }
     }
 
-    /// <summary>Kembalikan arah wander untuk digunakan FishBrain.</summary>
     public Vector3 CalculateWanderForce()
     {
+        if (aquariumMode && hasAquariumTargetPoint)
+        {
+            Vector3 toPoint = aquariumTargetPoint - transform.position;
+            if (toPoint.sqrMagnitude <= aquariumTargetReachDistance * aquariumTargetReachDistance)
+            {
+                GenerateNewWanderTarget();
+                toPoint = aquariumTargetPoint - transform.position;
+            }
+
+            if (toPoint.sqrMagnitude > 0.0001f)
+            {
+                toPoint.y *= aquariumVerticalScale;
+                return (toPoint + individualBias * individualBiasStrength).normalized;
+            }
+        }
+
+        // Ocean mode: navigate toward a specific world-space patrol point so fish
+        // actively move to different distant locations instead of drifting locally.
+        if (!aquariumMode && hasOceanTargetPoint)
+        {
+            Vector3 toTarget = oceanTargetPoint - transform.position;
+            if (toTarget.sqrMagnitude <= oceanTargetReachDistance * oceanTargetReachDistance)
+            {
+                GenerateNewWanderTarget();
+                toTarget = oceanTargetPoint - transform.position;
+            }
+
+            if (toTarget.sqrMagnitude > 0.0001f)
+                return (toTarget + individualBias * individualBiasStrength).normalized;
+        }
+
         if (wanderTarget.sqrMagnitude <= 0.0001f)
             GenerateNewWanderTarget();
 
         return wanderTarget.normalized;
     }
 
-    /// <summary>Aktifkan/nonaktifkan mode aquarium dan opsional berikan bounds untuk target gener...
     public void SetAquariumMode(bool enabled)
     {
         if (aquariumMode == enabled) return;
 
         aquariumMode = enabled;
+        hasOceanTargetPoint = false; // Force a new patrol target when switching to ocean mode.
         GenerateNewWanderTarget();
         changeTimer = GetNextChangeInterval();
     }
 
-    /// <summary>Berikan bounds aquarium agar target wander dihasilkan di dalam batas yang benar.<...
     public void SetBounds(Bounds bounds)
     {
         cachedBounds = bounds;
         hasBounds = true;
     }
-
-    // â”€â”€â”€ Private helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â...
 
     private float GetNextChangeInterval()
     {
@@ -123,50 +169,103 @@ public class FishWanderBehavior : MonoBehaviour
     {
         if (hasBounds)
         {
-            // Hasilkan titik target dalam bounds, lalu ubah menjadi arah dari posisi saat ini
             Vector3 pos = transform.position;
-            Vector3 min = cachedBounds.min;
-            Vector3 max = cachedBounds.max;
+            aquariumTargetPoint = GetBestAquariumTargetPoint(pos);
+            hasAquariumTargetPoint = true;
 
-            // Padding kecil agar tidak target persis di dinding
-            float pad = 0.15f;
-            Vector3 targetPoint = new Vector3(
-                Random.Range(min.x + pad, max.x - pad),
-                Random.Range(min.y + pad, max.y - pad),
-                Random.Range(min.z + pad, max.z - pad)
-            );
-
-            Vector3 toTarget = targetPoint - pos;
-
-            // Kurangi komponen Y jika aquariumVerticalScale < 1
+            Vector3 toTarget = aquariumTargetPoint - pos;
             toTarget.y *= aquariumVerticalScale;
-
-            // Tambahkan bias individu yang lemah
             wanderTarget = toTarget + individualBias * individualBiasStrength;
+            return;
         }
-        else
-        {
-            // Tidak ada bounds info â€” hasilkan arah sphere acak
-            Vector3 random = Random.insideUnitSphere;
-            random.y *= aquariumVerticalScale;
-            wanderTarget = random + individualBias * individualBiasStrength;
-        }
+
+        hasAquariumTargetPoint = false;
+        Vector3 random = Random.insideUnitSphere;
+        random.y *= aquariumVerticalScale;
+        wanderTarget = random + individualBias * individualBiasStrength;
     }
 
     private void GenerateOceanWanderTarget()
     {
-        wanderTarget = new Vector3(
-            Random.Range(-wanderRadius, wanderRadius),
-            Random.Range(-wanderRadius * 0.3f, wanderRadius * 0.3f),
-            Random.Range(-wanderRadius, wanderRadius)
-        );
+        // Pick a world-space patrol point within oceanPatrolRadius of the current position.
+        // Each fish picks a different distant destination, so fish naturally spread across the zone.
+        Vector3 randomDir = Random.insideUnitSphere;
+        randomDir.y *= 0.15f; // Limit vertical variance — fish stay roughly at their current depth.
+        if (randomDir.sqrMagnitude <= 0.0001f)
+            randomDir = Vector3.forward;
+        randomDir.Normalize();
+
+        float distance = Random.Range(oceanPatrolRadius * 0.4f, oceanPatrolRadius);
+        oceanTargetPoint = transform.position + randomDir * distance;
+        hasOceanTargetPoint = true;
+
+        // wanderTarget is kept as a fallback direction in case hasOceanTargetPoint fails.
+        wanderTarget = randomDir;
     }
 
     private void RefreshIndividualBias()
     {
-        // Bias baru dengan arah horizontal yang dominan dan sedikit vertical jitter
         individualBias = Random.insideUnitSphere;
         individualBias.y *= 0.3f;
         individualBias = individualBias.normalized;
+    }
+
+    private Vector3 GetBestAquariumTargetPoint(Vector3 currentPosition)
+    {
+        Vector3 center = cachedBounds.center;
+        Vector3 min = cachedBounds.min;
+        Vector3 max = cachedBounds.max;
+        float pad = Mathf.Max(0.01f, aquariumInteriorPadding);
+        Vector3 forward = movement != null ? movement.GetForward() : transform.forward;
+        if (forward.sqrMagnitude <= 0.0001f)
+            forward = Vector3.forward;
+
+        Vector3 bestPoint = center;
+        float bestScore = float.NegativeInfinity;
+
+        const int candidateCount = 4;
+        for (int i = 0; i < candidateCount; i++)
+        {
+            Vector3 candidate = new Vector3(
+                GetSafeRandomRange(min.x, max.x, pad),
+                GetSafeRandomRange(min.y, max.y, pad),
+                GetSafeRandomRange(min.z, max.z, pad)
+            );
+
+            candidate.y = Mathf.Lerp(currentPosition.y, candidate.y, aquariumVerticalScale);
+
+            Vector3 toCandidate = candidate - currentPosition;
+            float directionScore = 0f;
+            if (toCandidate.sqrMagnitude > 0.0001f)
+                directionScore = Vector3.Dot(forward.normalized, toCandidate.normalized);
+
+            float centerDistance = Vector3.Distance(candidate, center);
+            float maxCenterDistance = cachedBounds.extents.magnitude;
+            float centerScore = 1f - Mathf.Clamp01(centerDistance / Mathf.Max(0.01f, maxCenterDistance));
+
+            float score =
+                directionScore * aquariumForwardPreference +
+                centerScore * aquariumCenterBias +
+                Random.Range(0f, 0.15f);
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestPoint = candidate;
+            }
+        }
+
+        return bestPoint;
+    }
+
+    private float GetSafeRandomRange(float min, float max, float pad)
+    {
+        float paddedMin = min + pad;
+        float paddedMax = max - pad;
+
+        if (paddedMin > paddedMax)
+            return (min + max) * 0.5f;
+
+        return Random.Range(paddedMin, paddedMax);
     }
 }

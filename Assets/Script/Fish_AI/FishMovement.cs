@@ -13,6 +13,7 @@ public class FishMovement : MonoBehaviour
     [SerializeField] private float boundaryPadding = 1f;
     [SerializeField] private float boundaryTurnDistance = 3f;
     [SerializeField] private float boundarySteerWeight = 4f;
+    [SerializeField] private float boundaryCenterPullWeight = 1.6f;
     [SerializeField] private bool lockYPosition = false;
     [SerializeField] private float fixedYPosition = 5f;
     [SerializeField] private float directionSmoothing = 8f;
@@ -48,14 +49,10 @@ public class FishMovement : MonoBehaviour
             direction.Normalize();
         }
 
-        if (hasBounds)
-        {
-            Vector3 boundarySteering = GetBoundarySteering();
-            if (boundarySteering.sqrMagnitude > 0.0001f)
-            {
-                direction = (direction + boundarySteering.normalized * boundarySteerWeight).normalized;
-            }
-        }
+        // Boundary steering is handled by FishBrain.RecalculateMovementDecision() and already
+        // included in the direction parameter. Applying it here again would double the
+        // boundaryCenterPullWeight and cause all fish to converge toward the zone center.
+        // Hard clamping at the end of Move() is the final safety net.
 
         Vector3 smoothedDirection = GetSmoothedDirection(direction);
         RotateTowards(smoothedDirection);
@@ -187,8 +184,6 @@ public class FishMovement : MonoBehaviour
     public Vector3 GetBoundarySteering()
     {
         if (!hasBounds) return Vector3.zero;
-        if (boundaryCollider != null && boundaryCollider.enabled)
-            return GetColliderBoundarySteering();
 
         Vector3 pos = fishTransform.position;
         Vector3 min = GetSafeMin();
@@ -203,26 +198,42 @@ public class FishMovement : MonoBehaviour
             AddAxisSteering(pos.y, min.y, max.y, Vector3.up, ref steer);
         }
 
+        float edgeProximity = GetEdgeProximity(pos, min, max);
+        if (edgeProximity > 0f)
+        {
+            Vector3 toCenter = zoneBounds.center - pos;
+            if (lockYPosition)
+                toCenter.y = 0f;
+
+            if (toCenter.sqrMagnitude > 0.0001f)
+                steer += toCenter.normalized * edgeProximity * boundaryCenterPullWeight;
+        }
+
+        if (boundaryCollider != null && boundaryCollider.enabled)
+            steer += GetColliderRecoverySteering(pos);
+
         return steer;
     }
 
-    private Vector3 GetColliderBoundarySteering()
+    private Vector3 GetColliderRecoverySteering(Vector3 pos)
     {
-        Vector3 pos = fishTransform.position;
         Vector3 closest = boundaryCollider.ClosestPoint(pos);
-        Vector3 toClosest = closest - pos;
+        Vector3 correction = Vector3.zero;
 
-        if (toClosest.sqrMagnitude > 0.0001f)
-            return toClosest.normalized * 2f;
+        if ((closest - pos).sqrMagnitude > 0.0001f)
+            correction = (closest - pos).normalized * 2f;
 
-        Vector3 ahead = pos + fishTransform.forward * Mathf.Max(0.05f, boundaryTurnDistance);
+        Vector3 ahead = pos + currentMoveDirection.normalized * Mathf.Max(0.05f, boundaryTurnDistance);
         Vector3 closestAhead = boundaryCollider.ClosestPoint(ahead);
         Vector3 pullBack = closestAhead - ahead;
 
         if (lockYPosition)
+        {
             pullBack.y = 0f;
+            correction.y = 0f;
+        }
 
-        return pullBack;
+        return correction + pullBack;
     }
 
     private void AddAxisSteering(float value, float min, float max, Vector3 axis, ref Vector3 steer)
@@ -309,6 +320,33 @@ public class FishMovement : MonoBehaviour
     public Vector3 GetPosition() => fishTransform.position;
     public Vector3 GetForward() => fishTransform.forward;
     public float GetSpeed() => moveSpeed;
+
+    private float GetEdgeProximity(Vector3 position, Vector3 min, Vector3 max)
+    {
+        float safeTurnDistance = Mathf.Max(0.01f, boundaryTurnDistance);
+        float proximity = GetAxisEdgeProximity(position.x, min.x, max.x, safeTurnDistance);
+        proximity = Mathf.Max(proximity, GetAxisEdgeProximity(position.z, min.z, max.z, safeTurnDistance));
+
+        if (!lockYPosition)
+            proximity = Mathf.Max(proximity, GetAxisEdgeProximity(position.y, min.y, max.y, safeTurnDistance));
+
+        return proximity;
+    }
+
+    private float GetAxisEdgeProximity(float value, float min, float max, float safeTurnDistance)
+    {
+        if (value < min || value > max)
+            return 1f;
+
+        float distanceToMin = value - min;
+        float distanceToMax = max - value;
+        float nearestDistance = Mathf.Min(distanceToMin, distanceToMax);
+
+        if (nearestDistance >= safeTurnDistance)
+            return 0f;
+
+        return 1f - nearestDistance / safeTurnDistance;
+    }
 
     // ─── Terrain Avoidance ──────────────────────────────────────────────────
 

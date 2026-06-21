@@ -134,31 +134,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28a1e08874564a34d951175952e91e2e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 54.571
+      value: 54.476
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28a1e08874564a34d951175952e91e2e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.3588
+      value: 1.26
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28a1e08874564a34d951175952e91e2e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 41.529
+      value: 41.479
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28a1e08874564a34d951175952e91e2e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 0.70710665
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28a1e08874564a34d951175952e91e2e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.000000011403656
+      value: -0.70710695
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28a1e08874564a34d951175952e91e2e, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.7071069
+      value: -0.000001642853
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28a1e08874564a34d951175952e91e2e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.7071067
+      value: -0.0000016336314
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28a1e08874564a34d951175952e91e2e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -170,7 +170,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28a1e08874564a34d951175952e91e2e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -180
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 28a1e08874564a34d951175952e91e2e, type: 3}
       propertyPath: m_ConstrainProportionsScale
@@ -246,14 +246,14 @@ MonoBehaviour:
   itemName: AmoniaRemover
   keepInWorldAfterInteract: 0
   respawnAfterPickup: 1
-  respawnCooldownSeconds: 120
+  respawnCooldownSeconds: 20
   useHighlight: 1
   autoAddOutlineIfMissing: 0
   highlightMode: 1
   highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   highlightWidth: 4
   showWorldCooldownUI: 1
-  cooldownUIOffset: {x: 0, y: 1.6, z: 0}
+  cooldownUIOffset: {x: 0, y: 0.4, z: 0}
   cooldownUICanvasSize: {x: 60, y: 60}
   cooldownUIWorldScale: 0.006
   cooldownUIInnerPadding: 0.08

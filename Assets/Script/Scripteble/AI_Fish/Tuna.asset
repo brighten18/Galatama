@@ -17,11 +17,11 @@ MonoBehaviour:
   holdLocalPosition: {x: 0.1, y: 0, z: 0}
   holdLocalRotation: {x: 0, y: 0, z: 0}
   holdLocalScale: {x: 3, y: 3, z: 3}
-  baseSwimSpeed: 1
+  baseSwimSpeed: 1.5
   fleeSpeed: 2
-  aquariumIdleSpeed: 1.5
+  aquariumIdleSpeed: 0.8
   turnSpeed: 120
-  acceleration: 2
+  acceleration: 1.8
   wanderRadius: 3
   patrolRadius: 2
   fleeDistance: 2

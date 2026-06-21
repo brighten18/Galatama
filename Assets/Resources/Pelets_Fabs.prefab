@@ -120,8 +120,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.7378, y: 0.7102, z: -7.2194}
-  m_LocalScale: {x: 7.092628, y: 7.092628, z: 7.092628}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6170424572185155167}
   m_Father: {fileID: 0}
@@ -198,12 +198,20 @@ MonoBehaviour:
   itemName: Pelet
   keepInWorldAfterInteract: 0
   respawnAfterPickup: 1
-  respawnCooldownSeconds: 10
+  respawnCooldownSeconds: 30
   useHighlight: 1
   autoAddOutlineIfMissing: 0
   highlightMode: 1
   highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   highlightWidth: 4
+  showWorldCooldownUI: 1
+  cooldownUIOffset: {x: 0, y: 0.4, z: 0}
+  cooldownUICanvasSize: {x: 60, y: 60}
+  cooldownUIWorldScale: 0.006
+  cooldownUIInnerPadding: 0.08
+  cooldownUIFillColor: {r: 0.2, g: 0.82, b: 1, a: 0.95}
+  cooldownUIBackgroundColor: {r: 0, g: 0, b: 0, a: 0.35}
+  cooldownUIFontSize: 18
 --- !u!65 &7878910448800128145
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -238,7 +246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Outline
   outlineMode: 0
-  outlineColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+  outlineColor: {r: 1, g: 0.85098046, b: 0.20000002, a: 1}
   outlineWidth: 1
   precomputeOutline: 0
   bakeKeys: []

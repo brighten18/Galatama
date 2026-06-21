@@ -3,11 +3,11 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Screen-space navigation arrow pointing toward the current mission's waypoint.
-/// When the target is on-screen the arrow is placed at the target position (pointing down).
-/// When off-screen or behind the camera, the arrow is clamped to the screen edge and
-/// rotated to face the target direction.
-/// When the player is within nearDistance, the arrow always points downward at the target's
-/// screen position to indicate the objective is nearby.
+/// Saat target TIDAK terlihat (terhalang tembok/collider atau di luar layar), arrow di-clamp ke
+/// tepi layar dan dirotasi sebagai kompas penunjuk arah.
+/// Saat target TERLIHAT langsung oleh kamera (Physics.Raycast tembus), arrow dipindahkan ke atas
+/// objek target di world-space sehingga tidak mengikuti gerakan kamera.
+/// Saat player dalam jarak nearDistance dan target terlihat, arrow tetap floating di atas objek.
 /// </summary>
 public class MissionNavigator : MonoBehaviour
 {
@@ -34,6 +34,10 @@ public class MissionNavigator : MonoBehaviour
     [SerializeField] private float nearDistance = 10f;
     [Tooltip("Kamera dunia yang digunakan untuk proyeksi. Otomatis menggunakan Camera.main jika kosong.")]
     [SerializeField] private Camera targetCamera;
+    [Tooltip("Offset ketinggian (meter) di atas waypoint saat target terlihat langsung oleh kamera.")]
+    [SerializeField] private float visibleHeightOffset = 2f;
+    [Tooltip("Layer mask untuk raycast line-of-sight. Centang semua layer fisik, kecuali Player, Fish, UI, dan FishBoundary.")]
+    [SerializeField] private LayerMask occlusionMask = Physics.DefaultRaycastLayers;
 
     private Transform _currentWaypoint;
     private bool _isActive;
@@ -139,41 +143,44 @@ public class MissionNavigator : MonoBehaviour
             && screenPos.y > edgePadding
             && screenPos.y < Screen.height - edgePadding;
 
+        // Cek line-of-sight hanya saat target on-screen — tidak perlu raycast jika sudah pasti di belakang kamera
+        bool isVisible = isOnScreen && IsTargetVisible();
+
         float arrowAngle;
         Vector2 direction = Vector2.zero;
 
-        if (isNear)
+        if (isNear && isVisible)
         {
-            // Player dekat waypoint: tempatkan arrow di posisi target dan arahkan ke bawah (↓)
-            // Clamp agar tetap dalam batas layar meski target sedikit di luar viewport
-            Vector2 nearScreenPos = isBehind
-                ? new Vector2(halfW, halfH)
-                : new Vector2(
-                    Mathf.Clamp(screenPos.x, edgePadding, Screen.width - edgePadding),
-                    Mathf.Clamp(screenPos.y, edgePadding, Screen.height - edgePadding));
+            // Dekat DAN terlihat: arrow floating di atas objek, pointing down (↓)
+            Vector3 aboveScreen = targetCamera.WorldToScreenPoint(
+                _currentWaypoint.position + Vector3.up * visibleHeightOffset);
+            Vector2 nearPos = new Vector2(
+                Mathf.Clamp(aboveScreen.x, edgePadding, Screen.width - edgePadding),
+                Mathf.Clamp(aboveScreen.y, edgePadding, Screen.height - edgePadding));
 
-            SetArrowScreenPosition(nearScreenPos);
-            arrowAngle = 0f; // Sprite default menunjuk ke bawah (↓)
+            SetArrowScreenPosition(nearPos);
+            arrowAngle = 0f;
         }
-        else if (isOnScreen)
+        else if (isVisible)
         {
-            SetArrowScreenPosition(new Vector2(screenPos.x, screenPos.y));
+            // Target terlihat langsung: tempatkan arrow floating di atas objek di world-space
+            Vector3 aboveScreen = targetCamera.WorldToScreenPoint(
+                _currentWaypoint.position + Vector3.up * visibleHeightOffset);
+            SetArrowScreenPosition(new Vector2(aboveScreen.x, aboveScreen.y));
             arrowAngle = 0f;
         }
         else
         {
-            // Clamp ke tepi layar, rotasi panah ke arah target
+            // Target tidak terlihat (terhalang atau di luar layar): arrow menempel ke tepi layar sebagai kompas
             direction = new Vector2(screenPos.x - halfW, screenPos.y - halfH);
             Vector2 clamped = ClampToScreenEdge(direction, halfW - edgePadding, halfH - edgePadding);
             SetArrowScreenPosition(clamped + new Vector2(halfW, halfH));
-            // Negasi direction.x untuk mengkompensasi perbedaan konvensi antara atan2 (CCW+)
-            // dan Unity UI (CW+ dari perspektif viewer), sehingga arrow selalu mengarah keluar layar.
             arrowAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 90f;
         }
 
         arrowContainer.localRotation = Quaternion.Euler(0f, 0f, arrowAngle);
 
-        // Update label jarak (opsional)
+        // Update label jarak
         if (distanceText != null)
         {
             distanceText.text = $"{Mathf.RoundToInt(dist)} m";
@@ -181,18 +188,28 @@ public class MissionNavigator : MonoBehaviour
             // Counter-rotate text agar selalu terbaca upright, tidak ikut rotasi arrow
             distanceText.rectTransform.localRotation = Quaternion.Euler(0f, 0f, -arrowAngle);
 
-            // Saat arrow di tepi layar, geser teks ke arah dalam layar agar tidak terpotong/tertimpa.
-            // Offset horizontal dan vertikal dipisah agar bisa di-tune secara independen.
-            if (!isOnScreen && !isNear && direction != Vector2.zero)
+            // Saat arrow di tepi layar, geser teks ke dalam agar tidak terpotong
+            if (!isVisible && direction != Vector2.zero)
             {
                 Vector2 normDir = direction.normalized;
-                float offsetX = normDir.x * textInwardOffsetHorizontal;
-                float offsetY = normDir.y * textInwardOffsetVertical;
-                distanceText.rectTransform.localPosition = -new Vector2(offsetX, offsetY);
+                distanceText.rectTransform.localPosition = -new Vector2(
+                    normDir.x * textInwardOffsetHorizontal,
+                    normDir.y * textInwardOffsetVertical);
             }
             else
                 distanceText.rectTransform.localPosition = _defaultTextLocalPos;
         }
+    }
+
+    /// <summary>
+    /// Cek apakah target terlihat langsung dari kamera menggunakan Physics.Raycast.
+    /// Mengembalikan true jika tidak ada collider yang menghalangi garis pandang.
+    /// </summary>
+    private bool IsTargetVisible()
+    {
+        Vector3 origin = targetCamera.transform.position;
+        Vector3 toTarget = _currentWaypoint.position - origin;
+        return !Physics.Raycast(origin, toTarget.normalized, toTarget.magnitude, occlusionMask);
     }
 
     /// <summary>
@@ -225,6 +242,16 @@ public class MissionNavigator : MonoBehaviour
         float scaleY = absY > 0f ? halfH / absY : float.MaxValue;
 
         return direction * Mathf.Min(scaleX, scaleY);
+    }
+
+    /// <summary>
+    /// Clears the current waypoint and hides the navigation arrow immediately.
+    /// Call this when the player arrives at the destination.
+    /// </summary>
+    public void ClearWaypoint()
+    {
+        _currentWaypoint = null;
+        SetVisible(false);
     }
 
     private void SetVisible(bool visible)

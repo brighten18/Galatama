@@ -1396,6 +1396,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 21401109}
   m_Mesh: {fileID: 736115405485880582, guid: 5fef62533e4723949a8318d490a02f32, type: 3}
+--- !u!1 &21466975
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 21466976}
+  m_Layer: 0
+  m_Name: NavWater
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &21466976
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21466975}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0.0000002533197}
+  m_LocalPosition: {x: -4.6334, y: 6.54, z: 0.5911}
+  m_LocalScale: {x: 0.01, y: 1, z: 0.01}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 38967298}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &22033494
 GameObject:
   m_ObjectHideFlags: 0
@@ -2479,8 +2510,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10.000001, y: 4, z: 10.000001}
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Size: {x: 0.6345538, y: 4, z: 0.24193268}
+  m_Center: {x: -4.6826887, y: 1, z: 0.6471626}
 --- !u!23 &38967296
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2549,7 +2580,8 @@ Transform:
   m_LocalPosition: {x: 542.1, y: -0.52, z: 0}
   m_LocalScale: {x: 100, y: 1, z: 100}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 21466976}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &38967299
@@ -30428,6 +30460,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MissionNavigator
   waypoints:
   - {fileID: 1438801771}
+  - {fileID: 21466976}
   canvas: {fileID: 757213273}
   arrowContainer: {fileID: 807555495}
   distanceText: {fileID: 1572452347}
@@ -30436,6 +30469,10 @@ MonoBehaviour:
   textInwardOffsetVertical: 60
   nearDistance: 50
   targetCamera: {fileID: 0}
+  visibleHeightOffset: 2
+  occlusionMask:
+    serializedVersion: 2
+    m_Bits: 19
 --- !u!114 &403749494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91120,6 +91157,72 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1223564437}
   m_Mesh: {fileID: 5804271149031554680, guid: b48210c185d155549bef1aaa97f67725, type: 3}
+--- !u!1 &1223588074
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1223588075}
+  - component: {fileID: 1223588077}
+  - component: {fileID: 1223588078}
+  m_Layer: 0
+  m_Name: NavWaterTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1223588075
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223588074}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 83.25, y: -0.5, z: 66}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1223588077
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223588074}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 30, y: 5, z: 30}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1223588078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1223588074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a043a77085eb6064eae566c64defb6d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClearNavigatorOnTrigger
 --- !u!1 &1224044804
 GameObject:
   m_ObjectHideFlags: 0
@@ -102910,7 +103013,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1369600065
 RectTransform:
   m_ObjectHideFlags: 0
@@ -108994,7 +109097,7 @@ Transform:
   m_GameObject: {fileID: 1438801770}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 10.62, z: 0}
+  m_LocalPosition: {x: 0, y: 8.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -176428,3 +176531,4 @@ SceneRoots:
   - {fileID: 758398224}
   - {fileID: 11310297}
   - {fileID: 1271391228}
+  - {fileID: 1223588075}

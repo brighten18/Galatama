@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionTitle: MISI
   missionDescription: Tangkap ikan hias menggunakan jaring
-  waypointIndex: -1
+  waypointIndex: 1

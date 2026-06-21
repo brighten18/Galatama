@@ -1253,7 +1253,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 21265233}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.0093579}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1261,8 +1261,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2168, y: 133}
-  m_SizeDelta: {x: 1710, y: 362}
+  m_AnchoredPosition: {x: 1197, y: -348}
+  m_SizeDelta: {x: 3652, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &21265235
 MonoBehaviour:
@@ -1295,7 +1295,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &21265236
@@ -2716,7 +2716,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &40414059
@@ -3031,7 +3031,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &43705121
@@ -4570,7 +4570,7 @@ MonoBehaviour:
     m_Alignment: 3
     m_AlignByGeometry: 1
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
@@ -4838,7 +4838,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Status Aqaurium:'
 --- !u!222 &75631736
@@ -5977,7 +5977,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &89977110
@@ -6925,7 +6925,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Jumlah Ikan: '
 --- !u!222 &99965658
@@ -12922,7 +12922,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Status Aqaurium:'
 --- !u!222 &187555405
@@ -15877,7 +15877,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &222816248
@@ -17262,7 +17262,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &245930412
@@ -17959,7 +17959,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Jumlah Ikan: '
 --- !u!222 &255155604
@@ -19858,7 +19858,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 274386095}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -19866,7 +19866,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 385, y: -356.99945}
+  m_AnchoredPosition: {x: 2354, y: 129}
   m_SizeDelta: {x: 1710, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &274386097
@@ -19900,7 +19900,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &274386098
@@ -23305,7 +23305,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Status Aqaurium:'
 --- !u!222 &315899170
@@ -26198,7 +26198,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 402, y: -356.99945}
+  m_AnchoredPosition: {x: 2368, y: 140}
   m_SizeDelta: {x: 1710, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &343284065
@@ -26232,7 +26232,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &343284066
@@ -27356,7 +27356,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Kualitas Air:'
 --- !u!222 &354708710
@@ -28865,7 +28865,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &377697946
@@ -28944,7 +28944,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &378372399
@@ -31576,7 +31576,7 @@ MonoBehaviour:
     m_Alignment: 3
     m_AlignByGeometry: 1
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
@@ -31745,7 +31745,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &415572131
@@ -32323,7 +32323,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &422752517
@@ -35177,11 +35177,61 @@ MonoBehaviour:
   safeIndicatorColor: {r: 0.2, g: 0.85, b: 0.35, a: 1}
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
-  oxygenDangerMargin: 1
-  ammoniaDangerMargin: 0.35
-  temperatureDangerMargin: 1.5
-  phDangerMargin: 0.4
-  salinityDangerMargin: 3
+  oxygenThresholds:
+    batasAmanMinimum: 5
+    batasAmanMaksimum: 8
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 5
+    gunakanBahayaTinggi: 0
+    batasBahayaTinggi: 0
+    gunakanKritisRendah: 1
+    batasKritisRendah: 4
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  temperatureThresholds:
+    batasAmanMinimum: 25
+    batasAmanMaksimum: 27
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 21
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 31
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  phThresholds:
+    batasAmanMinimum: 6.5
+    batasAmanMaksimum: 7.5
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 6
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 8
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  salinityThresholds:
+    batasAmanMinimum: 32
+    batasAmanMaksimum: 35
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 32
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 35
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  ammoniaThresholds:
+    batasAmanMinimum: 0
+    batasAmanMaksimum: 0.1
+    gunakanBahayaRendah: 0
+    batasBahayaRendah: 0
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 0.1
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 0.5
   installedEquipment:
   - {fileID: 11400000, guid: 055eb1a81463620408374c032b8c77a0, type: 2}
   - {fileID: 11400000, guid: 352c2910898b70b4599eeaa5359433d9, type: 2}
@@ -38201,7 +38251,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &500826952
@@ -39767,11 +39817,61 @@ MonoBehaviour:
   safeIndicatorColor: {r: 0.2, g: 0.85, b: 0.35, a: 1}
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
-  oxygenDangerMargin: 1
-  ammoniaDangerMargin: 0.35
-  temperatureDangerMargin: 1.5
-  phDangerMargin: 0.4
-  salinityDangerMargin: 3
+  oxygenThresholds:
+    batasAmanMinimum: 5
+    batasAmanMaksimum: 8
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 5
+    gunakanBahayaTinggi: 0
+    batasBahayaTinggi: 0
+    gunakanKritisRendah: 1
+    batasKritisRendah: 4
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  temperatureThresholds:
+    batasAmanMinimum: 25
+    batasAmanMaksimum: 27
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 21
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 31
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  phThresholds:
+    batasAmanMinimum: 6.5
+    batasAmanMaksimum: 7.5
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 6
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 8
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  salinityThresholds:
+    batasAmanMinimum: 32
+    batasAmanMaksimum: 35
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 32
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 35
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  ammoniaThresholds:
+    batasAmanMinimum: 0
+    batasAmanMaksimum: 0.1
+    gunakanBahayaRendah: 0
+    batasBahayaRendah: 0
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 0.1
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 0.5
   installedEquipment:
   - {fileID: 11400000, guid: 055eb1a81463620408374c032b8c77a0, type: 2}
   - {fileID: 11400000, guid: 352c2910898b70b4599eeaa5359433d9, type: 2}
@@ -41257,37 +41357,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 536493151}
   m_Mesh: {fileID: -2279785635415672129, guid: b48210c185d155549bef1aaa97f67725, type: 3}
---- !u!1 &537082918
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 537082919}
-  m_Layer: 0
-  m_Name: Target
-  m_TagString: Untagged
-  m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &537082919
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 537082918}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.038, y: 0.334, z: -0.526}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 659562666}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &537865010
 GameObject:
   m_ObjectHideFlags: 0
@@ -43612,7 +43681,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &556610920
@@ -49923,7 +49992,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Jumlah Ikan: '
 --- !u!222 &635072309
@@ -50328,7 +50397,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Kualitas Air:'
 --- !u!222 &637710070
@@ -51537,118 +51606,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 657821067}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &659562665
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 659562666}
-  - component: {fileID: 659562669}
-  - component: {fileID: 659562668}
-  - component: {fileID: 659562667}
-  m_Layer: 0
-  m_Name: Blocker5 (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &659562666
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659562665}
-  serializedVersion: 2
-  m_LocalRotation: {x: -6.217249e-15, y: 0.70710546, z: -0.000000014901133, w: 0.70710814}
-  m_LocalPosition: {x: 12.059986, y: -4.96, z: 1.889993}
-  m_LocalScale: {x: 8.470816, y: 6.5580006, z: 8.097423}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 537082919}
-  m_Father: {fileID: 1655082102}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!65 &659562667
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659562665}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &659562668
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659562665}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 57f2f2886725b374d909fe91c6f76c27, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &659562669
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 659562665}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &659671700
 GameObject:
   m_ObjectHideFlags: 0
@@ -52124,7 +52081,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Kualitas Air:'
 --- !u!222 &665675432
@@ -55795,11 +55752,61 @@ MonoBehaviour:
   safeIndicatorColor: {r: 0.2, g: 0.85, b: 0.35, a: 1}
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
-  oxygenDangerMargin: 1
-  ammoniaDangerMargin: 0.35
-  temperatureDangerMargin: 1.5
-  phDangerMargin: 0.4
-  salinityDangerMargin: 3
+  oxygenThresholds:
+    batasAmanMinimum: 5
+    batasAmanMaksimum: 8
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 5
+    gunakanBahayaTinggi: 0
+    batasBahayaTinggi: 0
+    gunakanKritisRendah: 1
+    batasKritisRendah: 4
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  temperatureThresholds:
+    batasAmanMinimum: 25
+    batasAmanMaksimum: 27
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 21
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 31
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  phThresholds:
+    batasAmanMinimum: 6.5
+    batasAmanMaksimum: 7.5
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 6
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 8
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  salinityThresholds:
+    batasAmanMinimum: 32
+    batasAmanMaksimum: 35
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 32
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 35
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  ammoniaThresholds:
+    batasAmanMinimum: 0
+    batasAmanMaksimum: 0.1
+    gunakanBahayaRendah: 0
+    batasBahayaRendah: 0
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 0.1
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 0.5
   installedEquipment:
   - {fileID: 11400000, guid: 055eb1a81463620408374c032b8c77a0, type: 2}
   - {fileID: 11400000, guid: 352c2910898b70b4599eeaa5359433d9, type: 2}
@@ -57294,8 +57301,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 224, y: -357}
-  m_SizeDelta: {x: 1710, y: 362}
+  m_AnchoredPosition: {x: 2442, y: 125}
+  m_SizeDelta: {x: 2244, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &742907053
 MonoBehaviour:
@@ -57328,7 +57335,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &742907054
@@ -59838,7 +59845,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &777382183
@@ -62505,7 +62512,7 @@ MonoBehaviour:
     m_Alignment: 3
     m_AlignByGeometry: 1
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
@@ -62652,7 +62659,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &816891067
@@ -65505,7 +65512,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Kualitas Air:'
 --- !u!222 &854883756
@@ -66732,7 +66739,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Status Aqaurium:'
 --- !u!222 &869647991
@@ -69655,7 +69662,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 904052067}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.0011697}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -69663,8 +69670,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 224, y: 133}
-  m_SizeDelta: {x: 1710, y: 362}
+  m_AnchoredPosition: {x: 341, y: 133}
+  m_SizeDelta: {x: 1944, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &904052069
 MonoBehaviour:
@@ -69697,7 +69704,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &904052070
@@ -77110,7 +77117,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Status Aqaurium:'
 --- !u!222 &1034669945
@@ -78822,7 +78829,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1056379869}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -78830,8 +78837,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2082, y: 132.99986}
-  m_SizeDelta: {x: 1710, y: 362}
+  m_AnchoredPosition: {x: 879, y: -387}
+  m_SizeDelta: {x: 3652, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1056379871
 MonoBehaviour:
@@ -78864,7 +78871,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1056379872
@@ -82450,7 +82457,7 @@ MonoBehaviour:
     m_Alignment: 3
     m_AlignByGeometry: 1
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
@@ -83887,7 +83894,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Kualitas Air:'
 --- !u!222 &1126525606
@@ -87828,7 +87835,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!4 &1182376282 stripped
@@ -90888,7 +90895,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -91, y: -356.99945}
+  m_AnchoredPosition: {x: 2099, y: 133}
   m_SizeDelta: {x: 1710, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1222864702
@@ -90922,7 +90929,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1222864703
@@ -94458,7 +94465,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1253332335}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -94466,8 +94473,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2001, y: 132.99986}
-  m_SizeDelta: {x: 1710, y: 362}
+  m_AnchoredPosition: {x: 802, y: -356}
+  m_SizeDelta: {x: 3652, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1253332337
 MonoBehaviour:
@@ -94500,7 +94507,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1253332338
@@ -95284,7 +95291,7 @@ MonoBehaviour:
     m_Alignment: 3
     m_AlignByGeometry: 1
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
@@ -99281,7 +99288,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!1 &1317012385
@@ -101567,7 +101574,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1344650977
@@ -111141,7 +111148,7 @@ MonoBehaviour:
     m_Alignment: 3
     m_AlignByGeometry: 1
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
@@ -117762,7 +117769,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Kualitas Air:'
 --- !u!222 &1553186546
@@ -118484,7 +118491,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1565722528
@@ -121078,11 +121085,61 @@ MonoBehaviour:
   safeIndicatorColor: {r: 0.2, g: 0.85, b: 0.35, a: 1}
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
-  oxygenDangerMargin: 1
-  ammoniaDangerMargin: 0.35
-  temperatureDangerMargin: 1.5
-  phDangerMargin: 0.4
-  salinityDangerMargin: 3
+  oxygenThresholds:
+    batasAmanMinimum: 5
+    batasAmanMaksimum: 8
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 5
+    gunakanBahayaTinggi: 0
+    batasBahayaTinggi: 0
+    gunakanKritisRendah: 1
+    batasKritisRendah: 4
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  temperatureThresholds:
+    batasAmanMinimum: 25
+    batasAmanMaksimum: 27
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 21
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 31
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  phThresholds:
+    batasAmanMinimum: 6.5
+    batasAmanMaksimum: 7.5
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 6
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 8
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  salinityThresholds:
+    batasAmanMinimum: 32
+    batasAmanMaksimum: 35
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 32
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 35
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  ammoniaThresholds:
+    batasAmanMinimum: 0
+    batasAmanMaksimum: 0.1
+    gunakanBahayaRendah: 0
+    batasBahayaRendah: 0
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 0.1
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 0.5
   installedEquipment:
   - {fileID: 11400000, guid: 055eb1a81463620408374c032b8c77a0, type: 2}
   - {fileID: 11400000, guid: 352c2910898b70b4599eeaa5359433d9, type: 2}
@@ -124444,7 +124501,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1639806000
@@ -125842,7 +125899,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Jumlah Ikan: '
 --- !u!222 &1651479395
@@ -126066,7 +126123,6 @@ Transform:
   - {fileID: 1827199681}
   - {fileID: 1807202502}
   - {fileID: 760284128}
-  - {fileID: 659562666}
   - {fileID: 844349752}
   m_Father: {fileID: 1469888958114970891}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
@@ -130883,7 +130939,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1717762683
@@ -131631,7 +131687,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Jumlah Ikan: '
 --- !u!222 &1732493064
@@ -131805,7 +131861,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1733487332
@@ -134671,7 +134727,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1774878733}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -134679,8 +134735,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1953, y: 132.99986}
-  m_SizeDelta: {x: 1710, y: 362}
+  m_AnchoredPosition: {x: 754, y: -352}
+  m_SizeDelta: {x: 3652, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1774878735
 MonoBehaviour:
@@ -134713,7 +134769,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1774878736
@@ -138131,7 +138187,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Jumlah Ikan: '
 --- !u!222 &1814228154
@@ -138647,8 +138703,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2346, y: 132.99986}
-  m_SizeDelta: {x: 1710, y: 362}
+  m_AnchoredPosition: {x: 1389, y: -359}
+  m_SizeDelta: {x: 3652, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1821446565
 MonoBehaviour:
@@ -138681,7 +138737,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1821446566
@@ -139142,7 +139198,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1825006072}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -139150,7 +139206,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -172, y: -356.99945}
+  m_AnchoredPosition: {x: 2010, y: 130}
   m_SizeDelta: {x: 1710, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1825006074
@@ -139184,7 +139240,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1825006075
@@ -140341,7 +140397,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -220, y: -356.99945}
+  m_AnchoredPosition: {x: 1956, y: 137}
   m_SizeDelta: {x: 1710, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1842357236
@@ -140375,7 +140431,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1842357237
@@ -141289,7 +141345,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1859694402}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -141297,8 +141353,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2329, y: 132.99986}
-  m_SizeDelta: {x: 1710, y: 362}
+  m_AnchoredPosition: {x: 1356, y: -360}
+  m_SizeDelta: {x: 3652, y: 362}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1859694404
 MonoBehaviour:
@@ -141331,7 +141387,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1859694405
@@ -143060,7 +143116,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1882325501
@@ -147574,7 +147630,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Status Aqaurium:'
 --- !u!222 &1945085243
@@ -149219,7 +149275,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &1962976119
@@ -155536,11 +155592,61 @@ MonoBehaviour:
   safeIndicatorColor: {r: 0.2, g: 0.85, b: 0.35, a: 1}
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
-  oxygenDangerMargin: 1
-  ammoniaDangerMargin: 0.35
-  temperatureDangerMargin: 1.5
-  phDangerMargin: 0.4
-  salinityDangerMargin: 3
+  oxygenThresholds:
+    batasAmanMinimum: 5
+    batasAmanMaksimum: 8
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 5
+    gunakanBahayaTinggi: 0
+    batasBahayaTinggi: 0
+    gunakanKritisRendah: 1
+    batasKritisRendah: 4
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  temperatureThresholds:
+    batasAmanMinimum: 25
+    batasAmanMaksimum: 27
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 21
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 31
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  phThresholds:
+    batasAmanMinimum: 6.5
+    batasAmanMaksimum: 7.5
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 6
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 8
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  salinityThresholds:
+    batasAmanMinimum: 32
+    batasAmanMaksimum: 35
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 32
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 35
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  ammoniaThresholds:
+    batasAmanMinimum: 0
+    batasAmanMaksimum: 0.1
+    gunakanBahayaRendah: 0
+    batasBahayaRendah: 0
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 0.1
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 0.5
   installedEquipment:
   - {fileID: 11400000, guid: 055eb1a81463620408374c032b8c77a0, type: 2}
   - {fileID: 11400000, guid: 352c2910898b70b4599eeaa5359433d9, type: 2}
@@ -157875,7 +157981,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
+    m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '-'
 --- !u!222 &2073654556
@@ -174961,11 +175067,61 @@ MonoBehaviour:
   safeIndicatorColor: {r: 0.2, g: 0.85, b: 0.35, a: 1}
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
-  oxygenDangerMargin: 1
-  ammoniaDangerMargin: 0.35
-  temperatureDangerMargin: 1.5
-  phDangerMargin: 0.4
-  salinityDangerMargin: 3
+  oxygenThresholds:
+    batasAmanMinimum: 5
+    batasAmanMaksimum: 8
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 5
+    gunakanBahayaTinggi: 0
+    batasBahayaTinggi: 0
+    gunakanKritisRendah: 1
+    batasKritisRendah: 4
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  temperatureThresholds:
+    batasAmanMinimum: 25
+    batasAmanMaksimum: 27
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 21
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 31
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  phThresholds:
+    batasAmanMinimum: 6.5
+    batasAmanMaksimum: 7.5
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 6
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 8
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  salinityThresholds:
+    batasAmanMinimum: 32
+    batasAmanMaksimum: 35
+    gunakanBahayaRendah: 1
+    batasBahayaRendah: 32
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 35
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 0
+    batasKritisTinggi: 0
+  ammoniaThresholds:
+    batasAmanMinimum: 0
+    batasAmanMaksimum: 0.1
+    gunakanBahayaRendah: 0
+    batasBahayaRendah: 0
+    gunakanBahayaTinggi: 1
+    batasBahayaTinggi: 0.1
+    gunakanKritisRendah: 0
+    batasKritisRendah: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 0.5
   installedEquipment:
   - {fileID: 11400000, guid: 055eb1a81463620408374c032b8c77a0, type: 2}
   - {fileID: 11400000, guid: 352c2910898b70b4599eeaa5359433d9, type: 2}

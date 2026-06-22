@@ -16,7 +16,7 @@ MonoBehaviour:
     budidaya?
   options:
   - 0 - 10 ppt
-  - 25 - 35 ppt
+  - 32 - 35 ppt
   - 50 - 60 ppt
   - 100 ppt
   correctIndex: 1

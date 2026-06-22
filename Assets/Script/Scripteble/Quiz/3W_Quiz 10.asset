@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e98f76bf364bf84994f145b6a0efa3f, type: 3}
   m_Name: 3W_Quiz 10
   m_EditorClassIdentifier: Assembly-CSharp::QuizQuestionSO
-  question: Apa fungsi utama dari komponen Cooler dalam sistem RAS Galatama?
+  question: Apa fungsi utama dari Alat Cooler & Heater dalam sistem RAS Galatama?
   options:
-  - Meningkatkan kadar oksigen secara mendadak
-  - 'Menjaga suhu air tetap stabil di rentang ideal '
-  - Membunuh bakteri
-  - Menyaring kotoran
+  - Meningkatkan kadar oksigen
+  - Menjaga suhu air agar ideal
+  - Membunuh bakteri dan kuman
+  - Menyaring kotoran berukuran kecil
   correctIndex: 1

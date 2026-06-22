@@ -15,7 +15,7 @@ MonoBehaviour:
   question: Apa fungsi utama akuarium dalam sistem RAS?
   options:
   - Menyaring kotoran ikan
-  - 'Tempat utama ikan hidup, makan, dan tumbuh '
+  - 'Tempat ikan dibudidaya '
   - Mendinginkan suhu air
   - Menambah oksigen ke dalam air
   correctIndex: 1

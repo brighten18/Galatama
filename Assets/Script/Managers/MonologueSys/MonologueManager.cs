@@ -65,8 +65,20 @@ public class MonologueManager : MonoBehaviour
     private string[] _processedPanels;
     private int _lastPoseIndex = -1;
 
+    // True jika monologue ini yang membekukan Time.timeScale, bukan PauseManager.
+    private bool _didFreezeTime;
+
+    // Key dari monologue yang sedang dimainkan via PlayMonologue(string key).
+    private string _currentPlayingKey;
+
     /// <summary>Fired when all monologue panels have been displayed and dismissed.</summary>
     public event Action OnMonologueFinished;
+
+    /// <summary>
+    /// Fired when a named monologue (played via key) finishes.
+    /// Passes the key of the finished monologue.
+    /// </summary>
+    public event Action<string> OnNamedMonologueFinished;
 
     /// <summary>True while the monologue sequence is on screen.</summary>
     public bool IsPlaying { get; private set; }
@@ -151,6 +163,7 @@ public class MonologueManager : MonoBehaviour
         {
             if (entry.key == key)
             {
+                _currentPlayingKey = key;
                 PlayMonologue(entry.data);
                 return;
             }
@@ -239,7 +252,7 @@ public class MonologueManager : MonoBehaviour
         {
             if (bodyText != null)
                 bodyText.text = RevealRichText(fullText, i);
-            yield return new WaitForSeconds(typewriterSpeed);
+            yield return new WaitForSecondsRealtime(typewriterSpeed);
         }
 
         _isTyping = false;
@@ -299,6 +312,13 @@ public class MonologueManager : MonoBehaviour
         IsPlaying = false;
         SetPlayerBlocked(false);
         OnMonologueFinished?.Invoke();
+
+        if (!string.IsNullOrEmpty(_currentPlayingKey))
+        {
+            string finishedKey = _currentPlayingKey;
+            _currentPlayingKey = null;
+            OnNamedMonologueFinished?.Invoke(finishedKey);
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -384,7 +404,11 @@ public class MonologueManager : MonoBehaviour
     // Player input control
     // -------------------------------------------------------------------------
 
-    private static void SetPlayerBlocked(bool blocked)
+    /// <summary>
+    /// Memblokir atau membuka seluruh input dan membekukan waktu saat monologue aktif.
+    /// Jika game sudah di-pause oleh PauseManager, timeScale tidak diubah.
+    /// </summary>
+    private void SetPlayerBlocked(bool blocked)
     {
         var pm = PlayerInputManager.Instance;
         if (pm == null) return;
@@ -397,6 +421,23 @@ public class MonologueManager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+            // Bekukan waktu hanya jika PauseManager belum melakukannya
+            bool alreadyPaused = PauseManager.Instance != null && PauseManager.Instance.IsPaused;
+            if (!alreadyPaused)
+            {
+                Time.timeScale = 0f;
+                _didFreezeTime = true;
+            }
+        }
+        else
+        {
+            // Kembalikan timeScale hanya jika monologue ini yang membekukannya
+            if (_didFreezeTime)
+            {
+                Time.timeScale = 1f;
+                _didFreezeTime = false;
+            }
         }
     }
 
@@ -482,7 +523,7 @@ public class MonologueManager : MonoBehaviour
 
         while (elapsed < fadeDuration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             color.a = Mathf.Lerp(from, to, elapsed / fadeDuration);
             fadeOverlay.color = color;
             yield return null;

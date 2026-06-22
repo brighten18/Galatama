@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e98f76bf364bf84994f145b6a0efa3f, type: 3}
   m_Name: 2W_Quiz 6
   m_EditorClassIdentifier: Assembly-CSharp::QuizQuestionSO
-  question: Manakah rentang suhu ideal untuk menjaga ikan agar tetap sehat?
+  question: Alat apa yang berfungsi menghasilkan gelembung udara untuk menjaga kadar
+    DO tetap aman?
   options:
-  - "15-20\xB0C"
-  - "25-30\xB0C"
-  - "30-35\xB0C"
-  - "20-25\xB0C"
+  - Termometer
+  - Aerator
+  - Filter Fisik
+  - Lampu UV
   correctIndex: 1

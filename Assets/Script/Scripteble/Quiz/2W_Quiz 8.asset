@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::QuizQuestionSO
   question: Berapa nilai pH ideal yang mendukung keseimbangan tubuh ikan hias laut?
   options:
-  - 5,5 - 6,5
-  - '7,5 - 8,5 '
+  - 4,5 - 6,0
+  - '6,5 - 7,5 '
   - 9,0 - 10,0
-  - 6,5 - 7,0
+  - 3,5 - 5,0
   correctIndex: 1

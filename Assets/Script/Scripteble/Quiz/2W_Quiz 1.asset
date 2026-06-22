@@ -15,8 +15,8 @@ MonoBehaviour:
   question: Berapa kadar Amonia maksimal yang masih dianggap aman bagi kesehatan
     insang ikan?
   options:
-  - Di atas 0,04 mg/L
-  - Di bawah 0,02 mg/L
-  - Minimal 0,04 mg/L
-  - Tepat di 0,02 mg/L
+  - Di atas 0,5 mg/L
+  - Di bawah 0,1 mg/L
+  - Minimal 0,3 mg/L
+  - Tepat di 0,2 mg/L
   correctIndex: 1

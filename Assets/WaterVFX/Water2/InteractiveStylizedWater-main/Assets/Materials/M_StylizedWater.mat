@@ -56,7 +56,7 @@ Material:
     - _RECEIVE_SHADOWS_OFF: 0
     - _RefractionScale: 7
     - _RefractionSpeed: 1.9
-    - _RefractionStrength: 0.0186
+    - _RefractionStrength: 0
     - _RippleCutoff: 0.5
     - _Shineness: 0.877
     - _SurfaceScale: 9.9

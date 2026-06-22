@@ -15,7 +15,7 @@ MonoBehaviour:
   question: Apa keunggulan alat perangkap beta dalam konservasi laut?
   options:
   - Dapat menangkap ribuan ikan sekaligus
-  - Dipasang secara pasif dan tidak merusak struktur karang
+  - Dipasang secara pasif agar tidak merusak karang
   - Menggunakan listrik untuk melumpuhkan ikan
   - Terbuat dari bahan kimia yang menarik ikan
   correctIndex: 1

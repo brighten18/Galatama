@@ -30,10 +30,27 @@ public class QuizUIController : MonoBehaviour
     [SerializeField] private AudioClip pickSfx;
     [SerializeField, Range(0f, 1f)] private float pickSfxVolume = 1f;
 
+    private Vector2 originalResultTextPosition;
+    private Vector2 originalResultTextSizeDelta;
+
+    // Visual center Y of the result panel background, used to center text on fail.
+    private const float FailTextCenterY = 93.5f;
+    private const float FailTextHeight = 400f;
+
     public Button[] AnswerButtons => answerButtons;
     public Button RetryButton => retryButton;
     public Button NextButton => nextButton;
     public Button CloseButton => closeButton;
+
+    private void Awake()
+    {
+        if (resultText != null)
+        {
+            RectTransform rt = resultText.GetComponent<RectTransform>();
+            originalResultTextPosition = rt.anchoredPosition;
+            originalResultTextSizeDelta = rt.sizeDelta;
+        }
+    }
 
     public void ShowRoot(bool show)
     {
@@ -77,11 +94,26 @@ public class QuizUIController : MonoBehaviour
         }
     }
 
-    public void ShowResult(string message, bool showRetry, bool showNext)
+    public void ShowResult(string message, bool showRetry, bool showNext, bool passed)
     {
         if (questionPanel != null) questionPanel.SetActive(false);
         if (resultPanel != null) resultPanel.SetActive(true);
-        if (resultText != null) resultText.text = message;
+        if (rewardInfoRoot != null) rewardInfoRoot.SetActive(true);
+        if (resultText != null)
+        {
+            resultText.text = message;
+            RectTransform rt = resultText.GetComponent<RectTransform>();
+            if (passed)
+            {
+                rt.anchoredPosition = originalResultTextPosition;
+                rt.sizeDelta = originalResultTextSizeDelta;
+            }
+            else
+            {
+                rt.anchoredPosition = new Vector2(originalResultTextPosition.x, FailTextCenterY);
+                rt.sizeDelta = new Vector2(originalResultTextSizeDelta.x, FailTextHeight);
+            }
+        }
         if (retryButton != null) retryButton.gameObject.SetActive(showRetry);
         if (nextButton != null) nextButton.gameObject.SetActive(showNext);
     }
@@ -116,9 +148,6 @@ public class QuizUIController : MonoBehaviour
 
     public void HideRewardInfo()
     {
-        if (rewardInfoRoot != null)
-            rewardInfoRoot.SetActive(false);
-
         if (rewardTitleText != null)
             rewardTitleText.text = string.Empty;
 

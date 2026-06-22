@@ -110,10 +110,11 @@ public class MissionNavigator : MonoBehaviour
     private void LateUpdate()
     {
         bool monologueActive = MonologueManager.Instance != null && MonologueManager.Instance.IsActiveOrPending;
+        bool tutorialActive  = TutorialManager.Instance != null && TutorialManager.Instance.IsPlaying;
         if (arrowContainer != null)
-            arrowContainer.gameObject.SetActive(_isActive && !monologueActive);
+            arrowContainer.gameObject.SetActive(_isActive && !monologueActive && !tutorialActive);
 
-        if (!_isActive || monologueActive || _currentWaypoint == null || targetCamera == null || _canvasRect == null)
+        if (!_isActive || monologueActive || tutorialActive || _currentWaypoint == null || targetCamera == null || _canvasRect == null)
             return;
 
         UpdateArrow();

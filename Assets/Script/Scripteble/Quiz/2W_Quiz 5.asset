@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e98f76bf364bf84994f145b6a0efa3f, type: 3}
   m_Name: 2W_Quiz 5
   m_EditorClassIdentifier: Assembly-CSharp::QuizQuestionSO
-  question: Apa keunggulan alat perangkap beta dalam konservasi laut?
+  question: Apa yang diukur oleh skala pH dalam sebuah larutan?
   options:
-  - Dapat menangkap ribuan ikan sekaligus
-  - Dipasang secara pasif dan tidak merusak struktur karang
-  - Menggunakan listrik untuk melumpuhkan ikan
-  - Terbuat dari bahan kimia yang menarik ikan
+  - Kadar oksigen dalam air
+  - 'Tingkat keasaman atau kebasaan larutan '
+  - Kecepatan aliran air
+  - Jumlah ikan dalam akuarium
   correctIndex: 1

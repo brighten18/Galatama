@@ -156,6 +156,10 @@ public class FishBrain : MonoBehaviour
 
         currentZoneType = zoneType;
         wander.SetAquariumMode(zoneType == ZoneType.Aquarium);
+
+        // Terrain avoidance tidak diperlukan di dalam aquarium — skip SampleHeight() per frame.
+        movement.SetTerrainAvoidanceEnabled(zoneType != ZoneType.Aquarium);
+
         InitOceanFlockingMode();
         RecalculateMovementDecision();
         decisionTimer = GetNextDecisionInterval();

@@ -21,6 +21,7 @@ namespace GALATAMA.MainMenu
         public List<AquariumSaveData> aquariums = new List<AquariumSaveData>();
         public QuizSaveData quiz = new QuizSaveData();
         public List<CooldownEntrySaveData> cooldowns = new List<CooldownEntrySaveData>();
+        public List<string> completedTutorials = new List<string>();
     }
 
     [Serializable]
@@ -337,6 +338,8 @@ namespace GALATAMA.MainMenu
                 data.quiz = new QuizSaveData();
             if (data.cooldowns == null)
                 data.cooldowns = new List<CooldownEntrySaveData>();
+            if (data.completedTutorials == null)
+                data.completedTutorials = new List<string>();
 
             return true;
         }

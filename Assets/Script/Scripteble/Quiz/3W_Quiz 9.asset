@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e98f76bf364bf84994f145b6a0efa3f, type: 3}
   m_Name: 3W_Quiz 9
   m_EditorClassIdentifier: Assembly-CSharp::QuizQuestionSO
-  question: Apa kegunaan lain dari proses degassing?
+  question: Apa kegunaan dari proses degassing?
   options:
   - Membunuh virus dengan sinar UV
-  - 'Melepaskan gas berbahaya seperti karbon dioksida (CO2) dari air  '
+  - Melepaskan gas berbahaya dari air
   - "Menurunkan suhu air sebesar 3\xB0C"
   - Menguraikan amonia
   correctIndex: 1

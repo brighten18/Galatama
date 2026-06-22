@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::QuizQuestionSO
   question: Bagaimana UV Filter membunuh mikroorganisme berbahaya?
   options:
-  - ' Dengan menyaring menggunakan jaring halus'
+  - Dengan menyaring menggunakan jaring halus
   - 'Dengan cahaya ultraviolet yang merusak DNA mikroorganisme '
-  - Dengan bahan kimia klorin
+  - Dengan bahan kimia klorin dan karbon monoksida
   - Dengan suhu rendah dari pendingin air
   correctIndex: 1

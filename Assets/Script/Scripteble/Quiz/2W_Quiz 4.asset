@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e98f76bf364bf84994f145b6a0efa3f, type: 3}
   m_Name: 2W_Quiz 4
   m_EditorClassIdentifier: Assembly-CSharp::QuizQuestionSO
-  question: Apa kegunaan alat lidi pengusir dalam teknik penangkapan ikan ramah lingkungan?
+  question: Manakah rentang suhu ideal untuk menjaga ikan agar tetap sehat?
   options:
-  - Untuk memancing ikan agar memakan umpan
-  - Mengeluarkan ikan dari celah karang tanpa merusaknya
-  - Sebagai tiang penahan jaring pukat
-  - Untuk menusuk ikan target
+  - "15-20\xB0C"
+  - "25-27\xB0C "
+  - "31-35\xB0C"
+  - "28-30\xB0C"
   correctIndex: 1

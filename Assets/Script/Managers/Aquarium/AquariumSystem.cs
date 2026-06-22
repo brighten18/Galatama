@@ -283,7 +283,16 @@ public class AquariumSystem : MonoBehaviour
     private readonly List<AquariumFoodPellet> activeFoodPellets = new List<AquariumFoodPellet>();
     private readonly Dictionary<string, float> fishEatCooldownUntil = new Dictionary<string, float>();
     private readonly HashSet<int> consumedInventoryItemIds = new HashSet<int>();
+    private readonly List<string> warningBuffer = new List<string>();
     private float simulationTimer;
+
+    // Cached fish counts — updated only when fish are added, removed, or die.
+    // Avoids iterating storedFish every frame in Update().
+    private int cachedLivingFishCount;
+    private int cachedDeadFishCount;
+
+    // Cached cooler state — updated only when equipment changes.
+    private bool cachedCoolerActive;
 
     private enum WaterIndicatorSeverity
     {
@@ -332,6 +341,7 @@ public class AquariumSystem : MonoBehaviour
 
         EnsureFishSlots();
         InitializeRasSubsystems();
+        RebuildFishCountCache();
     }
 
     private void InitializeRasSubsystems()
@@ -342,6 +352,7 @@ public class AquariumSystem : MonoBehaviour
         bool coolerInstalled = installedEquipment.Exists(
             e => e != null && e.aquariumRole == AquariumEquipmentRole.Chiller);
 
+        cachedCoolerActive = coolerInstalled;
         rasSimulator.Initialize(waterQuality, coolerInstalled);
         rasFishManager.Initialize(waterQuality, storedFish, rasSimulator);
 
@@ -365,9 +376,8 @@ public class AquariumSystem : MonoBehaviour
         // Simulasi kontinu berbasis Time.deltaTime (RAS Galatama real-time)
         float dt = Time.deltaTime;
         float rasDt = dt * Mathf.Max(0f, rasTimeScale);
-        rasSimulator?.Tick(rasDt, CountLivingFish(), CountDeadFish());
+        rasSimulator?.Tick(rasDt, cachedLivingFishCount, cachedDeadFishCount);
         rasFishManager?.Tick(rasDt);
-        SyncCoolerState();
 
         // Simulasi tick lama (equipment effects, UI refresh) tetap berjalan
         TickSimulation(dt);
@@ -383,6 +393,7 @@ public class AquariumSystem : MonoBehaviour
 
     /// <summary>
     /// Sinkronisasi status cooler ke RasWaterSimulator saat equipment berubah.
+    /// Hanya dipanggil saat installedEquipment dimodifikasi, bukan setiap frame.
     /// </summary>
     private void SyncCoolerState()
     {
@@ -391,6 +402,9 @@ public class AquariumSystem : MonoBehaviour
         bool coolerInstalled = installedEquipment.Exists(
             e => e != null && e.aquariumRole == AquariumEquipmentRole.Chiller);
 
+        if (coolerInstalled == cachedCoolerActive) return;
+
+        cachedCoolerActive = coolerInstalled;
         rasSimulator.SetCoolerActive(coolerInstalled);
     }
 
@@ -405,6 +419,7 @@ public class AquariumSystem : MonoBehaviour
             if (fish == null || fish.instanceId != instanceId) continue;
 
             Debug.Log($"[Aquarium][RAS] Ikan '{fish.itemName}' mati karena {reason}.");
+            TransitionFishToDead();
             FishDied?.Invoke(this, fish);
             FishStateChanged?.Invoke(this, fish);
             RemoveFishAt(i);
@@ -552,6 +567,7 @@ public class AquariumSystem : MonoBehaviour
         storedFish.Add(fishState);
         spawnedFish.Add(fishObject);
         rasFishManager?.RegisterFish(fishState);
+        IncrementLivingFishCount();
         RefreshUI();
         AquariumStateChanged?.Invoke(this);
         OnFishPlacedInAquarium?.Invoke();
@@ -853,6 +869,7 @@ public class AquariumSystem : MonoBehaviour
             return false;
 
         installedEquipment.Add(equipment);
+        SyncCoolerState();
         RefreshUI();
         AquariumStateChanged?.Invoke(this);
         return true;
@@ -861,12 +878,12 @@ public class AquariumSystem : MonoBehaviour
     public bool RemoveEquipment(EquipmentData equipment)
     {
         if (IsRewardLocked) return false;
-        if (equipment == null)
-            return false;
+        if (equipment == null) return false;
 
         bool removed = installedEquipment.Remove(equipment);
         if (removed)
         {
+            SyncCoolerState();
             RefreshUI();
             AquariumStateChanged?.Invoke(this);
         }
@@ -1045,6 +1062,9 @@ public class AquariumSystem : MonoBehaviour
 
         if (index < spawnedFish.Count)
             spawnedFish.RemoveAt(index);
+
+        // Rebuild cache after structural change to storedFish
+        RebuildFishCountCache();
 
         ReassignFoodTargets();
         RefreshUI();
@@ -1270,43 +1290,44 @@ public class AquariumSystem : MonoBehaviour
         }
 
         waterQuality.Clamp();
+        RebuildFishCountCache();
         RefreshUI();
     }
 
-    private int CountLivingFish()
+    /// <summary>Rebuild both living and dead fish count caches from scratch.</summary>
+    private void RebuildFishCountCache()
     {
-        int count = 0;
+        cachedLivingFishCount = 0;
+        cachedDeadFishCount = 0;
         foreach (FishInstanceState fish in storedFish)
         {
-            if (fish != null && fish.isAlive)
-                count++;
+            if (fish == null) continue;
+            if (fish.isAlive) cachedLivingFishCount++;
+            else cachedDeadFishCount++;
         }
-
-        return count;
     }
 
-    private int CountDeadFish()
+    private void IncrementLivingFishCount()
     {
-        int count = 0;
-        foreach (FishInstanceState fish in storedFish)
-        {
-            if (fish != null && !fish.isAlive)
-                count++;
-        }
+        cachedLivingFishCount++;
+    }
 
-        return count;
+    private void TransitionFishToDead()
+    {
+        if (cachedLivingFishCount > 0) cachedLivingFishCount--;
+        cachedDeadFishCount++;
     }
 
     private string BuildWarningText()
     {
-        List<string> warnings = new List<string>();
-        AddWarningIfNeeded(warnings, "Amonia", waterQuality.ammonia, ammoniaThresholds);
-        AddWarningIfNeeded(warnings, "O2", waterQuality.oxygen, oxygenThresholds);
-        AddWarningIfNeeded(warnings, "Salinitas", waterQuality.salinity, salinityThresholds);
-        AddWarningIfNeeded(warnings, "pH", waterQuality.ph, phThresholds);
-        AddWarningIfNeeded(warnings, "Temperatur", waterQuality.temperature, temperatureThresholds);
+        warningBuffer.Clear();
+        AddWarningIfNeeded(warningBuffer, "Amonia", waterQuality.ammonia, ammoniaThresholds);
+        AddWarningIfNeeded(warningBuffer, "O2", waterQuality.oxygen, oxygenThresholds);
+        AddWarningIfNeeded(warningBuffer, "Salinitas", waterQuality.salinity, salinityThresholds);
+        AddWarningIfNeeded(warningBuffer, "pH", waterQuality.ph, phThresholds);
+        AddWarningIfNeeded(warningBuffer, "Temperatur", waterQuality.temperature, temperatureThresholds);
 
-        return warnings.Count == 0 ? string.Empty : string.Join("\n", warnings);
+        return warningBuffer.Count == 0 ? string.Empty : string.Join("\n", warningBuffer);
     }
 
     private void UpdateWaterIndicator(WaterIndicatorText indicator, float value, string format, WaterIndicatorSeverity severity)

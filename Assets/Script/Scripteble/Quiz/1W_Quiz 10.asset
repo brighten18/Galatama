@@ -15,7 +15,7 @@ MonoBehaviour:
   question: Zat beracun apa yang dihasilkan dari pembusukan sisa pakan di akuarium?
   options:
   - Oksigen
-  - Amonia (NH3)
+  - Amonia
   - Glukosa
   - Klorin
   correctIndex: 1

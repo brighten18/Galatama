@@ -52,7 +52,11 @@ public class MissionObjectiveUI : MonoBehaviour
         if (MonologueManager.Instance != null)
             MonologueManager.Instance.OnMonologueFinished += OnMonologueFinished;
 
+        if (OpeningSequencer.Instance != null)
+            OpeningSequencer.Instance.OnOpeningSequenceComplete += OnOpeningSequenceComplete;
+
         PosterMission3Tracker.OnAnyProgressChanged += OnPosterProgress;
+        FishAquariumMission7.OnProgressChanged += OnMission7Progress;
     }
 
     private void OnDisable()
@@ -66,19 +70,24 @@ public class MissionObjectiveUI : MonoBehaviour
         if (MonologueManager.Instance != null)
             MonologueManager.Instance.OnMonologueFinished -= OnMonologueFinished;
 
+        if (OpeningSequencer.Instance != null)
+            OpeningSequencer.Instance.OnOpeningSequenceComplete -= OnOpeningSequenceComplete;
+
         PosterMission3Tracker.OnAnyProgressChanged -= OnPosterProgress;
+        FishAquariumMission7.OnProgressChanged -= OnMission7Progress;
     }
 
     private void Start()
     {
-        // Jika monolog sedang berjalan atau terjadwal, tunda tampilan misi hingga monolog selesai
-        if (MonologueManager.Instance != null && MonologueManager.Instance.IsActiveOrPending)
+        bool isBlocked = (MonologueManager.Instance != null && MonologueManager.Instance.IsActiveOrPending)
+                      || (OpeningSequencer.Instance != null && !OpeningSequencer.Instance.IsSequenceComplete);
+
+        if (isBlocked)
         {
             _pendingMission = MissionManager.Instance?.CurrentMission;
             return;
         }
 
-        // Fallback: tampilkan misi aktif hanya jika event belum menanganinya lebih dulu
         if (!_missionDisplayed && MissionManager.Instance != null && MissionManager.Instance.CurrentMission != null)
             ShowMission(MissionManager.Instance.CurrentMission);
     }
@@ -89,6 +98,25 @@ public class MissionObjectiveUI : MonoBehaviour
         // Jangan unsubscribe di sini — lifecycle subscription dikelola oleh OnEnable/OnDisable.
         // Self-unsubscribe akan membuat monolog ke-2 dst tidak memicu transisi misi berikutnya.
 
+        // Jika opening sequence masih berjalan (tutorial belum selesai), tunda ke OnOpeningSequenceComplete
+        if (OpeningSequencer.Instance != null && !OpeningSequencer.Instance.IsSequenceComplete)
+            return;
+
+        if (_pendingMission != null)
+        {
+            var mission = _pendingMission;
+            _pendingMission = null;
+            ShowMission(mission);
+        }
+        else if (!_missionDisplayed && MissionManager.Instance != null && MissionManager.Instance.CurrentMission != null)
+        {
+            ShowMission(MissionManager.Instance.CurrentMission);
+        }
+    }
+
+    /// <summary>Dipanggil saat opening sequence (monolog + tutorial) selesai. Menampilkan misi yang diantrekan.</summary>
+    private void OnOpeningSequenceComplete()
+    {
         if (_pendingMission != null)
         {
             var mission = _pendingMission;
@@ -137,7 +165,8 @@ public class MissionObjectiveUI : MonoBehaviour
     /// <summary>Animates strikethrough → fade out → transition delay → fade in next mission.</summary>
     private IEnumerator StrikethroughThenFadeOutThenIn(MissionData data)
     {
-        // 1. Animasi garis coret pada deskripsi misi yang selesai
+        // 1. Rebuild lines berdasarkan teks yang sedang tampil, lalu animasi garis coret
+        SetupStrikethroughLines();
         yield return StartCoroutine(AnimateStrikethrough());
 
         // 2. Fade out seluruh panel
@@ -163,7 +192,8 @@ public class MissionObjectiveUI : MonoBehaviour
     /// <summary>Animates strikethrough → display delay → fade out. Used when all missions are complete.</summary>
     private IEnumerator StrikethroughThenFadeOut(float delay)
     {
-        // 1. Animasi garis coret pada misi terakhir
+        // 1. Rebuild lines berdasarkan teks yang sedang tampil, lalu animasi garis coret
+        SetupStrikethroughLines();
         yield return StartCoroutine(AnimateStrikethrough());
 
         // 2. Biarkan tampil sebentar
@@ -299,6 +329,22 @@ public class MissionObjectiveUI : MonoBehaviour
         var mission = MissionManager.Instance?.CurrentMission;
         if (mission == null) return;
         descriptionText.text = $"{mission.MissionDescription} {readCount}/{total}";
+    }
+
+    /// <summary>
+    /// Memperbarui deskripsi Misi 7 secara live.
+    /// Sebelum penuh: "Penuhi akuarium X/9"
+    /// Saat countdown: "Pertahankan semuanya tetap hidup selama Xs"
+    /// </summary>
+    private void OnMission7Progress(int fishCount, int maxFish, float remainingSeconds, bool isCountingDown)
+    {
+        if (descriptionText == null) return;
+        if (MissionManager.Instance == null || MissionManager.Instance.CurrentMissionIndex != 6) return;
+
+        if (isCountingDown)
+            descriptionText.text = $"Pertahankan semuanya tetap hidup selama {Mathf.CeilToInt(remainingSeconds)}s";
+        else
+            descriptionText.text = $"Penuhi akuarium {fishCount}/{maxFish}";
     }
 
     private IEnumerator FadeIn()

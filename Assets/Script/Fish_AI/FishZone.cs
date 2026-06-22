@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
@@ -11,6 +12,11 @@ public class FishZone : MonoBehaviour
 
     private Collider zoneCollider;
     private Bounds zoneBounds;
+
+    // Track colliders that have already received boundary assignment so
+    // OnTriggerStay does not repeat the expensive GetComponentInParent call
+    // every physics step for every fish already inside the zone.
+    private readonly HashSet<Collider> registeredColliders = new HashSet<Collider>();
 
     void Awake()
     {
@@ -43,15 +49,19 @@ public class FishZone : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        ApplyBoundary(other);
+        TryApplyBoundary(other);
     }
 
     void OnTriggerStay(Collider other)
     {
-        ApplyBoundary(other);
+        // Only process colliders that have not been registered yet.
+        // This handles fish that were already inside the zone when it first activated,
+        // without paying GetComponentInParent cost every physics step for all fish.
+        if (!registeredColliders.Contains(other))
+            TryApplyBoundary(other);
     }
 
-    private void ApplyBoundary(Collider other)
+    private void TryApplyBoundary(Collider other)
     {
         FishBrain fish = other.GetComponentInParent<FishBrain>();
         if (fish == null) return;
@@ -59,6 +69,7 @@ public class FishZone : MonoBehaviour
         UpdateBounds();
         fish.SetZoneType(zoneType);
         fish.SetBoundary(zoneCollider);
+        registeredColliders.Add(other);
 
         if (showDebugLog)
         {
@@ -68,10 +79,13 @@ public class FishZone : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        FishBrain fish = other.GetComponentInParent<FishBrain>();
-        if (fish != null && showDebugLog)
+        registeredColliders.Remove(other);
+
+        if (showDebugLog)
         {
-            Debug.LogWarning($"[FishZone] {fish.name} keluar dari {zoneType}. Movement akan clamp balik saat boundary masih tersimpan.");
+            FishBrain fish = other.GetComponentInParent<FishBrain>();
+            if (fish != null)
+                Debug.LogWarning($"[FishZone] {fish.name} keluar dari {zoneType}. Movement akan clamp balik saat boundary masih tersimpan.");
         }
     }
 

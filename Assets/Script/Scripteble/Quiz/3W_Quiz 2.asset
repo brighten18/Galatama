@@ -15,7 +15,7 @@ MonoBehaviour:
   question: Bagaimana cara kerja Drum Filter dalam sistem RAS?
   options:
   - Memancarkan cahaya UV untuk membunuh bakteri
-  - 'Berputar perlahan saat air melewatinya, lalu membuang kotoran secara otomatis '
+  - Menyaring kotoran berukuran besar lalu dibuang
   - Mengurai amonia menjadi zat aman
   - Menambah oksigen terlarut ke dalam air
   correctIndex: 1

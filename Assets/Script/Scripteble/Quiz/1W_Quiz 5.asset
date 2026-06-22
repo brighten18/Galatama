@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e98f76bf364bf84994f145b6a0efa3f, type: 3}
   m_Name: 1W_Quiz 5
   m_EditorClassIdentifier: Assembly-CSharp::QuizQuestionSO
-  question: Apa yang diukur oleh skala pH dalam sebuah larutan?
+  question: Penggunaan pukat harimau (trawl) dilarang di banyak wilayah karena?
   options:
-  - Kadar oksigen dalam air
-  - 'Tingkat keasaman atau kebasaan larutan '
-  - Kecepatan aliran air
-  - Jumlah ikan dalam akuarium
+  - Jaringnya terlalu kecil sehingga sulit dilihat
+  - Menangkap ikan tanpa pilih-pilih dan merusak dasar laut
+  - Hanya bisa digunakan oleh kapal besar
+  - Membuat air laut menjadi berwarna keruh
   correctIndex: 1

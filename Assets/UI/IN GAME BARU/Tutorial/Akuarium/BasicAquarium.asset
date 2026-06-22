@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6be5ad6469f54a48a35911e54a65b98, type: 3}
+  m_Name: BasicAquarium
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceSO
+  tutorialId: basic_aquarium
+  displayName: Petunjuk Budidaya Akuarium
+  playOnce: 1
+  lockPlayerWhileOpen: 1
+  steps:
+  - title: Memindahkan Ikan
+    description: Ikan di unequip terlebih dahulu dari quickslot, kemudian tarik dari
+      quickslot dan pindahkan ke penyimpanan akuarium
+    illustration: {fileID: 21300000, guid: bbd4f752a7e3ce64d845dc7c227047f7, type: 3}
+  - title: Status Ikan
+    description: Setiap ikan memiliki status lapar dan nyawanya tersendiri yang wajib
+      diperhatikan supaya ikan tetap hidup
+    illustration: {fileID: 21300000, guid: 56e4e2c230bcdf242ba2fe2b084f9b3d, type: 3}
+  - title: Item
+    description: Gunakan item untuk memberi penanganan yang sesuai. Perlu diingat
+      setiap item memiliki cooldown masing masing
+    illustration: {fileID: 21300000, guid: 35e92eb50b086db44bf56ebda6cc95ce, type: 3}
+  - title: Interaksi Item Ke Akuarium
+    description: klik item dari quickslot, kemudian tekan E ke akuarium untuk menggunakan
+      item
+    illustration: {fileID: 21300000, guid: e6526cb08fc9768488a8bc0d151375ec, type: 3}
+  - title: Alat Pengatur
+    description: Alat pengatur juga berguna memberi penanganan terhadap parameter
+      air. Setiap alat memiliki cooldown masing-masing
+    illustration: {fileID: 21300000, guid: 4e5ad7fab4c7de34ca1c87f1fdeabb88, type: 3}
+  - title: Parameter Kualitas Air
+    description: Pantau panel informasi di setiap akuarium untuk mengecek kondisi
+      air dan berikan penanganan yang sesuai. <b><color=#59f026>Hijau</color></b>
+      = zona aman. <b><color=#eda73e>Oranye</color></b> = zona bahaya. <b><color=#FF4136>Merah</color></b>
+      = zona kritis
+    illustration: {fileID: 21300000, guid: bb474e1aab977fe48ad32fd8520efde0, type: 3}
+  - title: Poster Edukasi
+    description: Baca poster yang tersedia sebagai sumber informasi permainan dan
+      materi untuk menjawab kuis
+    illustration: {fileID: 21300000, guid: 2a740c087efd39449a1d5c9767205a02, type: 3}
+  - title: Poster Edukasi
+    description: Baca poster yang tersedia sebagai sumber informasi permainan dan
+      materi untuk menjawab kuis
+    illustration: {fileID: 21300000, guid: 2a740c087efd39449a1d5c9767205a02, type: 3}

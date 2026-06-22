@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +20,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private Text titleText;
     [SerializeField] private Text bodyText;
     [SerializeField] private Text stepIndicatorText;
+    [SerializeField] private Text previousButtonText;
     [SerializeField] private Text nextButtonText;
 
     [Header("Visuals")]
@@ -39,6 +41,8 @@ public class TutorialManager : MonoBehaviour
     private TutorialSequenceSO _currentTutorial;
     private int _currentStepIndex;
     private bool _playerWasLockedByTutorial;
+    private bool _didFreezeTime;
+    private readonly HashSet<string> _completedIds = new HashSet<string>();
 
     private void Awake()
     {
@@ -58,14 +62,14 @@ public class TutorialManager : MonoBehaviour
     {
         if (previousButton != null) previousButton.onClick.AddListener(ShowPreviousStep);
         if (nextButton != null) nextButton.onClick.AddListener(ShowNextStepOrFinish);
-        if (closeButton != null) closeButton.onClick.AddListener(CloseCurrentTutorial);
+        if (closeButton != null) closeButton.onClick.AddListener(() => CloseCurrentTutorial());
     }
 
     private void OnDestroy()
     {
         if (previousButton != null) previousButton.onClick.RemoveListener(ShowPreviousStep);
         if (nextButton != null) nextButton.onClick.RemoveListener(ShowNextStepOrFinish);
-        if (closeButton != null) closeButton.onClick.RemoveListener(CloseCurrentTutorial);
+        if (closeButton != null) closeButton.onClick.RemoveAllListeners();
 
         if (Instance == this)
             Instance = null;
@@ -80,7 +84,12 @@ public class TutorialManager : MonoBehaviour
         return true;
     }
 
-    public void CloseCurrentTutorial()
+    /// <param name="suppressFinishedEvent">
+    /// Jika true, event OnTutorialFinished tidak akan di-fire.
+    /// Gunakan ini saat menutup tutorial untuk keperluan internal (misal: ganti kategori),
+    /// bukan saat user benar-benar selesai/menutup tutorial.
+    /// </param>
+    public void CloseCurrentTutorial(bool suppressFinishedEvent = false)
     {
         if (!IsPlaying)
             return;
@@ -103,7 +112,8 @@ public class TutorialManager : MonoBehaviour
         _markCompletedOnClose = true;
         IsPlaying = false;
 
-        OnTutorialFinished?.Invoke(finishedTutorial);
+        if (!suppressFinishedEvent)
+            OnTutorialFinished?.Invoke(finishedTutorial);
     }
 
     public bool IsTutorialCompleted(TutorialSequenceSO tutorial)
@@ -111,7 +121,7 @@ public class TutorialManager : MonoBehaviour
         if (tutorial == null)
             return false;
 
-        return PlayerPrefs.GetInt(GetPlayerPrefsKey(tutorial), 0) == 1;
+        return _completedIds.Contains(tutorial.TutorialId);
     }
 
     public void ResetTutorialCompletion(TutorialSequenceSO tutorial)
@@ -119,7 +129,40 @@ public class TutorialManager : MonoBehaviour
         if (tutorial == null)
             return;
 
-        PlayerPrefs.DeleteKey(GetPlayerPrefsKey(tutorial));
+        _completedIds.Remove(tutorial.TutorialId);
+    }
+
+    /// <summary>
+    /// Menghapus semua catatan tutorial yang sudah selesai.
+    /// Dipanggil saat memulai New Game agar tutorial muncul kembali dari awal.
+    /// </summary>
+    public void ResetAllTutorials()
+    {
+        _completedIds.Clear();
+    }
+
+    /// <summary>
+    /// Mengembalikan daftar tutorial ID yang sudah selesai untuk disimpan ke save data.
+    /// </summary>
+    public List<string> CaptureSaveData()
+    {
+        return new List<string>(_completedIds);
+    }
+
+    /// <summary>
+    /// Memuat daftar tutorial ID yang sudah selesai dari save data.
+    /// </summary>
+    public void RestoreFromSaveData(List<string> ids)
+    {
+        _completedIds.Clear();
+        if (ids == null)
+            return;
+
+        foreach (string id in ids)
+        {
+            if (!string.IsNullOrEmpty(id))
+                _completedIds.Add(id);
+        }
     }
 
     private bool _markCompletedOnClose = true;
@@ -169,14 +212,8 @@ public class TutorialManager : MonoBehaviour
         if (!IsPlaying || _currentTutorial == null)
             return;
 
-        if (_currentStepIndex < _currentTutorial.StepCount - 1)
-        {
-            _currentStepIndex++;
-            RefreshStep();
-            return;
-        }
-
-        CloseCurrentTutorial();
+        _currentStepIndex = (_currentStepIndex + 1) % _currentTutorial.StepCount;
+        RefreshStep();
     }
 
     private void RefreshStep()
@@ -214,11 +251,18 @@ public class TutorialManager : MonoBehaviour
         if (previousButton != null)
             previousButton.interactable = _currentStepIndex > 0;
 
+        if (previousButtonText != null)
+            previousButtonText.text = "Sebelumnya";
+
         if (nextButtonText != null)
-            nextButtonText.text = _currentStepIndex >= _currentTutorial.StepCount - 1 ? "Selesai" : "Next";
+            nextButtonText.text = "Selanjutnya";
     }
 
-    private static void SetPlayerBlocked(bool blocked)
+    /// <summary>
+    /// Memblokir atau membuka seluruh input dan membekukan waktu saat tutorial aktif.
+    /// Jika game sudah di-pause oleh PauseManager, timeScale tidak diubah.
+    /// </summary>
+    private void SetPlayerBlocked(bool blocked)
     {
         var pm = PlayerInputManager.Instance;
         if (pm == null)
@@ -228,15 +272,22 @@ public class TutorialManager : MonoBehaviour
         {
             pm.SetPlayerMovement(false);
             pm.SetCursorAndLook(false, false);
+            pm.SetInteractionBlocked(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            pm.ResetPauseInput();
-            pm.ResetInteractInput();
-            pm.ResetInteractOBJInput();
-            pm.ResetInventoryInput();
-            pm.ResetAllQuickSlotInputs();
+
+            // Bekukan waktu hanya jika PauseManager belum melakukannya
+            bool alreadyPaused = PauseManager.Instance != null && PauseManager.Instance.IsPaused;
+            if (!alreadyPaused)
+            {
+                Time.timeScale = 0f;
+                _didFreezeTime = true;
+            }
             return;
         }
+
+        // Unblock
+        pm.SetInteractionBlocked(false);
 
         bool isPaused = PauseManager.Instance != null && PauseManager.Instance.IsPaused;
         pm.SetPlayerMovement(!isPaused);
@@ -246,6 +297,13 @@ public class TutorialManager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+
+        // Kembalikan timeScale hanya jika tutorial ini yang membekukannya
+        if (_didFreezeTime)
+        {
+            Time.timeScale = 1f;
+            _didFreezeTime = false;
         }
     }
 
@@ -273,14 +331,11 @@ public class TutorialManager : MonoBehaviour
         rt.sizeDelta = new Vector2(width, height);
     }
 
-    private static string GetPlayerPrefsKey(TutorialSequenceSO tutorial)
-    {
-        return $"tutorial.completed.{tutorial.TutorialId}";
-    }
-
     private static void MarkCompleted(TutorialSequenceSO tutorial)
     {
-        PlayerPrefs.SetInt(GetPlayerPrefsKey(tutorial), 1);
-        PlayerPrefs.Save();
+        if (Instance == null || tutorial == null)
+            return;
+
+        Instance._completedIds.Add(tutorial.TutorialId);
     }
 }

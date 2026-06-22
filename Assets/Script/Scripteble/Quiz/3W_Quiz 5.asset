@@ -16,7 +16,7 @@ MonoBehaviour:
     menempel?
   options:
   - Pasir dan kerikil besar
-  - 'Media porous seperti bioball atau bola plastik kecil '
+  - Media seperti bola plastik kecil (bioball)
   - Lampu UV dan tabung transparan
   - Pompa dan pipa sirkulasi
   correctIndex: 1

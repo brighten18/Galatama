@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e98f76bf364bf84994f145b6a0efa3f, type: 3}
   m_Name: 3W_Quiz 8
   m_EditorClassIdentifier: Assembly-CSharp::QuizQuestionSO
-  question: Apa parameter kualitas air yang secara langsung ditingkatkan melalui
-    proses Degassing?
+  question: Gas berbahaya apa yang dilepaskan melalui proses Degassing?
   options:
-  - pH (Derajat Keasaman)
+  - CO2 (Carbon Dioxide)
   - DO (Dissolved Oxygen)
   - Salinitas (Kadar Garam)
   - Amonia (NH3)
-  correctIndex: 1
+  correctIndex: 0

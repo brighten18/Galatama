@@ -187,7 +187,7 @@ public class QuizManager : MonoBehaviour
 
         if (activeQuestions.Count == 0)
         {
-            ui.ShowResult("Wave tidak punya soal valid. Cek data wave/question.", true, false);
+            ui.ShowResult("Wave tidak punya soal valid. Cek data wave/question.", true, false, false);
             return;
         }
 
@@ -298,16 +298,15 @@ public class QuizManager : MonoBehaviour
             if (AreAllWavesPassed())
             {
                 message += "\nSemua gelombang lulus.";
-                ui.ShowResult(message, false, false);
+                ui.ShowResult(message, false, false, true);
                 return;
             }
 
-            ui.ShowResult(message, false, true);
+            ui.ShowResult(message, false, true, true);
             return;
         }
 
-        ui.HideRewardInfo();
-        ui.ShowResult(message, true, false);
+        ui.ShowResult(message, true, false, false);
     }
 
     private void ShowRewardResult(int passedWaveNumber)

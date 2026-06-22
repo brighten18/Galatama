@@ -165,6 +165,12 @@ public class PauseManager : MonoBehaviour
         if (pauseScreenUI != null)
             pauseScreenUI.SetActive(false);
 
+        if (TutorialCategorySwitcher.Instance != null)
+        {
+            TutorialCategorySwitcher.Instance.SetNavigationEnabled(true);
+            TutorialCategorySwitcher.Instance.SyncToTutorial(movementTutorial);
+        }
+
         TutorialManager.Instance.OnTutorialFinished -= HandleTutorialFinished;
         TutorialManager.Instance.OnTutorialFinished += HandleTutorialFinished;
         TutorialManager.Instance.TryPlayTutorial(movementTutorial, ignorePlayOnce: true, markCompletedOnClose: false);

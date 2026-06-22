@@ -69,6 +69,9 @@ namespace GALATAMA.MainMenu
             data.aquariums = CaptureAquariumData();
             data.quiz = QuizManager.Instance != null ? QuizManager.Instance.CaptureSaveData() : new QuizSaveData();
             data.cooldowns = CaptureCooldownData();
+            data.completedTutorials = TutorialManager.Instance != null
+                ? TutorialManager.Instance.CaptureSaveData()
+                : new List<string>();
 
             SaveGameService.SaveSlot(data);
             return true;
@@ -92,6 +95,9 @@ namespace GALATAMA.MainMenu
 
             if (isNewGame || !data.hasSavedProgress)
             {
+                if (TutorialManager.Instance != null)
+                    TutorialManager.Instance.ResetAllTutorials();
+
                 if (QuizManager.Instance != null)
                     QuizManager.Instance.RestoreFromSaveData(new QuizSaveData());
 
@@ -118,6 +124,9 @@ namespace GALATAMA.MainMenu
                 QuizManager.Instance.RestoreFromSaveData(data.quiz);
 
             RestoreCooldownData(data.cooldowns);
+
+            if (TutorialManager.Instance != null)
+                TutorialManager.Instance.RestoreFromSaveData(data.completedTutorials);
         }
 
         private PlayerSaveData CapturePlayerData(GameObject player)

@@ -173,7 +173,16 @@ public class FishSpawner : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"[FishSpawner] {fishObj.name} tidak punya FishBrain, boundary AI tidak diterapkan.");
+            SimpleMenuFish menuFish = fishObj.GetComponent<SimpleMenuFish>();
+            if (menuFish != null)
+            {
+                Bounds zoneBounds = spawnZone.GetBounds();
+                menuFish.SetSwimArea(zoneBounds.center, zoneBounds.size);
+            }
+            else
+            {
+                Debug.LogWarning($"[FishSpawner] {fishObj.name} tidak punya FishBrain maupun SimpleMenuFish, boundary AI tidak diterapkan.");
+            }
         }
 
         recentSpawnPositions.Add(spawnPos);

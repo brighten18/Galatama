@@ -28,6 +28,7 @@ public class FishMovement : MonoBehaviour
     private Bounds zoneBounds;
     private Collider boundaryCollider;
     private bool hasBounds = false;
+    private bool terrainAvoidanceEnabled = true;
     private Vector3 currentMoveDirection = Vector3.forward;
 
     void Awake()
@@ -63,8 +64,8 @@ public class FishMovement : MonoBehaviour
             newPosition.y = fixedYPosition;
         }
 
-        newPosition = ClampAboveTerrain(newPosition);
-        fishTransform.position = hasBounds ? ClampToBounds(newPosition) : newPosition;
+        if (terrainAvoidanceEnabled)
+            newPosition = ClampAboveTerrain(newPosition);        fishTransform.position = hasBounds ? ClampToBounds(newPosition) : newPosition;
     }
 
     private Vector3 GetSmoothedDirection(Vector3 desiredDirection)
@@ -351,16 +352,33 @@ public class FishMovement : MonoBehaviour
     // ─── Terrain Avoidance ──────────────────────────────────────────────────
 
     /// <summary>
+    /// Aktifkan atau nonaktifkan terrain avoidance sepenuhnya.
+    /// Nonaktifkan saat ikan berada di dalam aquarium agar SampleHeight()
+    /// tidak dipanggil setiap frame tanpa manfaat.
+    /// </summary>
+    public void SetTerrainAvoidanceEnabled(bool enabled)
+    {
+        terrainAvoidanceEnabled = enabled;
+    }
+
+    /// <summary>
     /// Kembalikan gaya steering ke atas saat ikan terlalu dekat dengan terrain.
     /// Dipanggil oleh FishBrain dan digabungkan ke final direction.
+    /// Mengembalikan zero jika terrain avoidance dinonaktifkan.
     /// </summary>
     public Vector3 GetTerrainAvoidanceSteering()
     {
+        if (!terrainAvoidanceEnabled) return Vector3.zero;
         Terrain terrain = Terrain.activeTerrain;
         if (terrain == null) return Vector3.zero;
 
         Vector3 pos = fishTransform.position;
         float terrainWorldY = terrain.SampleHeight(pos) + terrain.transform.position.y;
+
+        // Terrain di atas zone max Y berarti daratan di luar zona ikan (cliff, dll.).
+        // Abaikan agar ikan tidak terdorong ke atas dan terbang.
+        if (hasBounds && terrainWorldY > zoneBounds.max.y) return Vector3.zero;
+
         float distanceAboveTerrain = pos.y - terrainWorldY;
 
         if (distanceAboveTerrain >= terrainAvoidanceDistance) return Vector3.zero;
@@ -379,6 +397,11 @@ public class FishMovement : MonoBehaviour
         if (terrain == null) return position;
 
         float terrainWorldY = terrain.SampleHeight(position) + terrain.transform.position.y;
+
+        // Terrain di atas zone max Y berarti daratan di luar zona ikan (cliff, dll.).
+        // Jangan dorong ikan ke atas atau akan menyebabkan ikan terbang ke langit.
+        if (hasBounds && terrainWorldY > zoneBounds.max.y) return position;
+
         float minY = terrainWorldY + terrainOffset;
 
         if (position.y < minY)

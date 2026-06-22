@@ -3139,7 +3139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &416910952
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3790,6 +3790,9 @@ MonoBehaviour:
   confirmYesButton: {fileID: 959750284}
   confirmNoButton: {fileID: 1189473717}
   gameplaySceneName: Galatama
+  cutsceneSceneName: CutScene
+  useLoadingScene: 1
+  loadingSceneName: LoadingScene
 --- !u!4 &545195786
 Transform:
   m_ObjectHideFlags: 0
@@ -12157,7 +12160,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1813395551
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13432,7 +13435,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 3537e1d34bcd4c84ca98ee67ba0f205d, type: 3}
     m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0

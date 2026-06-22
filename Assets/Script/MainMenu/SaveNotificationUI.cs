@@ -6,6 +6,12 @@ namespace GALATAMA.MainMenu
 {
     public class SaveNotificationUI : MonoBehaviour
     {
+        private sealed class CoroutineRunner : MonoBehaviour
+        {
+        }
+
+        private static CoroutineRunner runner;
+
         [SerializeField] private GameObject popupRoot;
         [SerializeField] private Text messageText;
         [SerializeField] private string successMessage = "Progress berhasil disimpan";
@@ -13,6 +19,7 @@ namespace GALATAMA.MainMenu
         [SerializeField] private float displayDuration = 2f;
 
         private Coroutine hideRoutine;
+        private bool initialized;
 
         public float DisplayDuration
         {
@@ -22,10 +29,7 @@ namespace GALATAMA.MainMenu
 
         private void Awake()
         {
-            if (popupRoot == null)
-                popupRoot = gameObject;
-
-            popupRoot.SetActive(false);
+            EnsureInitialized();
         }
 
         public void ShowSaveResult(bool success)
@@ -36,18 +40,24 @@ namespace GALATAMA.MainMenu
 
         public void ShowMessage(string message, float duration)
         {
-            if (popupRoot == null)
-                popupRoot = gameObject;
+            EnsureInitialized();
 
             if (messageText != null)
                 messageText.text = message;
 
             popupRoot.SetActive(true);
 
-            if (hideRoutine != null)
-                StopCoroutine(hideRoutine);
+            CoroutineRunner coroutineRunner = GetOrCreateRunner();
+            if (coroutineRunner == null)
+            {
+                Debug.LogError("[SaveNotificationUI] Coroutine runner tidak tersedia.");
+                return;
+            }
 
-            hideRoutine = StartCoroutine(HideAfterDelay(Mathf.Max(0f, duration)));
+            if (hideRoutine != null)
+                coroutineRunner.StopCoroutine(hideRoutine);
+
+            hideRoutine = coroutineRunner.StartCoroutine(HideAfterDelay(Mathf.Max(0f, duration)));
         }
 
         private IEnumerator HideAfterDelay(float delay)
@@ -59,6 +69,33 @@ namespace GALATAMA.MainMenu
                 popupRoot.SetActive(false);
 
             hideRoutine = null;
+        }
+
+        private void EnsureInitialized()
+        {
+            if (initialized)
+                return;
+
+            if (popupRoot == null)
+                popupRoot = gameObject;
+
+            popupRoot.SetActive(false);
+            initialized = true;
+        }
+
+        private static CoroutineRunner GetOrCreateRunner()
+        {
+            if (runner != null)
+                return runner;
+
+            runner = FindFirstObjectByType<CoroutineRunner>();
+            if (runner != null)
+                return runner;
+
+            GameObject runnerObject = new GameObject("__SaveNotificationRunner");
+            DontDestroyOnLoad(runnerObject);
+            runner = runnerObject.AddComponent<CoroutineRunner>();
+            return runner;
         }
     }
 }

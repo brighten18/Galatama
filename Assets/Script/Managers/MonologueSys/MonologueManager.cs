@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
+using GALATAMA.MainMenu;
 
 /// <summary>
 /// Entry tunggal dalam library monologue. Beri key unik agar script lain
@@ -28,6 +30,8 @@ public struct MonologueEntry
 [DefaultExecutionOrder(-100)]
 public class MonologueManager : MonoBehaviour
 {
+    private const string OpeningSequenceKey = "__opening__";
+
     public static MonologueManager Instance { get; private set; }
 
     [Header("UI References")]
@@ -70,6 +74,11 @@ public class MonologueManager : MonoBehaviour
 
     // Key dari monologue yang sedang dimainkan via PlayMonologue(string key).
     private string _currentPlayingKey;
+    private string _activeSequenceKey;
+    private bool _activeSequenceIsOpening;
+    private bool _nextButtonBound;
+    private bool _openingCompleted;
+    private readonly HashSet<string> _completedMonologueKeys = new HashSet<string>();
 
     /// <summary>Fired when all monologue panels have been displayed and dismissed.</summary>
     public event Action OnMonologueFinished;
@@ -111,6 +120,15 @@ public class MonologueManager : MonoBehaviour
             IsPlaying = true;
     }
 
+    private void OnDestroy()
+    {
+        if (nextButton != null && _nextButtonBound)
+            nextButton.onClick.RemoveListener(OnNextClicked);
+
+        if (Instance == this)
+            Instance = null;
+    }
+
     private IEnumerator Start()
     {
         // Yield one frame so all other Start() methods (PlayerInputManager, MissionManager) complete first.
@@ -119,11 +137,12 @@ public class MonologueManager : MonoBehaviour
         if (openingMonologue == null || openingMonologue.Panels == null || openingMonologue.Panels.Length == 0)
         {
             if (monologuePanel != null) monologuePanel.SetActive(false);
+            _openingCompleted = true;
             yield break;
         }
 
         _processedPanels = PreprocessPanels(openingMonologue.Panels);
-        nextButton.onClick.AddListener(OnNextClicked);
+        EnsureNextButtonListener();
 
         IsPlaying = true;
         SetPlayerBlocked(true);
@@ -131,7 +150,9 @@ public class MonologueManager : MonoBehaviour
         monologuePanel.SetActive(true);
         UpdateIndicator();
 
-        yield return StartCoroutine(PlayIntro());
+        _activeSequenceIsOpening = true;
+        _activeSequenceKey = OpeningSequenceKey;
+        yield return StartCoroutine(PlayIntro(0));
     }
 
     // -------------------------------------------------------------------------
@@ -145,7 +166,8 @@ public class MonologueManager : MonoBehaviour
     public void PlayMonologue(MonologueData data)
     {
         if (data == null || data.Panels == null || data.Panels.Length == 0) return;
-        StartCoroutine(PlayMonologueRoutine(data));
+        _currentPlayingKey = null;
+        StartCoroutine(PlayMonologueRoutine(data, string.Empty, false, 0));
     }
 
     /// <summary>
@@ -164,7 +186,7 @@ public class MonologueManager : MonoBehaviour
             if (entry.key == key)
             {
                 _currentPlayingKey = key;
-                PlayMonologue(entry.data);
+                StartCoroutine(PlayMonologueRoutine(entry.data, key, false, 0));
                 return;
             }
         }
@@ -190,7 +212,7 @@ public class MonologueManager : MonoBehaviour
     // Core sequence
     // -------------------------------------------------------------------------
 
-    private IEnumerator PlayIntro()
+    private IEnumerator PlayIntro(int startIndex)
     {
         // Set pose sebelum fade dimulai agar overlay masih menutupi panel saat pose di-assign,
         // sehingga pose yang benar langsung tampil begitu fade selesai.
@@ -203,16 +225,19 @@ public class MonologueManager : MonoBehaviour
         // baik untuk opening monologue maupun monologue subsequent.
         SetNextButtonInteractable(true);
 
-        ShowPanel(0, setPose: false);
+        ShowPanel(startIndex, setPose: false);
     }
 
-    private IEnumerator PlayMonologueRoutine(MonologueData data)
+    private IEnumerator PlayMonologueRoutine(MonologueData data, string sequenceKey, bool isOpeningSequence, int startPanelIndex)
     {
         _isPending = false;
         _processedPanels = PreprocessPanels(data.Panels);
-        _currentIndex = 0;
+        _currentIndex = Mathf.Clamp(startPanelIndex, 0, _processedPanels.Length - 1);
+        _activeSequenceKey = sequenceKey;
+        _activeSequenceIsOpening = isOpeningSequence;
         IsPlaying = true;
         SetPlayerBlocked(true);
+        EnsureNextButtonListener();
 
         // Bersihkan konten lama sebelum panel ditampilkan agar tidak ada visual gap.
         if (bodyText != null) bodyText.text = string.Empty;
@@ -222,7 +247,7 @@ public class MonologueManager : MonoBehaviour
         monologuePanel.SetActive(true);
         UpdateIndicator();
 
-        yield return StartCoroutine(PlayIntro());
+        yield return StartCoroutine(PlayIntro(_currentIndex));
     }
 
     private void ShowPanel(int index, bool setPose = true)
@@ -311,6 +336,11 @@ public class MonologueManager : MonoBehaviour
         monologuePanel.SetActive(false);
         IsPlaying = false;
         SetPlayerBlocked(false);
+        _openingCompleted |= _activeSequenceIsOpening;
+
+        if (!string.IsNullOrEmpty(_activeSequenceKey) && _activeSequenceKey != OpeningSequenceKey)
+            _completedMonologueKeys.Add(_activeSequenceKey);
+
         OnMonologueFinished?.Invoke();
 
         if (!string.IsNullOrEmpty(_currentPlayingKey))
@@ -319,6 +349,9 @@ public class MonologueManager : MonoBehaviour
             _currentPlayingKey = null;
             OnNamedMonologueFinished?.Invoke(finishedKey);
         }
+
+        _activeSequenceKey = null;
+        _activeSequenceIsOpening = false;
     }
 
     // -------------------------------------------------------------------------
@@ -335,6 +368,118 @@ public class MonologueManager : MonoBehaviour
     {
         if (nextButton != null)
             nextButton.interactable = state;
+    }
+
+    public MonologueSaveData CaptureSaveData()
+    {
+        MonologueSaveData data = new MonologueSaveData
+        {
+            openingCompleted = _openingCompleted,
+            isPlaying = IsPlaying,
+            isPending = _isPending,
+            currentPanelIndex = _currentIndex,
+            currentMonologueKey = IsPlaying ? GetCurrentSequenceKeyForSave() : string.Empty,
+            completedMonologueKeys = new List<string>(_completedMonologueKeys)
+        };
+
+        return data;
+    }
+
+    public void RestoreFromSaveData(MonologueSaveData data)
+    {
+        StopAllCoroutines();
+        if (_typewriterCoroutine != null)
+        {
+            StopCoroutine(_typewriterCoroutine);
+            _typewriterCoroutine = null;
+        }
+
+        _completedMonologueKeys.Clear();
+        _openingCompleted = data != null && data.openingCompleted;
+        _isPending = data != null && data.isPending;
+        _currentPlayingKey = null;
+        _activeSequenceKey = null;
+        _activeSequenceIsOpening = false;
+        _isTyping = false;
+        EnsureNextButtonListener();
+
+        if (data != null && data.completedMonologueKeys != null)
+        {
+            for (int i = 0; i < data.completedMonologueKeys.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(data.completedMonologueKeys[i]))
+                    _completedMonologueKeys.Add(data.completedMonologueKeys[i]);
+            }
+        }
+
+        if (data == null || !data.isPlaying)
+        {
+            IsPlaying = false;
+            if (monologuePanel != null)
+                monologuePanel.SetActive(false);
+            SetPlayerBlocked(false);
+            return;
+        }
+
+        if (data.currentMonologueKey == OpeningSequenceKey)
+        {
+            if (openingMonologue != null && openingMonologue.Panels != null && openingMonologue.Panels.Length > 0)
+            {
+                StartCoroutine(PlayMonologueRoutine(openingMonologue, OpeningSequenceKey, true, data.currentPanelIndex));
+                return;
+            }
+        }
+        else if (!string.IsNullOrEmpty(data.currentMonologueKey) && TryResolveMonologueByKey(data.currentMonologueKey, out MonologueData resolvedData))
+        {
+            _currentPlayingKey = data.currentMonologueKey;
+            StartCoroutine(PlayMonologueRoutine(resolvedData, data.currentMonologueKey, false, data.currentPanelIndex));
+            return;
+        }
+
+        IsPlaying = false;
+        if (monologuePanel != null)
+            monologuePanel.SetActive(false);
+        SetPlayerBlocked(false);
+    }
+
+    public bool IsMonologueCompleted(string key)
+    {
+        return !string.IsNullOrEmpty(key) && _completedMonologueKeys.Contains(key);
+    }
+
+    private string GetCurrentSequenceKeyForSave()
+    {
+        if (_activeSequenceIsOpening)
+            return OpeningSequenceKey;
+
+        return string.IsNullOrEmpty(_currentPlayingKey) ? _activeSequenceKey : _currentPlayingKey;
+    }
+
+    private bool TryResolveMonologueByKey(string key, out MonologueData data)
+    {
+        data = null;
+        if (string.IsNullOrEmpty(key) || monologues == null)
+            return false;
+
+        for (int i = 0; i < monologues.Length; i++)
+        {
+            if (monologues[i].key == key)
+            {
+                data = monologues[i].data;
+                return data != null;
+            }
+        }
+
+        return false;
+    }
+
+    private void EnsureNextButtonListener()
+    {
+        if (nextButton == null || _nextButtonBound)
+            return;
+
+        nextButton.onClick.AddListener(OnNextClicked);
+        _nextButtonBound = true;
     }
 
     /// <summary>Assigns a random pose sprite, avoiding repeating the same pose twice in a row.

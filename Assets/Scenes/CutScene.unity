@@ -1187,6 +1187,8 @@ MonoBehaviour:
       terbaik!
     backgroundTexture: {fileID: 2800000, guid: 2b1ee77acf8f9514d84aac883d298593, type: 3}
   gameplaySceneName: Galatama
+  useLoadingScene: 1
+  loadingSceneName: LoadingScene
   typewriterSpeed: 0.04
   fadeDuration: 0.5
 --- !u!1 &1543787806

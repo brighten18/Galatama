@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GALATAMA.MainMenu;
 
 public class FishTrapWorld : InteractableObject
 {
@@ -21,6 +22,10 @@ public class FishTrapWorld : InteractableObject
     private string capturedFishItemName;
     private Coroutine captureRoutine;
     private TrapWorldMarker worldMarker;
+
+    public bool IsTrapActive => isActive;
+    public bool HasCaughtFish => hasCaughtFish;
+    public string CapturedFishItemName => capturedFishItemName;
 
     void Awake()
     {
@@ -60,6 +65,7 @@ public class FishTrapWorld : InteractableObject
 
         isActive = true;
         captureRoutine = StartCoroutine(CaptureLoop());
+        worldMarker?.SetCapturedState(false);
     }
 
     public void SetPlayerInPickupRange(bool value)
@@ -204,6 +210,42 @@ public class FishTrapWorld : InteractableObject
         OnFishCaptured?.Invoke(capturedFishItemName);
 
         Debug.Log("[FishTrapWorld] Perangkap menangkap ikan: " + capturedFishItemName);
+    }
+
+    public TrapSaveData CaptureSaveData()
+    {
+        return new TrapSaveData
+        {
+            position = transform.position,
+            rotationEuler = transform.eulerAngles,
+            isActive = isActive,
+            hasCaughtFish = hasCaughtFish,
+            capturedFishItemName = capturedFishItemName
+        };
+    }
+
+    public void RestoreFromSaveData(TrapSaveData data)
+    {
+        if (data == null)
+            return;
+
+        if (captureRoutine != null)
+        {
+            StopCoroutine(captureRoutine);
+            captureRoutine = null;
+        }
+
+        transform.position = data.position;
+        transform.rotation = Quaternion.Euler(data.rotationEuler);
+        playerInPickupRange = false;
+        capturedFishItemName = data.capturedFishItemName;
+        hasCaughtFish = data.hasCaughtFish && !string.IsNullOrEmpty(capturedFishItemName);
+        isActive = data.isActive && !hasCaughtFish;
+
+        worldMarker?.SetCapturedState(hasCaughtFish);
+
+        if (isActive)
+            captureRoutine = StartCoroutine(CaptureLoop());
     }
 
     void OnDrawGizmosSelected()

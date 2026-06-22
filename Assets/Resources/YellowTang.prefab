@@ -119,7 +119,7 @@ MonoBehaviour:
   thisDescription: Ikan berwarna kuning cerah ini sangat aktif bergerak dan berperan
     sebagai 'tukang bersih' alami dalam akuarium karena gemar memakan alga yang menempel
     di kaca.
-  thisFunctionality: Yellow Tang ni
+  thisFunctionality: 
   isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

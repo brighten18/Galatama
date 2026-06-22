@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using GALATAMA.MainMenu;
 
 namespace GALATAMA.Cutscene
 {
@@ -44,6 +45,8 @@ namespace GALATAMA.Cutscene
 
         [Header("Settings")]
         [SerializeField] private string gameplaySceneName = "Galatama";
+        [SerializeField] private bool useLoadingScene = false;
+        [SerializeField] private string loadingSceneName = "Loading";
         [SerializeField] private float typewriterSpeed = 0.04f;
         [SerializeField] private float fadeDuration = 0.5f;
 
@@ -180,6 +183,18 @@ namespace GALATAMA.Cutscene
 
             // Fade out lalu load gameplay
             if (fadeOverlay != null) yield return StartCoroutine(Fade(0f, 1f));
+
+            int activeSlot = SaveGameService.GetActiveSlotIndex();
+            if (SaveGameService.IsValidSlotIndex(activeSlot))
+                SaveGameService.MarkIntroCutscenePlayed(activeSlot);
+
+            if (useLoadingScene && !string.IsNullOrWhiteSpace(loadingSceneName))
+            {
+                SaveGameService.SetPendingTargetScene(gameplaySceneName);
+                SceneManager.LoadScene(loadingSceneName);
+                yield break;
+            }
+
             SceneManager.LoadScene(gameplaySceneName);
         }
 

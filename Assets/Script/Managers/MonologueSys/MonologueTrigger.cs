@@ -41,6 +41,8 @@ public class MonologueTrigger : MonoBehaviour
     private void TrySubscribe()
     {
         if (_subscribed || MissionManager.Instance == null) return;
+        if (playOnce && MonologueManager.Instance != null && MonologueManager.Instance.IsMonologueCompleted(monologueKey))
+            _hasPlayed = true;
         MissionManager.Instance.OnMissionCompleted += OnMissionCompleted;
         _subscribed = true;
     }

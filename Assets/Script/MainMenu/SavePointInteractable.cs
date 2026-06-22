@@ -18,13 +18,16 @@ namespace GALATAMA.MainMenu
             if (PlayerInputManager.Instance != null)
                 PlayerInputManager.Instance.ResetInteractInput();
 
-            if (SaveGameRuntimeController.Instance == null)
+            SaveGameRuntimeController runtimeController = SaveGameRuntimeController.GetOrCreateInstanceForSaving();
+            if (runtimeController == null)
             {
-                Debug.LogError("[SavePoint] SaveGameRuntimeController tidak ditemukan di scene gameplay.");
+                Debug.LogError("[SavePoint] SaveGameRuntimeController tidak bisa dibuat.");
+                if (saveNotificationUI != null)
+                    saveNotificationUI.ShowSaveResult(false);
                 return;
             }
 
-            bool saved = SaveGameRuntimeController.Instance.SaveActiveSlotFromScene();
+            bool saved = runtimeController.SaveActiveSlotFromScene();
             if (saveNotificationUI != null)
                 saveNotificationUI.ShowSaveResult(saved);
 

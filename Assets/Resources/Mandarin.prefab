@@ -118,7 +118,7 @@ MonoBehaviour:
   thisName: Mandarin
   thisDescription: Ikan kecil berwarna biru-hijau metalik berlapis pola oranye-merah
     ini memiliki tampilan unik dan sangat digemari.
-  thisFunctionality: Fih Mandarin
+  thisFunctionality: 
   isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

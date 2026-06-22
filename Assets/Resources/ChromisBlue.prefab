@@ -119,7 +119,7 @@ MonoBehaviour:
   thisDescription: Ikan ini berwarna biru ini paling bahagia saat dipelihara dalam
     kelompok, dan gerakannya yang serempak berkilauan biru-hijau terlihat seperti
     disko bawah laut.
-  thisFunctionality: ChromisBlue wow
+  thisFunctionality: 
   isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

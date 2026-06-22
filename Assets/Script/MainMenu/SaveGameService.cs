@@ -19,9 +19,12 @@ namespace GALATAMA.MainMenu
         public PlayerSaveData player = new PlayerSaveData();
         public InventorySaveData inventory = new InventorySaveData();
         public List<AquariumSaveData> aquariums = new List<AquariumSaveData>();
+        public List<TrapSaveData> traps = new List<TrapSaveData>();
         public QuizSaveData quiz = new QuizSaveData();
         public List<CooldownEntrySaveData> cooldowns = new List<CooldownEntrySaveData>();
         public List<string> completedTutorials = new List<string>();
+        public MissionSaveData mission = new MissionSaveData();
+        public MonologueSaveData monologue = new MonologueSaveData();
     }
 
     [Serializable]
@@ -47,7 +50,13 @@ namespace GALATAMA.MainMenu
 
         public bool IsEmpty
         {
-            get { return string.IsNullOrEmpty(itemName); }
+            get
+            {
+                bool hasItemName = !string.IsNullOrEmpty(itemName);
+                bool hasFishState = fishState != null &&
+                    (!string.IsNullOrEmpty(fishState.itemName) || !string.IsNullOrEmpty(fishState.instanceId));
+                return !hasItemName && !hasFishState;
+            }
         }
     }
 
@@ -66,12 +75,12 @@ namespace GALATAMA.MainMenu
         public bool isAlive;
         public bool isStressed;
 
-        public static FishStateSaveData FromRuntime(FishInstanceState state)
+        public static FishStateSaveData FromRuntime(FishInstanceState state, string fallbackItemName = null)
         {
             if (state == null)
                 return null;
 
-            FishInstanceState safeState = FishFactory.EnsureValid(state, state.itemName);
+            FishInstanceState safeState = FishFactory.EnsureValid(state, fallbackItemName);
             return new FishStateSaveData
             {
                 instanceId = safeState.instanceId,
@@ -88,7 +97,7 @@ namespace GALATAMA.MainMenu
             };
         }
 
-        public FishInstanceState ToRuntimeState()
+        public FishInstanceState ToRuntimeState(string fallbackItemName = null)
         {
             FishInstanceState state = new FishInstanceState
             {
@@ -105,7 +114,7 @@ namespace GALATAMA.MainMenu
                 isStressed = isStressed
             };
 
-            return FishFactory.EnsureValid(state, itemName);
+            return FishFactory.EnsureValid(state, fallbackItemName);
         }
     }
 
@@ -113,9 +122,21 @@ namespace GALATAMA.MainMenu
     public class AquariumSaveData
     {
         public string aquariumId;
+        public bool hasRewardUnlockState;
+        public bool isRewardUnlocked;
         public List<FishStateSaveData> fish = new List<FishStateSaveData>();
         public WaterQualitySaveData waterQuality = new WaterQualitySaveData();
         public List<string> installedEquipmentItemNames = new List<string>();
+    }
+
+    [Serializable]
+    public class TrapSaveData
+    {
+        public Vector3 position;
+        public Vector3 rotationEuler;
+        public bool isActive;
+        public bool hasCaughtFish;
+        public string capturedFishItemName;
     }
 
     [Serializable]
@@ -163,6 +184,23 @@ namespace GALATAMA.MainMenu
     }
 
     [Serializable]
+    public class MissionSaveData
+    {
+        public int currentMissionIndex;
+    }
+
+    [Serializable]
+    public class MonologueSaveData
+    {
+        public bool openingCompleted;
+        public bool isPlaying;
+        public bool isPending;
+        public int currentPanelIndex;
+        public string currentMonologueKey;
+        public List<string> completedMonologueKeys = new List<string>();
+    }
+
+    [Serializable]
     public class CooldownEntrySaveData
     {
         public string cooldownKey;
@@ -192,6 +230,7 @@ namespace GALATAMA.MainMenu
         private const string ActiveSlotPrefKey = "save.activeSlot";
         private const string PendingSlotPrefKey = "save.pendingSlot";
         private const string PendingModePrefKey = "save.pendingMode";
+        private const string PendingTargetScenePrefKey = "save.pendingTargetScene";
         private const int PendingModeNone = 0;
         private const int PendingModeLoad = 1;
         private const int PendingModeNewGame = 2;
@@ -281,6 +320,7 @@ namespace GALATAMA.MainMenu
                 player = new PlayerSaveData(),
                 inventory = new InventorySaveData(),
                 aquariums = new List<AquariumSaveData>(),
+                traps = new List<TrapSaveData>(),
                 quiz = new QuizSaveData(),
                 cooldowns = new List<CooldownEntrySaveData>()
             };
@@ -332,14 +372,41 @@ namespace GALATAMA.MainMenu
                 data.player = new PlayerSaveData();
             if (data.inventory == null)
                 data.inventory = new InventorySaveData();
+            if (data.inventory.mainSlots == null)
+                data.inventory.mainSlots = new List<InventorySlotSaveData>();
+            if (data.inventory.quickSlots == null)
+                data.inventory.quickSlots = new List<InventorySlotSaveData>();
             if (data.aquariums == null)
                 data.aquariums = new List<AquariumSaveData>();
+            if (data.traps == null)
+                data.traps = new List<TrapSaveData>();
+            for (int i = 0; i < data.aquariums.Count; i++)
+            {
+                AquariumSaveData aquarium = data.aquariums[i];
+                if (aquarium == null)
+                    continue;
+
+                if (aquarium.fish == null)
+                    aquarium.fish = new List<FishStateSaveData>();
+                if (aquarium.waterQuality == null)
+                    aquarium.waterQuality = new WaterQualitySaveData();
+                if (aquarium.installedEquipmentItemNames == null)
+                    aquarium.installedEquipmentItemNames = new List<string>();
+            }
             if (data.quiz == null)
                 data.quiz = new QuizSaveData();
+            if (data.quiz.passedWaveNumbers == null)
+                data.quiz.passedWaveNumbers = new List<int>();
             if (data.cooldowns == null)
                 data.cooldowns = new List<CooldownEntrySaveData>();
             if (data.completedTutorials == null)
                 data.completedTutorials = new List<string>();
+            if (data.mission == null)
+                data.mission = new MissionSaveData();
+            if (data.monologue == null)
+                data.monologue = new MonologueSaveData();
+            if (data.monologue.completedMonologueKeys == null)
+                data.monologue.completedMonologueKeys = new List<string>();
 
             return true;
         }
@@ -429,12 +496,37 @@ namespace GALATAMA.MainMenu
             SetPendingLoadRequest(slotIndex, PendingModeNewGame);
         }
 
-        public static bool TryConsumePendingLoadRequest(out int slotIndex, out bool isNewGame)
+        public static void SetPendingTargetScene(string targetSceneName)
+        {
+            if (string.IsNullOrWhiteSpace(targetSceneName))
+            {
+                PlayerPrefs.DeleteKey(PendingTargetScenePrefKey);
+            }
+            else
+            {
+                PlayerPrefs.SetString(PendingTargetScenePrefKey, targetSceneName);
+            }
+
+            PlayerPrefs.Save();
+        }
+
+        public static string GetPendingTargetScene()
+        {
+            return PlayerPrefs.GetString(PendingTargetScenePrefKey, string.Empty);
+        }
+
+        public static string ConsumePendingTargetScene()
+        {
+            string targetScene = GetPendingTargetScene();
+            PlayerPrefs.DeleteKey(PendingTargetScenePrefKey);
+            PlayerPrefs.Save();
+            return targetScene;
+        }
+
+        public static bool TryPeekPendingLoadRequest(out int slotIndex, out bool isNewGame)
         {
             slotIndex = GetPendingSlotIndex();
             int pendingMode = PlayerPrefs.GetInt(PendingModePrefKey, PendingModeNone);
-
-            ClearPendingLoadRequest();
 
             if (!IsValidSlotIndex(slotIndex) || pendingMode == PendingModeNone)
             {
@@ -445,6 +537,20 @@ namespace GALATAMA.MainMenu
 
             isNewGame = pendingMode == PendingModeNewGame;
             return true;
+        }
+
+        public static bool TryConsumePendingLoadRequest(out int slotIndex, out bool isNewGame)
+        {
+            bool hasPendingRequest = TryPeekPendingLoadRequest(out slotIndex, out isNewGame);
+            if (hasPendingRequest)
+                ClearPendingLoadRequest();
+
+            return hasPendingRequest;
+        }
+
+        public static void ClearPendingLoadRequestPublic()
+        {
+            ClearPendingLoadRequest();
         }
 
         public static bool IsValidSlotIndex(int slotIndex)

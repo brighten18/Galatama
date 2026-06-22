@@ -119,7 +119,7 @@ MonoBehaviour:
   thisDescription: Blenny memiliki mata besar menonjol dan mulut yang selalu terlihat
     'tersenyum'. Dikenal juga sebagai ikan pemakan alga, blenny membantu menjaga
     kebersihan akuarium.
-  thisFunctionality: Blenny Cuy
+  thisFunctionality: 
   isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

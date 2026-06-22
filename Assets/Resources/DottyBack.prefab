@@ -118,7 +118,7 @@ MonoBehaviour:
   thisName: DottyBack
   thisDescription: Dottyback berwarna kuning menyala, hingga oranye yang mencolok
     menjadikannya seperti permata hidup dalam akuarium.
-  thisFunctionality: DottyBack Ni
+  thisFunctionality: 
   isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

@@ -118,7 +118,7 @@ MonoBehaviour:
   thisName: ClownFish
   thisDescription: 'Clownfish atau Ikan badut sangat populer di kalangan penghobi
     akuarium karena warnanya yang mencolok dan perawatannya yang relatif mudah. '
-  thisFunctionality: Clown
+  thisFunctionality: 
   isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

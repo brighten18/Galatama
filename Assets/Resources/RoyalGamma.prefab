@@ -118,7 +118,7 @@ MonoBehaviour:
   thisName: RoyyalGamma
   thisDescription: "Ikan ini terkenal karena warnanya yang indah\u2014ungu di bagian
     depan dan kuning di bagian belakang."
-  thisFunctionality: Royyal Gamma Coy
+  thisFunctionality: 
   isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

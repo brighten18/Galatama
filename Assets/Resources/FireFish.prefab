@@ -119,7 +119,7 @@ MonoBehaviour:
   thisDescription: Firefish Goby tampil dengan gradasi warna putih  di bagian kepala
     dan merah-oranye menyala menuju ujung ekor. Sirip punggung pertamanya yang memanjang
     seperti antena menjadi ciri khas yang membuatnya mudah dikenali.
-  thisFunctionality: Firee
+  thisFunctionality: 
   isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

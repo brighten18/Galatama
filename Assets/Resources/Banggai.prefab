@@ -119,7 +119,7 @@ MonoBehaviour:
   thisDescription: Ikan endemik Indonesia ini sangat cocok untuk akuarium karena
     sifatnya yang tenang dan tidak agresif. Tubuhnya berhias pola hitam-putih elegan
     dengan sirip memanjang seperti rumbai.
-  thisFunctionality: 'Banggai '
+  thisFunctionality: 
   isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

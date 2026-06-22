@@ -213,6 +213,11 @@ public class InventorySystem : MonoBehaviour
             return false;
 
         fishState = FishFactory.EnsureValid(fishState, fishState.itemName);
+        if (string.IsNullOrEmpty(fishState.itemName))
+        {
+            Debug.LogWarning("[Inventory] Gagal menambah ikan ke inventory karena itemName kosong.");
+            return false;
+        }
 
         // Prioritas 1: Isi hotbar terlebih dahulu
         GameObject hotbarSlot = FindNextEmptyHotbarSlot();
@@ -248,8 +253,15 @@ public class InventorySystem : MonoBehaviour
 
     public bool TryAddItemToInventorySlot(string ItemName, GameObject targetSlot)
     {
+        ItemName = ItemNameUtility.CleanName(ItemName);
         if (targetSlot == null)
             return TryAddItemToInventory(ItemName);
+
+        if (string.IsNullOrEmpty(ItemName))
+        {
+            Debug.LogWarning("[Inventory] Gagal restore item ke slot karena itemName kosong.");
+            return false;
+        }
 
         if (targetSlot.transform.childCount > 0)
         {
@@ -289,6 +301,11 @@ public class InventorySystem : MonoBehaviour
             return false;
 
         fishState = FishFactory.EnsureValid(fishState, fishState.itemName);
+        if (string.IsNullOrEmpty(fishState.itemName))
+        {
+            Debug.LogWarning("[Inventory] Gagal restore ikan ke slot karena itemName kosong.");
+            return false;
+        }
         if (targetSlot == null)
             return TryAddFishStateToInventory(fishState);
 
@@ -592,6 +609,13 @@ public class InventorySystem : MonoBehaviour
     private bool TryCreateItemInSlot(string itemName, GameObject targetSlot, out GameObject itemObject)
     {
         itemObject = null;
+        itemName = ItemNameUtility.CleanName(itemName);
+        if (string.IsNullOrEmpty(itemName))
+        {
+            Debug.LogWarning("[Inventory] TryCreateItemInSlot menerima itemName kosong.");
+            return false;
+        }
+
         GameObject itemPrefab = Resources.Load<GameObject>(itemName);
         if (itemPrefab == null)
         {
@@ -733,7 +757,11 @@ public class InventorySystem : MonoBehaviour
 
                 FishRuntimeData fishRuntime = itemObject.GetComponent<FishRuntimeData>();
                 if (fishRuntime != null && fishRuntime.State != null)
-                    slotData.fishState = FishStateSaveData.FromRuntime(fishRuntime.State);
+                {
+                    FishInstanceState normalizedFishState = FishFactory.EnsureValid(fishRuntime.State, slotData.itemName);
+                    slotData.itemName = normalizedFishState.itemName;
+                    slotData.fishState = FishStateSaveData.FromRuntime(normalizedFishState, slotData.itemName);
+                }
             }
 
             result.Add(slotData);
@@ -760,10 +788,25 @@ public class InventorySystem : MonoBehaviour
             if (targetSlot == null)
                 continue;
 
+            string itemName = ItemNameUtility.CleanName(slotData.itemName);
             if (slotData.fishState != null)
-                TryAddFishStateToInventorySlot(slotData.fishState.ToRuntimeState(), targetSlot);
+            {
+                FishInstanceState runtimeState = slotData.fishState.ToRuntimeState(itemName);
+                if (runtimeState == null || string.IsNullOrEmpty(runtimeState.itemName))
+                {
+                    Debug.LogWarning("[Inventory] Slot ikan dilewati saat restore karena itemName tidak valid pada slot index " + slotData.slotIndex + ".");
+                    continue;
+                }
+
+                TryAddFishStateToInventorySlot(runtimeState, targetSlot);
+            }
             else
-                TryAddItemToInventorySlot(slotData.itemName, targetSlot);
+            {
+                if (string.IsNullOrEmpty(itemName))
+                    continue;
+
+                TryAddItemToInventorySlot(itemName, targetSlot);
+            }
         }
     }
 

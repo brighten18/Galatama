@@ -55,6 +55,8 @@ namespace GALATAMA.MainMenu
         [Header("Scene")]
         [SerializeField] private string gameplaySceneName = "Galatama";
         [SerializeField] private string cutsceneSceneName = "CutScene";
+        [SerializeField] private bool useLoadingScene = false;
+        [SerializeField] private string loadingSceneName = "Loading";
 
         private int selectedSlotIndex;
         private System.Action pendingConfirmAction;
@@ -186,8 +188,7 @@ namespace GALATAMA.MainMenu
             SaveGameData data = SaveGameService.CreateNewSlotData(selectedSlotIndex, saveName, gameplaySceneName);
             SaveGameService.SaveSlot(data);
             SaveGameService.PrepareNewGameSlot(selectedSlotIndex);
-            // Load the intro cutscene before gameplay for new saves.
-            SceneManager.LoadScene(cutsceneSceneName);
+            StartSceneTransition(cutsceneSceneName);
         }
 
         private void ConfirmLoadSelectedSlot()
@@ -196,10 +197,8 @@ namespace GALATAMA.MainMenu
                 return;
 
             SaveGameService.PrepareLoadSlot(selectedSlotIndex);
-            string sceneToLoad = data.introCutscenePlayed
-                ? (string.IsNullOrWhiteSpace(data.sceneName) ? gameplaySceneName : data.sceneName)
-                : cutsceneSceneName;
-            SceneManager.LoadScene(sceneToLoad);
+            string sceneToLoad = string.IsNullOrWhiteSpace(data.sceneName) ? gameplaySceneName : data.sceneName;
+            StartSceneTransition(sceneToLoad);
         }
 
         private void OpenRenamePopup()
@@ -331,6 +330,24 @@ namespace GALATAMA.MainMenu
             if (renamePopup != null) renamePopup.SetActive(false);
             if (confirmPopup != null) confirmPopup.SetActive(false);
             pendingConfirmAction = null;
+        }
+
+        private void StartSceneTransition(string targetSceneName)
+        {
+            if (string.IsNullOrWhiteSpace(targetSceneName))
+            {
+                Debug.LogError("[MainMenu] Target scene kosong.");
+                return;
+            }
+
+            if (useLoadingScene && !string.IsNullOrWhiteSpace(loadingSceneName))
+            {
+                SaveGameService.SetPendingTargetScene(targetSceneName);
+                SceneManager.LoadScene(loadingSceneName);
+                return;
+            }
+
+            SceneManager.LoadScene(targetSceneName);
         }
 
         private void RegisterButtonListeners()

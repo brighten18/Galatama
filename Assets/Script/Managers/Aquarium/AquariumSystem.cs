@@ -316,6 +316,7 @@ public class AquariumSystem : MonoBehaviour
     private bool isOpen;
     private bool inventoryWasOpenBeforeAquarium;
     private bool isRewardUnlocked = true;
+    private bool isRestoringFromSave;
 
     public int MaxFish => maxFish;
     public int FishCount => storedFish.Count;
@@ -537,14 +538,14 @@ public class AquariumSystem : MonoBehaviour
 
     public bool TryAddFish(string itemName)
     {
-        if (IsRewardLocked) return false;
+        if (IsRewardLocked && !isRestoringFromSave) return false;
         itemName = ItemNameUtility.CleanName(itemName);
         return TryAddFish(FishFactory.CreateFromWildFish(itemName, ResolveSpeciesData(itemName)));
     }
 
     public bool TryAddFish(FishInstanceState fishState)
     {
-        if (IsRewardLocked) return false;
+        if (IsRewardLocked && !isRestoringFromSave) return false;
         fishState = FishFactory.EnsureValid(fishState, fishState != null ? fishState.itemName : string.Empty);
         string itemName = ItemNameUtility.CleanName(fishState.itemName);
         if (string.IsNullOrEmpty(itemName))
@@ -1245,6 +1246,8 @@ public class AquariumSystem : MonoBehaviour
         AquariumSaveData data = new AquariumSaveData
         {
             aquariumId = PersistentAquariumId,
+            hasRewardUnlockState = true,
+            isRewardUnlocked = isRewardUnlocked,
             waterQuality = WaterQualitySaveData.FromRuntime(waterQuality),
             installedEquipmentItemNames = CaptureInstalledEquipmentNames(),
             fish = new List<FishStateSaveData>()
@@ -1256,7 +1259,7 @@ public class AquariumSystem : MonoBehaviour
             if (fishState == null)
                 continue;
 
-            data.fish.Add(FishStateSaveData.FromRuntime(fishState));
+            data.fish.Add(FishStateSaveData.FromRuntime(fishState, fishState.itemName));
         }
 
         return data;
@@ -1272,26 +1275,63 @@ public class AquariumSystem : MonoBehaviour
             return;
         }
 
-        if (data.waterQuality != null)
-            data.waterQuality.ApplyTo(waterQuality);
+        bool originalRewardUnlocked = isRewardUnlocked;
+        bool targetRewardUnlocked = ResolveRewardUnlockStateForRestore(data, originalRewardUnlocked);
+        isRestoringFromSave = true;
+        isRewardUnlocked = true;
 
-        RestoreInstalledEquipment(data.installedEquipmentItemNames);
-
-        if (data.fish != null)
+        try
         {
-            for (int i = 0; i < data.fish.Count; i++)
-            {
-                FishStateSaveData fishSave = data.fish[i];
-                if (fishSave == null)
-                    continue;
+            if (data.waterQuality != null)
+                data.waterQuality.ApplyTo(waterQuality);
 
-                TryAddFish(fishSave.ToRuntimeState());
+            RestoreInstalledEquipment(data.installedEquipmentItemNames);
+
+            if (data.fish != null)
+            {
+                for (int i = 0; i < data.fish.Count; i++)
+                {
+                    FishStateSaveData fishSave = data.fish[i];
+                    if (fishSave == null)
+                        continue;
+
+                    FishInstanceState fishState = fishSave.ToRuntimeState(fishSave.itemName);
+                    if (fishState == null || string.IsNullOrEmpty(fishState.itemName))
+                    {
+                        Debug.LogWarning("[Aquarium] Data ikan dilewati saat restore karena itemName kosong.");
+                        continue;
+                    }
+
+                    if (!TryAddFish(fishState))
+                        Debug.LogWarning("[Aquarium] Gagal restore ikan ke aquarium: " + fishState.itemName);
+                }
             }
+        }
+        finally
+        {
+            isRestoringFromSave = false;
+            isRewardUnlocked = targetRewardUnlocked;
         }
 
         waterQuality.Clamp();
+        SyncCoolerState();
         RebuildFishCountCache();
         RefreshUI();
+    }
+
+    private bool ResolveRewardUnlockStateForRestore(AquariumSaveData data, bool fallbackState)
+    {
+        if (data == null)
+            return fallbackState;
+
+        if (data.hasRewardUnlockState)
+            return data.isRewardUnlocked;
+
+        bool hasLegacyProgress =
+            (data.fish != null && data.fish.Count > 0) ||
+            (data.installedEquipmentItemNames != null && data.installedEquipmentItemNames.Count > 0);
+
+        return hasLegacyProgress || fallbackState;
     }
 
     /// <summary>Rebuild both living and dead fish count caches from scratch.</summary>

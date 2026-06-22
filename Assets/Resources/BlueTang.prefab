@@ -117,7 +117,7 @@ MonoBehaviour:
   isTrashable: 1
   thisName: BlueTang
   thisDescription: BlueTang
-  thisFunctionality: BiruKuning keren
+  thisFunctionality: 
   isEquippable: 1
   IsNowInsideQcSlot: 0
   isSelected: 0

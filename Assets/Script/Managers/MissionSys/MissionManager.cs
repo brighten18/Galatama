@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using GALATAMA.MainMenu;
 
 [DefaultExecutionOrder(-50)]
 public class MissionManager : MonoBehaviour
@@ -34,6 +35,12 @@ public class MissionManager : MonoBehaviour
         Instance = this;
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
     private void Start()
     {
         if (CurrentMission != null)
@@ -57,6 +64,25 @@ public class MissionManager : MonoBehaviour
         if (currentMissionIndex < missions.Count)
             OnMissionStarted?.Invoke(CurrentMission);
         else
+            OnAllMissionsCompleted?.Invoke();
+    }
+
+    public MissionSaveData CaptureSaveData()
+    {
+        return new MissionSaveData
+        {
+            currentMissionIndex = currentMissionIndex
+        };
+    }
+
+    public void RestoreFromSaveData(MissionSaveData data)
+    {
+        int restoredIndex = data != null ? data.currentMissionIndex : 0;
+        currentMissionIndex = Mathf.Clamp(restoredIndex, 0, missions.Count);
+
+        if (CurrentMission != null)
+            OnMissionStarted?.Invoke(CurrentMission);
+        else if (AllCompleted)
             OnAllMissionsCompleted?.Invoke();
     }
 }

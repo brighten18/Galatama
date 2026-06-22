@@ -2,18 +2,19 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Menyelesaikan Misi 7 (index 6) saat Aquarium 1 penuh (9/9 ikan)
-/// dan seluruh ikan berhasil dipertahankan hidup selama 3 menit.
+/// Menyelesaikan Misi 7 (index 6) saat Aquarium 1 mencapai jumlah target ikan
+/// dan seluruh ikan berhasil dipertahankan hidup selama durasi yang ditentukan.
 /// Countdown direset jika ada ikan yang mati atau jumlah ikan turun.
 /// </summary>
 public class FishAquariumMission7 : MonoBehaviour
 {
     private const int TargetMissionIndex = 6;
+    private const int TargetFishCount = 9;
     private const float MaintainDurationSeconds = 180f;
 
     /// <summary>
     /// Dipanggil setiap frame saat Misi 7 aktif.
-    /// Parameter: fishCount, maxFish, remainingSeconds, isCountingDown.
+    /// Parameter: fishCount, targetFishCount, remainingSeconds, isCountingDown.
     /// </summary>
     public static event Action<int, int, float, bool> OnProgressChanged;
 
@@ -54,9 +55,9 @@ public class FishAquariumMission7 : MonoBehaviour
             {
                 missionCompleted = true;
                 // Tetap tampilkan instruksi 2 (isCountingDown: true) agar teks yang dicoret benar
-                OnProgressChanged?.Invoke(aquarium1.FishCount, aquarium1.MaxFish, 0f, true);
+                OnProgressChanged?.Invoke(aquarium1.FishCount, TargetFishCount, 0f, true);
                 MissionManager.Instance.CompleteMission(TargetMissionIndex);
-                Debug.Log("[FishAquariumMission7] Akuarium penuh dipertahankan 3 menit — Misi 7 selesai.");
+                Debug.Log("[FishAquariumMission7] Target terpenuhi — Misi 7 selesai.");
                 return;
             }
         }
@@ -64,7 +65,7 @@ public class FishAquariumMission7 : MonoBehaviour
         float remaining = MaintainDurationSeconds - maintainTimer;
         OnProgressChanged?.Invoke(
             aquarium1 != null ? aquarium1.FishCount : 0,
-            aquarium1 != null ? aquarium1.MaxFish : 9,
+            TargetFishCount,
             remaining,
             isTracking
         );
@@ -72,24 +73,26 @@ public class FishAquariumMission7 : MonoBehaviour
 
     /// <summary>
     /// Dipanggil setiap kali jumlah ikan atau state akuarium berubah.
-    /// Memulai atau mereset countdown berdasarkan kapasitas akuarium.
+    /// Memulai atau mereset countdown berdasarkan target ikan.
     /// </summary>
     private void HandleAquariumStateChanged(AquariumSystem aquarium)
     {
         if (missionCompleted) return;
         if (MissionManager.Instance == null || MissionManager.Instance.CurrentMissionIndex != TargetMissionIndex) return;
 
-        if (aquarium.IsFull && !isTracking)
+        bool isTargetReached = aquarium.FishCount >= TargetFishCount;
+
+        if (isTargetReached && !isTracking)
         {
             isTracking = true;
             maintainTimer = 0f;
-            Debug.Log("[FishAquariumMission7] Akuarium penuh (9/9). Countdown 3 menit dimulai.");
+            Debug.Log($"[FishAquariumMission7] Target ikan tercapai ({aquarium.FishCount}/{TargetFishCount}). Countdown dimulai.");
         }
-        else if (!aquarium.IsFull && isTracking)
+        else if (!isTargetReached && isTracking)
         {
             isTracking = false;
             maintainTimer = 0f;
-            Debug.Log($"[FishAquariumMission7] Ikan berkurang ({aquarium.FishCount}/{aquarium.MaxFish}). Countdown direset.");
+            Debug.Log($"[FishAquariumMission7] Ikan berkurang ({aquarium.FishCount}/{TargetFishCount}). Countdown direset.");
         }
     }
 

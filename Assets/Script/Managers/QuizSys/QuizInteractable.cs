@@ -6,10 +6,30 @@ public class QuizInteractable : InteractableObject
     [SerializeField] private string displayName = "Quiz";
     [SerializeField, Min(1)] private int targetWaveNumber = 1;
 
+    [Header("Popup UI")]
+    [Tooltip("Anak GameObject 'PopUPQuizNPC' — ditampilkan saat quiz belum selesai, disembunyikan saat lulus.")]
+    [SerializeField] private GameObject popupQuizNPC;
+
+    private bool isExplicitlyLocked = false;
+
     private void Awake()
     {
         base.Awake();
         itemName = displayName;
+    }
+
+    private void Start()
+    {
+        if (quizManager != null)
+            quizManager.OnWavePassed += OnWavePassed;
+
+        RefreshPopup();
+    }
+
+    private void OnDestroy()
+    {
+        if (quizManager != null)
+            quizManager.OnWavePassed -= OnWavePassed;
     }
 
     protected override void Update()
@@ -19,8 +39,7 @@ public class QuizInteractable : InteractableObject
     }
 
     /// <summary>
-    /// Menyembunyikan prompt interaksi jika wave sebelumnya belum diselesaikan.
-    /// Ini mencegah player melihat prompt untuk Wave 2/3 yang belum terbuka.
+    /// Menyembunyikan prompt interaksi jika NPC terkunci atau wave belum bisa diakses.
     /// </summary>
     public override void SetLookingAt(bool value)
     {
@@ -29,7 +48,7 @@ public class QuizInteractable : InteractableObject
     }
 
     /// <summary>
-    /// Mengembalikan nama kosong saat wave belum bisa diakses sehingga
+    /// Mengembalikan nama kosong saat NPC tidak bisa diakses sehingga
     /// InteractUIManager tidak menampilkan panel interaksi.
     /// </summary>
     public override string GetItemName()
@@ -51,8 +70,47 @@ public class QuizInteractable : InteractableObject
         quizManager.OpenQuizFromWave(targetWaveNumber);
     }
 
+    /// <summary>Mengunci NPC ini sepenuhnya. Popup juga disembunyikan selama terkunci.</summary>
+    public void SetLocked(bool locked)
+    {
+        isExplicitlyLocked = locked;
+        RefreshPopup();
+    }
+
+    /// <summary>Mengembalikan wave number target saat ini.</summary>
+    public int GetTargetWaveNumber() => targetWaveNumber;
+
+    /// <summary>Mengubah wave number target secara runtime. Digunakan oleh Mission8QuizTracker.</summary>
+    public void SetTargetWaveNumber(int waveNumber)
+    {
+        targetWaveNumber = waveNumber;
+        RefreshPopup();
+    }
+
     private bool IsAccessible()
     {
-        return quizManager != null && quizManager.IsWaveAccessible(targetWaveNumber);
+        if (isExplicitlyLocked) return false;
+        if (quizManager == null) return false;
+        return true;
+    }
+
+    /// <summary>Dipanggil oleh QuizManager saat sebuah wave lulus.</summary>
+    private void OnWavePassed(int waveNumber)
+    {
+        if (waveNumber == targetWaveNumber)
+            RefreshPopup();
+    }
+
+    /// <summary>
+    /// Mengatur visibilitas PopUPQuizNPC:
+    /// - Tampil  → NPC tidak terkunci DAN wave belum pernah lulus.
+    /// - Sembunyi → NPC terkunci ATAU wave sudah lulus.
+    /// </summary>
+    private void RefreshPopup()
+    {
+        if (popupQuizNPC == null || quizManager == null) return;
+
+        bool wavePassed = quizManager.IsWavePassed(targetWaveNumber);
+        popupQuizNPC.SetActive(!isExplicitlyLocked && !wavePassed);
     }
 }

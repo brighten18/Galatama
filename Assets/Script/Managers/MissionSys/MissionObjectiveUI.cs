@@ -342,7 +342,7 @@ public class MissionObjectiveUI : MonoBehaviour
         if (MissionManager.Instance == null || MissionManager.Instance.CurrentMissionIndex != 6) return;
 
         if (isCountingDown)
-            descriptionText.text = $"Pertahankan semuanya tetap hidup selama {Mathf.CeilToInt(remainingSeconds)}s";
+            descriptionText.text = $"Pantau ikan agar tetap hidup selama {Mathf.CeilToInt(remainingSeconds)}s";
         else
             descriptionText.text = $"Penuhi akuarium {fishCount}/{maxFish}";
     }

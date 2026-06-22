@@ -47,7 +47,6 @@ MonoBehaviour:
     description: Baca poster yang tersedia sebagai sumber informasi permainan dan
       materi untuk menjawab kuis
     illustration: {fileID: 21300000, guid: 2a740c087efd39449a1d5c9767205a02, type: 3}
-  - title: Poster Edukasi
-    description: Baca poster yang tersedia sebagai sumber informasi permainan dan
-      materi untuk menjawab kuis
-    illustration: {fileID: 21300000, guid: 2a740c087efd39449a1d5c9767205a02, type: 3}
+  - title: Kuis Berhadiah
+    description: Selesaikan kuis dengan mencapai target skor untuk mendapatkan hadiah!!!
+    illustration: {fileID: 21300000, guid: 2813f32e2522dce49b469b2a7d600b3f, type: 3}

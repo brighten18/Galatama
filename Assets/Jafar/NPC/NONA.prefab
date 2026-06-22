@@ -95,9 +95,20 @@ MonoBehaviour:
   highlightMode: 1
   highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   highlightWidth: 4
+  showWorldCooldownUI: 1
+  cooldownUIOffset: {x: 0, y: 1.6, z: 0}
+  cooldownUICanvasSize: {x: 60, y: 60}
+  cooldownUIWorldScale: 0.006
+  cooldownUIInnerPadding: 0.08
+  cooldownUIFillColor: {r: 0.2, g: 0.82, b: 1, a: 0.95}
+  cooldownUIBackgroundColor: {r: 0, g: 0, b: 0, a: 0.35}
+  cooldownUIFontSize: 18
   quizManager: {fileID: 0}
   displayName: Quiz
   targetWaveNumber: 3
+  prerequisiteWaveNumber: 2
+  blockedMessage: Selesaikan kuis sebelumnya terlebih dahulu!
+  popupQuizNPC: {fileID: 0}
 --- !u!95 &254761615958265923
 Animator:
   serializedVersion: 7

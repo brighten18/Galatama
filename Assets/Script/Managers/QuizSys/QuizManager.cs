@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,9 @@ public class QuizManager : MonoBehaviour
     }
 
     public static QuizManager Instance { get; private set; }
+
+    /// <summary>Dipanggil saat player berhasil lulus sebuah wave. Parameter adalah waveNumber yang baru saja lulus.</summary>
+    public event Action<int> OnWavePassed;
 
     [Header("Quiz Data")]
     [SerializeField] private QuizWaveSO[] waves;
@@ -96,17 +100,6 @@ public class QuizManager : MonoBehaviour
         {
             Debug.LogWarning("[Quiz] Wave number tidak ditemukan: " + waveNumber);
             return;
-        }
-
-        // Linear progression: wave N hanya bisa dibuka jika wave N-1 sudah lulus.
-        if (targetIndex > 0)
-        {
-            QuizWaveSO prevWave = waves[targetIndex - 1];
-            if (prevWave != null && !IsWavePassed(prevWave.waveNumber))
-            {
-                Debug.Log("[Quiz] Wave sebelumnya belum lulus. Selesaikan Wave " + prevWave.waveNumber + " dulu.");
-                return;
-            }
         }
 
         OpenQuizInternal(targetIndex);
@@ -290,6 +283,7 @@ public class QuizManager : MonoBehaviour
         {
             int passedWaveNumber = waves[currentWaveIndex].waveNumber;
             SaveWavePassed(passedWaveNumber);
+            OnWavePassed?.Invoke(passedWaveNumber);
             if (rewardUnlockManager != null)
                 rewardUnlockManager.OnWavePassed(passedWaveNumber);
 
@@ -408,7 +402,7 @@ public class QuizManager : MonoBehaviour
     {
         for (int i = 0; i < list.Count; i++)
         {
-            int r = Random.Range(i, list.Count);
+            int r = UnityEngine.Random.Range(i, list.Count);
             T tmp = list[i];
             list[i] = list[r];
             list[r] = tmp;

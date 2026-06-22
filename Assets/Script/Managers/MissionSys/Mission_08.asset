@@ -10,9 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb01969f161c1a345951d147b470fc2c, type: 3}
-  m_Name: Mission_07
+  m_Name: Mission_08
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionTitle: MISI
-  missionDescription: Penuhi Akuarium 1 dengan 9 ikan dan pertahankan ikan agar tetap
-    hidup selama 3 menit.
-  waypointIndex: -1
+  missionDescription: Temui Pa Kumis dan kerjakan kuis untuk mendapat hadiah
+  waypointIndex: 3

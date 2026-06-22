@@ -144,8 +144,7 @@ public class MissionNavigator : MonoBehaviour
             && screenPos.y > edgePadding
             && screenPos.y < Screen.height - edgePadding;
 
-        // Cek line-of-sight hanya saat target on-screen — tidak perlu raycast jika sudah pasti di belakang kamera
-        bool isVisible = isOnScreen && IsTargetVisible();
+        bool isVisible = isOnScreen;
 
         float arrowAngle;
         Vector2 direction = Vector2.zero;
@@ -204,13 +203,20 @@ public class MissionNavigator : MonoBehaviour
 
     /// <summary>
     /// Cek apakah target terlihat langsung dari kamera menggunakan Physics.Raycast.
-    /// Mengembalikan true jika tidak ada collider yang menghalangi garis pandang.
+    /// Hit yang mengenai collider dalam hierarchy yang sama dengan waypoint diabaikan.
     /// </summary>
     private bool IsTargetVisible()
     {
         Vector3 origin = targetCamera.transform.position;
         Vector3 toTarget = _currentWaypoint.position - origin;
-        return !Physics.Raycast(origin, toTarget.normalized, toTarget.magnitude, occlusionMask);
+
+        if (!Physics.Raycast(origin, toTarget.normalized, out RaycastHit hit, toTarget.magnitude, occlusionMask))
+            return true;
+
+        // Jika yang terhalang adalah collider milik NPC/objek yang sama dengan waypoint, tetap anggap terlihat
+        Transform hitRoot = hit.transform.root;
+        Transform waypointRoot = _currentWaypoint.root;
+        return hitRoot == waypointRoot;
     }
 
     /// <summary>

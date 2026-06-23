@@ -13,6 +13,14 @@ namespace GALATAMA.MainMenu
     [RequireComponent(typeof(Image))]
     public class MenuButtonHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        [Header("Audio")]
+        [Tooltip("Audio source yang dipakai untuk memutar SFX hover.")]
+        [SerializeField] private AudioSource hoverAudioSource;
+        [Tooltip("Clip yang diputar saat cursor masuk ke tombol.")]
+        [SerializeField] private AudioClip hoverSfx;
+        [Tooltip("Volume SFX hover.")]
+        [SerializeField] [Range(0f, 1f)] private float hoverSfxVolume = 1f;
+
         [Header("Zoom Settings")]
         [Tooltip("Scale multiplier applied on hover.")]
         [SerializeField] private float hoveredScale = 1.12f;
@@ -29,6 +37,7 @@ namespace GALATAMA.MainMenu
 
         private RectTransform rectTransform;
         private Image targetImage;
+        private Button targetButton;
         private Vector3 originalScale;
         private Coroutine scaleCoroutine;
         private Coroutine colorCoroutine;
@@ -37,14 +46,22 @@ namespace GALATAMA.MainMenu
         {
             rectTransform = GetComponent<RectTransform>();
             targetImage = GetComponent<Image>();
+            targetButton = GetComponent<Button>();
             originalScale = rectTransform.localScale;
+
+            if (hoverAudioSource == null)
+                hoverAudioSource = GetComponent<AudioSource>();
         }
 
         /// <summary>Called when the pointer enters the element.</summary>
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if (targetButton != null && !targetButton.interactable)
+                return;
+
             AnimateScale(originalScale * hoveredScale, scaleDuration);
             AnimateColor(highlightColor, colorDuration);
+            PlayHoverSfx();
         }
 
         /// <summary>Called when the pointer exits the element.</summary>
@@ -52,6 +69,14 @@ namespace GALATAMA.MainMenu
         {
             AnimateScale(originalScale, scaleDuration);
             AnimateColor(NormalColor, colorDuration);
+        }
+
+        private void PlayHoverSfx()
+        {
+            if (hoverAudioSource == null || hoverSfx == null)
+                return;
+
+            hoverAudioSource.PlayOneShot(hoverSfx, Mathf.Clamp01(hoverSfxVolume));
         }
 
         private void AnimateScale(Vector3 targetScale, float duration)

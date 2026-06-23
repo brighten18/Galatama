@@ -285,6 +285,14 @@ public class AquariumSystem : MonoBehaviour
     private readonly HashSet<int> consumedInventoryItemIds = new HashSet<int>();
     private readonly List<string> warningBuffer = new List<string>();
     private float simulationTimer;
+    private bool machineAeratorControlActive;
+    private float machineAeratorIncreasePerTick;
+    private bool machineHeaterControlActive;
+    private float machineHeaterTarget;
+    private float machineHeaterStepPerTick;
+    private bool machineChillerControlActive;
+    private float machineChillerTarget;
+    private float machineChillerStepPerTick;
 
     // Cached fish counts — updated only when fish are added, removed, or die.
     // Avoids iterating storedFish every frame in Update().
@@ -741,6 +749,31 @@ public class AquariumSystem : MonoBehaviour
         CommitWaterQualityChange();
         Debug.Log($"[RAS][{name}] O2: {before:0.00} â†’ {waterQuality.oxygen:0.00} (+{amount:0.00})");
         return true;
+    }
+
+    public void ConfigureMachineAerator(float oxygenIncreasePerTick)
+    {
+        machineAeratorControlActive = oxygenIncreasePerTick > 0f;
+        machineAeratorIncreasePerTick = Mathf.Max(0f, oxygenIncreasePerTick);
+    }
+
+    public void ConfigureMachineTemperature(AquariumEquipmentRole machineRole, float targetTemperature, float changePerTick)
+    {
+        float step = Mathf.Abs(changePerTick);
+
+        switch (machineRole)
+        {
+            case AquariumEquipmentRole.Heater:
+                machineHeaterControlActive = true;
+                machineHeaterTarget = targetTemperature;
+                machineHeaterStepPerTick = step;
+                break;
+            case AquariumEquipmentRole.Chiller:
+                machineChillerControlActive = true;
+                machineChillerTarget = targetTemperature;
+                machineChillerStepPerTick = step;
+                break;
+        }
     }
 
     public bool ChangeTemperature(float targetTemperature, float changePerTick)
@@ -1210,16 +1243,83 @@ public class AquariumSystem : MonoBehaviour
         if (IsRewardLocked)
             return;
 
+        bool oxygenHandledByMachine = false;
+        if (machineAeratorControlActive && machineAeratorIncreasePerTick > 0f && waterQuality.oxygen < targetOxygen)
+        {
+            float oxygenDelta = Mathf.Min(machineAeratorIncreasePerTick, targetOxygen - waterQuality.oxygen);
+            waterQuality.oxygen += oxygenDelta;
+            oxygenHandledByMachine = true;
+        }
+
+        float temperatureDelta = 0f;
+        bool temperatureHandledByMachine = false;
+
+        if (machineHeaterControlActive && waterQuality.temperature < machineHeaterTarget)
+        {
+            float heaterDelta = machineHeaterStepPerTick <= 0f
+                ? machineHeaterTarget - waterQuality.temperature
+                : Mathf.Min(machineHeaterStepPerTick, machineHeaterTarget - waterQuality.temperature);
+
+            temperatureDelta += heaterDelta;
+            temperatureHandledByMachine = true;
+        }
+
+        if (machineChillerControlActive && waterQuality.temperature > machineChillerTarget)
+        {
+            float chillerDelta = machineChillerStepPerTick <= 0f
+                ? waterQuality.temperature - machineChillerTarget
+                : Mathf.Min(machineChillerStepPerTick, waterQuality.temperature - machineChillerTarget);
+
+            temperatureDelta -= chillerDelta;
+            temperatureHandledByMachine = true;
+        }
+
+        if (temperatureHandledByMachine)
+            waterQuality.temperature += temperatureDelta;
+
         foreach (EquipmentData equipment in installedEquipment)
         {
             if (equipment == null)
                 continue;
 
             waterQuality.ammonia = Mathf.Max(0f, waterQuality.ammonia - Mathf.Max(0f, equipment.ammoniaReductionPerTick));
-            waterQuality.oxygen = Mathf.Min(targetOxygen, waterQuality.oxygen + Mathf.Max(0f, equipment.oxygenIncreasePerTick));
 
-            if (equipment.temperatureChangePerTick > 0f)
-                waterQuality.temperature = Mathf.MoveTowards(waterQuality.temperature, equipment.targetTemperature, equipment.temperatureChangePerTick);
+            if (!oxygenHandledByMachine &&
+                equipment.oxygenIncreasePerTick > 0f &&
+                waterQuality.oxygen < targetOxygen)
+            {
+                float oxygenDelta = Mathf.Min(
+                    equipment.oxygenIncreasePerTick,
+                    targetOxygen - waterQuality.oxygen);
+                waterQuality.oxygen += oxygenDelta;
+            }
+
+            if (!temperatureHandledByMachine && equipment.temperatureChangePerTick > 0f)
+            {
+                if (equipment.aquariumRole == AquariumEquipmentRole.Heater &&
+                    waterQuality.temperature < equipment.targetTemperature)
+                {
+                    float heaterDelta = Mathf.Min(
+                        equipment.temperatureChangePerTick,
+                        equipment.targetTemperature - waterQuality.temperature);
+                    waterQuality.temperature += heaterDelta;
+                }
+                else if (equipment.aquariumRole == AquariumEquipmentRole.Chiller &&
+                         waterQuality.temperature > equipment.targetTemperature)
+                {
+                    float chillerDelta = Mathf.Min(
+                        equipment.temperatureChangePerTick,
+                        waterQuality.temperature - equipment.targetTemperature);
+                    waterQuality.temperature -= chillerDelta;
+                }
+                else
+                {
+                    waterQuality.temperature = Mathf.MoveTowards(
+                        waterQuality.temperature,
+                        equipment.targetTemperature,
+                        equipment.temperatureChangePerTick);
+                }
+            }
         }
     }
 

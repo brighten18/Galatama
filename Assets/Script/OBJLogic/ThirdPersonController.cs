@@ -72,6 +72,10 @@ namespace StarterAssets
         [Tooltip("Multiplier applied to gravity while the player is falling (vertical velocity < 0). Higher values make the fall feel heavier and more responsive.")]
         public float FallMultiplier = 2.5f;
 
+        [Header("Interaction Lock")]
+        [Tooltip("Durasi player tidak bisa bergerak setelah menekan Interact atau InteractOBJ.")]
+        [SerializeField] private float interactionMovementLockDuration = 1f;
+
         [Space(10)]
         [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
         public float JumpTimeout = 0.50f;
@@ -159,6 +163,7 @@ namespace StarterAssets
 
         private bool _hasAnimator;
         private bool _movementBlocked;
+        private float _interactionMovementLockUntil;
 
         // Apakah cursor sedang ditampilkan (toggle dengan Ctrl)
         private bool _cursorVisible;
@@ -225,11 +230,11 @@ namespace StarterAssets
         private void Update()
         {
             GroundedCheck();
+            HandlePickUpInput();
             JumpAndGravity();
             Move();
             HandleFootstepAudio();
             HandleLandingAudio();
-            HandlePickUpInput();
             HandleCtrlCameraMode();
             HandleRightClickCamera();
         }
@@ -498,7 +503,7 @@ namespace StarterAssets
 
         private void Move()
         {
-            if (_movementBlocked)
+            if (IsMovementBlocked())
             {
                 _input.move = Vector2.zero;
                 _input.sprint = false;
@@ -575,7 +580,7 @@ namespace StarterAssets
 
         private void JumpAndGravity()
         {
-            if (_movementBlocked)
+            if (IsMovementBlocked())
             {
                 _input.jump = false;
             }
@@ -718,9 +723,10 @@ namespace StarterAssets
         /// </summary>
         private void HandlePickUpInput()
         {
-            if (!_hasAnimator || _movementBlocked || !Grounded) return;
+            if (!_hasAnimator || IsMovementBlocked() || !Grounded) return;
             if (_input.Interact || _input.InteractOBJ)
             {
+                BeginInteractionMovementLock();
                 _animator.SetTrigger(_animIDPickUp);
             }
         }
@@ -734,6 +740,22 @@ namespace StarterAssets
                 _input.sprint = false;
                 _input.jump = false;
             }
+        }
+
+        private bool IsMovementBlocked()
+        {
+            return _movementBlocked || Time.time < _interactionMovementLockUntil;
+        }
+
+        private void BeginInteractionMovementLock()
+        {
+            _interactionMovementLockUntil = Mathf.Max(
+                _interactionMovementLockUntil,
+                Time.time + Mathf.Max(0f, interactionMovementLockDuration));
+
+            _input.move = Vector2.zero;
+            _input.sprint = false;
+            _input.jump = false;
         }
 
         /// <summary>

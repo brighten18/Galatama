@@ -115,6 +115,7 @@ MonoBehaviour:
   JumpHeight: 1.1
   Gravity: -20
   FallMultiplier: 3
+  interactionMovementLockDuration: 0.2
   JumpTimeout: 0.6
   FallTimeout: 0.5
   Grounded: 1

@@ -22,10 +22,10 @@ MonoBehaviour:
   ammoniaReductionPerTick: 0
   oxygenIncreasePerTick: 0
   temperatureChangePerTick: 0
-  targetTemperature: 26
+  targetTemperature: 0
   salinityChange: 1
   cooldownSeconds: 20
-  targetPh: 8
+  targetPh: 0
   targetAmmonia: 0
   instantOxygenIncrease: 1.5
   feedHungerReduction: 0

@@ -90,7 +90,7 @@ public class RasFishManager : MonoBehaviour
             water.salinity < 32f ||
             water.salinity > 35f ||
             water.temperature < 21f ||
-            water.temperature > 29f ||
+            water.temperature > 30f ||
             water.ph < 6f ||
             water.ph > 8f ||
             doStatus != DOStatus.Safe;

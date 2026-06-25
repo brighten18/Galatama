@@ -24391,7 +24391,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -7.196, y: 4.659, z: 18.468096}
+  m_LocalPosition: {x: -6.8, y: 4.659, z: 18.468096}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -35211,7 +35211,7 @@ MonoBehaviour:
     label: Amonia
     text: {fileID: 1639805999}
   oxygenIndicator:
-    label: O2
+    label: "O\u2082"
     text: {fileID: 1733487331}
   salinityIndicator:
     label: Salinitas
@@ -35295,7 +35295,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c3565ae698d9e5a41835d87ae4e2b81b, type: 2}
   waterChangeAmmoniaMultiplier: 0.05
   waterChangeOxygenRecovery: 0.5
-  targetOxygen: 8
+  targetOxygen: 7
   targetSalinity: 33
   startLockedUntilRewardUnlock: 1
   persistentAquariumId: Aquarium_Gudang_4
@@ -39927,7 +39927,7 @@ MonoBehaviour:
     label: Amonia
     text: {fileID: 89977109}
   oxygenIndicator:
-    label: O2
+    label: "O\u2082"
     text: {fileID: 777382182}
   salinityIndicator:
     label: Salinitas
@@ -40011,7 +40011,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c3565ae698d9e5a41835d87ae4e2b81b, type: 2}
   waterChangeAmmoniaMultiplier: 0.05
   waterChangeOxygenRecovery: 0.5
-  targetOxygen: 8
+  targetOxygen: 7
   targetSalinity: 33
   startLockedUntilRewardUnlock: 1
   persistentAquariumId: Aquarium_Gudang_2
@@ -43839,7 +43839,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.196
+      value: -6.8
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.y
@@ -55856,7 +55856,7 @@ MonoBehaviour:
     label: Amonia
     text: {fileID: 43705120}
   oxygenIndicator:
-    label: O2
+    label: "O\u2082"
     text: {fileID: 1717762682}
   salinityIndicator:
     label: Salinitas
@@ -55940,7 +55940,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c3565ae698d9e5a41835d87ae4e2b81b, type: 2}
   waterChangeAmmoniaMultiplier: 0.05
   waterChangeOxygenRecovery: 0.5
-  targetOxygen: 8
+  targetOxygen: 7
   targetSalinity: 33
   startLockedUntilRewardUnlock: 1
   persistentAquariumId: Aquarium_Gudang_3
@@ -70520,7 +70520,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 916880883}
-  m_LocalRotation: {x: -0.00000000214532, y: 0.76728237, z: -0.0000000017930999, w: 0.6413095}
+  m_LocalRotation: {x: 7.154182e-10, y: 0.7676103, z: 5.97339e-10, w: 0.6409168}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.005999999, y: 0.006, z: 0.005999998}
   m_ConstrainProportionsScale: 0
@@ -71538,7 +71538,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 927421578}
-  m_LocalRotation: {x: -3.9357725e-10, y: -0.84469926, z: 2.493891e-10, w: 0.53524125}
+  m_LocalRotation: {x: 0.0000000015754258, y: -0.8452937, z: -9.958112e-10, w: 0.5343019}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.0059999996, y: 0.0060000005, z: 0.0059999996}
   m_ConstrainProportionsScale: 0
@@ -77125,7 +77125,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1028221075}
-  m_LocalRotation: {x: -0.017122075, y: -0.75634485, z: 0.019812156, w: 0.6536489}
+  m_LocalRotation: {x: -0.01703499, y: -0.75920516, z: 0.019887082, w: 0.65032446}
   m_LocalPosition: {x: 0, y: 0, z: -0.057588615}
   m_LocalScale: {x: 0.0060000005, y: 0.0060000005, z: 0.0060000014}
   m_ConstrainProportionsScale: 0
@@ -121693,7 +121693,7 @@ MonoBehaviour:
     label: Amonia
     text: {fileID: 816891066}
   oxygenIndicator:
-    label: O2
+    label: "O\u2082"
     text: {fileID: 222816247}
   salinityIndicator:
     label: Salinitas
@@ -121777,7 +121777,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c3565ae698d9e5a41835d87ae4e2b81b, type: 2}
   waterChangeAmmoniaMultiplier: 0.05
   waterChangeOxygenRecovery: 0.5
-  targetOxygen: 8
+  targetOxygen: 7
   targetSalinity: 33
   startLockedUntilRewardUnlock: 1
   persistentAquariumId: Aquarium_Gudang_6
@@ -146805,7 +146805,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1293029876712600392, guid: 2553cec8fdb3eb643bbe9f2ec880c472, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.396
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 1293029876712600392, guid: 2553cec8fdb3eb643bbe9f2ec880c472, type: 3}
       propertyPath: m_LocalPosition.y
@@ -156781,7 +156781,7 @@ MonoBehaviour:
     label: Amonia
     text: {fileID: 1882325500}
   oxygenIndicator:
-    label: O2
+    label: "O\u2082"
     text: {fileID: 415572130}
   salinityIndicator:
     label: Salinitas
@@ -156865,7 +156865,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c3565ae698d9e5a41835d87ae4e2b81b, type: 2}
   waterChangeAmmoniaMultiplier: 0.05
   waterChangeOxygenRecovery: 0.5
-  targetOxygen: 8
+  targetOxygen: 7
   targetSalinity: 33
   startLockedUntilRewardUnlock: 1
   persistentAquariumId: Aquarium_Gudang_5
@@ -168575,7 +168575,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3660015111835177311, guid: 324266391f7409149a694b2186be2308, type: 3}
       propertyPath: respawnCooldownSeconds
-      value: 90
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 8087463658417668756, guid: 324266391f7409149a694b2186be2308, type: 3}
       propertyPath: m_Name
@@ -174300,7 +174300,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7983738434047934027, guid: 5deb3045d1221f14a8bd4098c5374708, type: 3}
       propertyPath: respawnCooldownSeconds
-      value: 90
+      value: 120
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -176704,7 +176704,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c3565ae698d9e5a41835d87ae4e2b81b, type: 2}
   waterChangeAmmoniaMultiplier: 0.05
   waterChangeOxygenRecovery: 0.5
-  targetOxygen: 8
+  targetOxygen: 7
   targetSalinity: 33
   startLockedUntilRewardUnlock: 0
   persistentAquariumId: Aquarium_Gudang_1

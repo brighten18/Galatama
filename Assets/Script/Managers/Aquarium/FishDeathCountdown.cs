@@ -56,7 +56,7 @@ public class FishDeathCountdown
             isActive = true;
             remainingSeconds = DANGER_DURATION;
             currentPhase = DOStatus.Danger;
-            Debug.Log($"[DeathCountdown] {fishInstanceId}: DO < 6, {DANGER_DURATION}s tersisa.");
+            Debug.Log($"[DeathCountdown] {fishInstanceId}: DO < 5, {DANGER_DURATION}s tersisa.");
         }
         else if (currentPhase == DOStatus.Critical)
         {
@@ -74,7 +74,7 @@ public class FishDeathCountdown
             isActive = true;
             remainingSeconds = CRITICAL_DURATION;
             currentPhase = DOStatus.Critical;
-            Debug.Log($"[DeathCountdown] {fishInstanceId}: DO < 5, {CRITICAL_DURATION}s tersisa.");
+            Debug.Log($"[DeathCountdown] {fishInstanceId}: DO < 4, {CRITICAL_DURATION}s tersisa.");
         }
         else if (currentPhase == DOStatus.Danger)
         {

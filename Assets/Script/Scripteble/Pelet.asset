@@ -25,8 +25,8 @@ MonoBehaviour:
   targetTemperature: 0
   salinityChange: 0
   cooldownSeconds: 180
-  targetPh: 7.2
+  targetPh: 0
   targetAmmonia: 0
   instantOxygenIncrease: 0
   feedHungerReduction: 100
-  pelletSpawnCount: 9
+  pelletSpawnCount: 12

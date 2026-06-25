@@ -21,8 +21,8 @@ MonoBehaviour:
   aquariumRole: 4
   ammoniaReductionPerTick: 0
   oxygenIncreasePerTick: 0
-  temperatureChangePerTick: 3
-  targetTemperature: 24
+  temperatureChangePerTick: 0
+  targetTemperature: 0
   salinityChange: 0
   cooldownSeconds: 300
   targetPh: 0

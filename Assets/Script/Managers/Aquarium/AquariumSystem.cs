@@ -708,6 +708,8 @@ public class AquariumSystem : MonoBehaviour
             return;
 
         fish.hunger = Mathf.Min(fish.maxHunger, fish.hunger + Mathf.Abs(feedPoints));
+        if (rasSimulator != null && rasSimulator.GetDOStatus() == DOStatus.Safe)
+            fish.health = Mathf.Clamp(100f, 0f, fish.maxHealth);
         FishStateChanged?.Invoke(this, fish);
         RefreshUI();
     }
@@ -727,6 +729,8 @@ public class AquariumSystem : MonoBehaviour
         if (IsRewardLocked) return false;
         float before = waterQuality.ammonia;
         waterQuality.ammonia = Mathf.Max(0f, targetAmmonia);
+        if (targetAmmonia <= 0f)
+            rasSimulator?.StopFishAmmoniaProduction();
         CommitWaterQualityChange();
         Debug.Log($"[RAS][{name}] NH3: {before:0.00} â†’ {waterQuality.ammonia:0.00}");
         return true;
@@ -815,6 +819,7 @@ public class AquariumSystem : MonoBehaviour
         float feedAmmoniaIncrease = waterQuality.salinity < 32f ? 0.05f : 0.02f;
         if (waterQuality.ph > 8f)
             feedAmmoniaIncrease *= 2f;
+        rasSimulator?.StartFishAmmoniaProduction();
         rasSimulator?.AddAmmonia(feedAmmoniaIncrease);
         rasSimulator?.AddFoodLoad(pelletCount);
 

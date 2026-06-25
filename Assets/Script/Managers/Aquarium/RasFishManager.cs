@@ -6,6 +6,8 @@ public class RasFishManager : MonoBehaviour
 {
     private const float FULL_TO_EMPTY_HUNGER_SECONDS = 300f;
     private const float HUNGER_LOSS_PER_SEC = 100f / FULL_TO_EMPTY_HUNGER_SECONDS;
+    private const float HEALTH_DECAY_INTERVAL = 5f;
+    private const float HEALTH_DECAY_PER_TICK = 1f;
 
     private WaterQualityState water;
     private RasWaterSimulator simulator;
@@ -13,6 +15,8 @@ public class RasFishManager : MonoBehaviour
 
     private readonly Dictionary<string, FishDeathCountdown> doCountdowns
         = new Dictionary<string, FishDeathCountdown>();
+    private readonly Dictionary<string, float> healthDecayTimers
+        = new Dictionary<string, float>();
 
     public event Action<string, string> OnFishDied;
     public event Action<string, float, DOStatus> OnCountdownUpdated;
@@ -40,6 +44,7 @@ public class RasFishManager : MonoBehaviour
             TickHunger(fish, dt);
             TickDOCountdown(fish, dt, doStatus);
             TickStress(fish, doStatus);
+            TickHealthDecay(fish, dt);
         }
 
         CleanupStaleCountdowns();
@@ -49,12 +54,14 @@ public class RasFishManager : MonoBehaviour
     {
         if (fish == null) return;
         fish.hunger = Mathf.Clamp(fish.hunger, 0f, fish.maxHunger);
+        fish.health = Mathf.Clamp(fish.health, 0f, fish.maxHealth);
     }
 
     public void UnregisterFish(FishInstanceState fish)
     {
         if (fish == null) return;
         doCountdowns.Remove(fish.instanceId);
+        healthDecayTimers.Remove(fish.instanceId);
     }
 
     private void TickHunger(FishInstanceState fish, float dt)
@@ -86,7 +93,49 @@ public class RasFishManager : MonoBehaviour
 
     private void TickStress(FishInstanceState fish, DOStatus doStatus)
     {
-        fish.isStressed =
+        fish.isStressed = fish.health < 60f;
+    }
+
+    private void TickHealthDecay(FishInstanceState fish, float dt)
+    {
+        if (fish == null || !fish.isAlive || string.IsNullOrEmpty(fish.instanceId))
+            return;
+
+        if (!IsHealthDangerActive())
+        {
+            healthDecayTimers.Remove(fish.instanceId);
+            return;
+        }
+
+        float elapsed = 0f;
+        healthDecayTimers.TryGetValue(fish.instanceId, out elapsed);
+        elapsed += dt;
+
+        while (elapsed >= HEALTH_DECAY_INTERVAL && fish.isAlive)
+        {
+            elapsed -= HEALTH_DECAY_INTERVAL;
+            fish.health = Mathf.Max(0f, fish.health - HEALTH_DECAY_PER_TICK);
+            if (fish.health <= 0f)
+            {
+                KillFish(fish, "health habis karena kualitas air buruk");
+                elapsed = 0f;
+                break;
+            }
+        }
+
+        if (fish.isAlive)
+            healthDecayTimers[fish.instanceId] = elapsed;
+        else
+            healthDecayTimers.Remove(fish.instanceId);
+    }
+
+    private bool IsHealthDangerActive()
+    {
+        if (water == null || simulator == null)
+            return false;
+
+        DOStatus doStatus = simulator.GetDOStatus();
+        return
             water.salinity < 32f ||
             water.salinity > 35f ||
             water.temperature < 21f ||
@@ -105,6 +154,7 @@ public class RasFishManager : MonoBehaviour
         fish.isStressed = false;
 
         doCountdowns.Remove(fish.instanceId);
+        healthDecayTimers.Remove(fish.instanceId);
 
         Debug.Log($"[RasFishManager] Ikan '{fish.itemName}' ({fish.instanceId}) mati karena {reason}.");
         OnFishDied?.Invoke(fish.instanceId, reason);

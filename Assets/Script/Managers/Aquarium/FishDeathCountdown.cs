@@ -5,6 +5,7 @@ public class FishDeathCountdown
 {
     private const float DANGER_DURATION = 240f;
     private const float CRITICAL_DURATION = 60f;
+    private const float ZERO_DURATION = 30f;
 
     private readonly string fishInstanceId;
 
@@ -36,6 +37,9 @@ public class FishDeathCountdown
                 break;
             case DOStatus.Critical:
                 HandleCriticalTick(dt);
+                break;
+            case DOStatus.Zero:
+                HandleZeroTick(dt);
                 break;
         }
     }
@@ -81,6 +85,25 @@ public class FishDeathCountdown
             currentPhase = DOStatus.Critical;
             remainingSeconds = Mathf.Min(remainingSeconds, CRITICAL_DURATION);
             Debug.Log($"[DeathCountdown] {fishInstanceId}: Danger ke Critical, sisa {remainingSeconds:0}s.");
+        }
+
+        TickDown(dt);
+    }
+
+    private void HandleZeroTick(float dt)
+    {
+        if (!isActive)
+        {
+            isActive = true;
+            remainingSeconds = ZERO_DURATION;
+            currentPhase = DOStatus.Zero;
+            Debug.Log($"[DeathCountdown] {fishInstanceId}: DO <= 0, {ZERO_DURATION}s tersisa.");
+        }
+        else if (currentPhase != DOStatus.Zero)
+        {
+            currentPhase = DOStatus.Zero;
+            remainingSeconds = Mathf.Min(remainingSeconds, ZERO_DURATION);
+            Debug.Log($"[DeathCountdown] {fishInstanceId}: DO turun ke 0, sisa {remainingSeconds:0}s.");
         }
 
         TickDown(dt);

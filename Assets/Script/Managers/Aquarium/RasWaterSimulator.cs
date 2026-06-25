@@ -4,7 +4,8 @@ public enum DOStatus
 {
     Safe,
     Danger,
-    Critical
+    Critical,
+    Zero
 }
 
 public class RasWaterSimulator : MonoBehaviour
@@ -47,6 +48,7 @@ public class RasWaterSimulator : MonoBehaviour
 
     private WaterQualityState water;
     private bool coolerActive;
+    private bool fishAmmoniaProductionActive;
     private float foodLoad;
     private float temperatureRandomTimer;
     public float FoodLoad => foodLoad;
@@ -55,6 +57,7 @@ public class RasWaterSimulator : MonoBehaviour
     {
         water = waterState;
         coolerActive = isCoolerInstalled;
+        fishAmmoniaProductionActive = false;
         foodLoad = 0f;
         temperatureRandomTimer = 0f;
     }
@@ -74,6 +77,10 @@ public class RasWaterSimulator : MonoBehaviour
     }
 
     public void RegisterFedFish() { }
+
+    public void StartFishAmmoniaProduction() => fishAmmoniaProductionActive = true;
+
+    public void StopFishAmmoniaProduction() => fishAmmoniaProductionActive = false;
 
     public void AddAmmonia(float amount)
     {
@@ -100,6 +107,7 @@ public class RasWaterSimulator : MonoBehaviour
     public DOStatus GetDOStatus()
     {
         if (water == null) return DOStatus.Safe;
+        if (water.oxygen <= 0f) return DOStatus.Zero;
         if (water.oxygen < DO_CRITICAL_THRESHOLD) return DOStatus.Critical;
         if (water.oxygen < DO_DANGER_THRESHOLD) return DOStatus.Danger;
         return DOStatus.Safe;
@@ -153,7 +161,7 @@ public class RasWaterSimulator : MonoBehaviour
 
     private void TickAmmoniaFromFish(float dt, int livingFishCount)
     {
-        if (livingFishCount <= 0) return;
+        if (!fishAmmoniaProductionActive || livingFishCount <= 0) return;
 
         float productionMultiplier = IsAmmoniaProductionDoubled() ? 2f : 1f;
         water.ammonia += NH3_PER_FISH_PER_SECOND * productionMultiplier * livingFishCount * dt;

@@ -98,8 +98,10 @@ public class FishRuntimeData : MonoBehaviour
 [Serializable]
 public class WaterQualityState
 {
+    public const float MaxOxygen = 8f;
+
     public float ammonia;
-    public float oxygen = 8f;
+    public float oxygen = MaxOxygen;
     public float temperature = 26f;
     public float ph = 8.1f;
     public float salinity = 35f;
@@ -107,7 +109,7 @@ public class WaterQualityState
     public void Clamp()
     {
         ammonia = Mathf.Max(0f, ammonia);
-        oxygen = Mathf.Max(0f, oxygen);
+        oxygen = Mathf.Clamp(oxygen, 0f, MaxOxygen);
         temperature = Mathf.Clamp(temperature, 0f, 50f);
         ph = Mathf.Clamp(ph, 0f, 14f);
         salinity = Mathf.Max(0f, salinity);
@@ -267,7 +269,7 @@ public class AquariumSystem : MonoBehaviour
     [SerializeField] private List<EquipmentData> installedEquipment = new List<EquipmentData>();
     [SerializeField] private float waterChangeAmmoniaMultiplier = 0.35f;
     [SerializeField] private float waterChangeOxygenRecovery = 2f;
-    [SerializeField] private float targetOxygen = 8f;
+    [SerializeField] private float targetOxygen = WaterQualityState.MaxOxygen;
     [SerializeField] private float targetSalinity = 35f;
 
     [Header("Reward Lock")]
@@ -750,7 +752,7 @@ public class AquariumSystem : MonoBehaviour
     {
         if (IsRewardLocked) return false;
         float before = waterQuality.oxygen;
-        waterQuality.oxygen = Mathf.Max(0f, waterQuality.oxygen + amount);
+        waterQuality.oxygen = Mathf.Clamp(waterQuality.oxygen + amount, 0f, WaterQualityState.MaxOxygen);
         CommitWaterQualityChange();
         Debug.Log($"[RAS][{name}] O2: {before:0.00} â†’ {waterQuality.oxygen:0.00} (+{amount:0.00})");
         return true;

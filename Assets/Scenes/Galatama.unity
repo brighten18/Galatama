@@ -17601,7 +17601,7 @@ PrefabInstance:
       objectReference: {fileID: 519874428}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: targetTemperature
@@ -17613,7 +17613,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5953108997085482601, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: m_Name
@@ -28219,7 +28219,7 @@ PrefabInstance:
       objectReference: {fileID: 466570436}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: targetTemperature
@@ -28231,7 +28231,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5953108997085482601, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: m_Name
@@ -34519,7 +34519,7 @@ PrefabInstance:
       objectReference: {fileID: 716681154}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: targetTemperature
@@ -34531,7 +34531,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5953108997085482601, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: m_Name
@@ -35225,7 +35225,7 @@ MonoBehaviour:
   waterQuality:
     ammonia: 0
     oxygen: 8
-    temperature: 26
+    temperature: 24
     ph: 7.2
     salinity: 33.5
   rasTimeScale: 1
@@ -35234,7 +35234,7 @@ MonoBehaviour:
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
   oxygenThresholds:
-    batasAmanMinimum: 5
+    batasAmanMinimum: 5.1
     batasAmanMaksimum: 8
     gunakanBahayaRendah: 1
     batasBahayaRendah: 5
@@ -35250,14 +35250,14 @@ MonoBehaviour:
     gunakanBahayaRendah: 1
     batasBahayaRendah: 21
     gunakanBahayaTinggi: 1
-    batasBahayaTinggi: 31
+    batasBahayaTinggi: 27
     gunakanKritisRendah: 0
     batasKritisRendah: 0
-    gunakanKritisTinggi: 0
-    batasKritisTinggi: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 31
   phThresholds:
-    batasAmanMinimum: 6.5
-    batasAmanMaksimum: 7.5
+    batasAmanMinimum: 6.1
+    batasAmanMaksimum: 7.9
     gunakanBahayaRendah: 1
     batasBahayaRendah: 6
     gunakanBahayaTinggi: 1
@@ -39941,7 +39941,7 @@ MonoBehaviour:
   waterQuality:
     ammonia: 0
     oxygen: 8
-    temperature: 26
+    temperature: 24
     ph: 7.2
     salinity: 33.5
   rasTimeScale: 1
@@ -39950,7 +39950,7 @@ MonoBehaviour:
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
   oxygenThresholds:
-    batasAmanMinimum: 5
+    batasAmanMinimum: 5.1
     batasAmanMaksimum: 8
     gunakanBahayaRendah: 1
     batasBahayaRendah: 5
@@ -39966,14 +39966,14 @@ MonoBehaviour:
     gunakanBahayaRendah: 1
     batasBahayaRendah: 21
     gunakanBahayaTinggi: 1
-    batasBahayaTinggi: 31
+    batasBahayaTinggi: 27
     gunakanKritisRendah: 0
     batasKritisRendah: 0
-    gunakanKritisTinggi: 0
-    batasKritisTinggi: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 31
   phThresholds:
-    batasAmanMinimum: 6.5
-    batasAmanMaksimum: 7.5
+    batasAmanMinimum: 6.1
+    batasAmanMaksimum: 7.9
     gunakanBahayaRendah: 1
     batasBahayaRendah: 6
     gunakanBahayaTinggi: 1
@@ -48207,7 +48207,7 @@ PrefabInstance:
       objectReference: {fileID: 2046010121}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: targetTemperature
@@ -48219,7 +48219,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5953108997085482601, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: m_Name
@@ -55870,7 +55870,7 @@ MonoBehaviour:
   waterQuality:
     ammonia: 0
     oxygen: 8
-    temperature: 26
+    temperature: 24
     ph: 7.2
     salinity: 33.5
   rasTimeScale: 1
@@ -55879,7 +55879,7 @@ MonoBehaviour:
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
   oxygenThresholds:
-    batasAmanMinimum: 5
+    batasAmanMinimum: 5.1
     batasAmanMaksimum: 8
     gunakanBahayaRendah: 1
     batasBahayaRendah: 5
@@ -55895,14 +55895,14 @@ MonoBehaviour:
     gunakanBahayaRendah: 1
     batasBahayaRendah: 21
     gunakanBahayaTinggi: 1
-    batasBahayaTinggi: 31
+    batasBahayaTinggi: 27
     gunakanKritisRendah: 0
     batasKritisRendah: 0
-    gunakanKritisTinggi: 0
-    batasKritisTinggi: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 31
   phThresholds:
-    batasAmanMinimum: 6.5
-    batasAmanMaksimum: 7.5
+    batasAmanMinimum: 6.1
+    batasAmanMaksimum: 7.9
     gunakanBahayaRendah: 1
     batasBahayaRendah: 6
     gunakanBahayaTinggi: 1
@@ -57053,7 +57053,7 @@ PrefabInstance:
       objectReference: {fileID: 716681154}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: targetTemperature
@@ -57065,7 +57065,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7094198339324778838, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: m_Name
@@ -70346,7 +70346,7 @@ PrefabInstance:
       objectReference: {fileID: 466570436}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: targetTemperature
@@ -70358,7 +70358,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7094198339324778838, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: m_Name
@@ -70766,7 +70766,7 @@ PrefabInstance:
       objectReference: {fileID: 1593392011}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: targetTemperature
@@ -70778,7 +70778,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5953108997085482601, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: m_Name
@@ -70842,9 +70842,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5953108997085482601, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 919163312}
-    - targetCorrespondingSourceObject: {fileID: 5953108997085482601, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 919163311}
   m_SourcePrefab: {fileID: 100100000, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
 --- !u!4 &919163309 stripped
@@ -70875,43 +70872,6 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
---- !u!114 &919163312
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919163310}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d223a3eeae5f40caa8c9dc0b5daf4f13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AquariumMachineInteractable
-  itemName: Cooler
-  keepInWorldAfterInteract: 1
-  respawnAfterPickup: 0
-  respawnCooldownSeconds: 300
-  useHighlight: 1
-  autoAddOutlineIfMissing: 0
-  highlightMode: 0
-  highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  highlightWidth: 4
-  showWorldCooldownUI: 1
-  cooldownUIOffset: {x: 0, y: 1.6, z: 0}
-  cooldownUICanvasSize: {x: 60, y: 60}
-  cooldownUIWorldScale: 0.006
-  cooldownUIInnerPadding: 0.08
-  cooldownUIFillColor: {r: 0.2, g: 0.82, b: 1, a: 0.95}
-  cooldownUIBackgroundColor: {r: 0, g: 0, b: 0, a: 0.35}
-  cooldownUIFontSize: 18
-  aquariumSystem: {fileID: 1593392011}
-  machineRole: 4
-  cooldownSeconds: 4
-  oxygenIncrease: 0
-  salinityChange: 0
-  targetTemperature: 23
-  temperatureChangePerUse: 2
-  searchRadius: 15
 --- !u!1 &919928809
 GameObject:
   m_ObjectHideFlags: 0
@@ -72938,7 +72898,7 @@ PrefabInstance:
       objectReference: {fileID: 8326309825565251786}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: targetTemperature
@@ -72950,7 +72910,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4103101229411185870, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5953108997085482601, guid: b290f67cfceb98b48981d927ab9a57e3, type: 3}
       propertyPath: m_Name
@@ -100959,7 +100919,7 @@ PrefabInstance:
       objectReference: {fileID: 8326309825565251786}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: targetTemperature
@@ -100975,7 +100935,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7094198339324778838, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: m_Name
@@ -108000,7 +107960,7 @@ PrefabInstance:
       objectReference: {fileID: 1593392011}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: targetTemperature
@@ -108012,7 +107972,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7094198339324778838, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: m_Name
@@ -108076,9 +108036,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7094198339324778838, guid: daf553860b5a5144f8d304858698b637, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1415654828}
-    - targetCorrespondingSourceObject: {fileID: 7094198339324778838, guid: daf553860b5a5144f8d304858698b637, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1415654827}
   m_SourcePrefab: {fileID: 100100000, guid: daf553860b5a5144f8d304858698b637, type: 3}
 --- !u!4 &1415654825 stripped
@@ -108109,43 +108066,6 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
---- !u!114 &1415654828
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1415654826}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d223a3eeae5f40caa8c9dc0b5daf4f13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AquariumMachineInteractable
-  itemName: Heater
-  keepInWorldAfterInteract: 1
-  respawnAfterPickup: 0
-  respawnCooldownSeconds: 300
-  useHighlight: 1
-  autoAddOutlineIfMissing: 0
-  highlightMode: 0
-  highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  highlightWidth: 4
-  showWorldCooldownUI: 1
-  cooldownUIOffset: {x: 0, y: 1.6, z: 0}
-  cooldownUICanvasSize: {x: 60, y: 60}
-  cooldownUIWorldScale: 0.006
-  cooldownUIInnerPadding: 0.08
-  cooldownUIFillColor: {r: 0.2, g: 0.82, b: 1, a: 0.95}
-  cooldownUIBackgroundColor: {r: 0, g: 0, b: 0, a: 0.35}
-  cooldownUIFontSize: 18
-  aquariumSystem: {fileID: 1593392011}
-  machineRole: 3
-  cooldownSeconds: 4
-  oxygenIncrease: 0
-  salinityChange: 0
-  targetTemperature: 30
-  temperatureChangePerUse: 2
-  searchRadius: 15
 --- !u!1 &1415917309
 GameObject:
   m_ObjectHideFlags: 0
@@ -121707,7 +121627,7 @@ MonoBehaviour:
   waterQuality:
     ammonia: 0
     oxygen: 8
-    temperature: 26
+    temperature: 24
     ph: 7.2
     salinity: 33.5
   rasTimeScale: 1
@@ -121716,7 +121636,7 @@ MonoBehaviour:
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
   oxygenThresholds:
-    batasAmanMinimum: 5
+    batasAmanMinimum: 5.1
     batasAmanMaksimum: 8
     gunakanBahayaRendah: 1
     batasBahayaRendah: 5
@@ -121732,14 +121652,14 @@ MonoBehaviour:
     gunakanBahayaRendah: 1
     batasBahayaRendah: 21
     gunakanBahayaTinggi: 1
-    batasBahayaTinggi: 31
+    batasBahayaTinggi: 27
     gunakanKritisRendah: 0
     batasKritisRendah: 0
-    gunakanKritisTinggi: 0
-    batasKritisTinggi: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 31
   phThresholds:
-    batasAmanMinimum: 6.5
-    batasAmanMaksimum: 7.5
+    batasAmanMinimum: 6.1
+    batasAmanMaksimum: 7.9
     gunakanBahayaRendah: 1
     batasBahayaRendah: 6
     gunakanBahayaTinggi: 1
@@ -156440,7 +156360,7 @@ PrefabInstance:
       objectReference: {fileID: 2046010121}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: targetTemperature
@@ -156452,7 +156372,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7094198339324778838, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: m_Name
@@ -156795,7 +156715,7 @@ MonoBehaviour:
   waterQuality:
     ammonia: 0
     oxygen: 8
-    temperature: 26
+    temperature: 24
     ph: 7.2
     salinity: 33.5
   rasTimeScale: 1
@@ -156804,7 +156724,7 @@ MonoBehaviour:
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
   oxygenThresholds:
-    batasAmanMinimum: 5
+    batasAmanMinimum: 5.1
     batasAmanMaksimum: 8
     gunakanBahayaRendah: 1
     batasBahayaRendah: 5
@@ -156820,14 +156740,14 @@ MonoBehaviour:
     gunakanBahayaRendah: 1
     batasBahayaRendah: 21
     gunakanBahayaTinggi: 1
-    batasBahayaTinggi: 31
+    batasBahayaTinggi: 27
     gunakanKritisRendah: 0
     batasKritisRendah: 0
-    gunakanKritisTinggi: 0
-    batasKritisTinggi: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 31
   phThresholds:
-    batasAmanMinimum: 6.5
-    batasAmanMaksimum: 7.5
+    batasAmanMinimum: 6.1
+    batasAmanMaksimum: 7.9
     gunakanBahayaRendah: 1
     batasBahayaRendah: 6
     gunakanBahayaTinggi: 1
@@ -157841,7 +157761,7 @@ PrefabInstance:
       objectReference: {fileID: 519874428}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: cooldownSeconds
-      value: 300
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: targetTemperature
@@ -157853,7 +157773,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2873044342990857874, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: temperatureChangePerUse
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7094198339324778838, guid: daf553860b5a5144f8d304858698b637, type: 3}
       propertyPath: m_Name
@@ -168359,7 +168279,7 @@ MonoBehaviour:
   cooldownUIFontSize: 18
   aquariumSystem: {fileID: 2046010121}
   machineRole: 2
-  cooldownSeconds: 300
+  cooldownSeconds: 60
   oxygenIncrease: 1
   salinityChange: 0
   targetTemperature: 0
@@ -168396,7 +168316,7 @@ MonoBehaviour:
   cooldownUIFontSize: 18
   aquariumSystem: {fileID: 716681154}
   machineRole: 2
-  cooldownSeconds: 300
+  cooldownSeconds: 60
   oxygenIncrease: 1
   salinityChange: 0
   targetTemperature: 0
@@ -168433,7 +168353,7 @@ MonoBehaviour:
   cooldownUIFontSize: 18
   aquariumSystem: {fileID: 1593392011}
   machineRole: 2
-  cooldownSeconds: 300
+  cooldownSeconds: 60
   oxygenIncrease: 1
   salinityChange: 0
   targetTemperature: 0
@@ -168470,7 +168390,7 @@ MonoBehaviour:
   cooldownUIFontSize: 18
   aquariumSystem: {fileID: 466570436}
   machineRole: 2
-  cooldownSeconds: 300
+  cooldownSeconds: 60
   oxygenIncrease: 1
   salinityChange: 0
   targetTemperature: 0
@@ -168507,7 +168427,7 @@ MonoBehaviour:
   cooldownUIFontSize: 18
   aquariumSystem: {fileID: 519874428}
   machineRole: 2
-  cooldownSeconds: 300
+  cooldownSeconds: 60
   oxygenIncrease: 1
   salinityChange: 0
   targetTemperature: 0
@@ -168544,7 +168464,7 @@ MonoBehaviour:
   cooldownUIFontSize: 18
   aquariumSystem: {fileID: 8326309825565251786}
   machineRole: 2
-  cooldownSeconds: 300
+  cooldownSeconds: 60
   oxygenIncrease: 1
   salinityChange: 0
   targetTemperature: 0
@@ -174299,8 +174219,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7983738434047934027, guid: 5deb3045d1221f14a8bd4098c5374708, type: 3}
+      propertyPath: useHighlight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7983738434047934027, guid: 5deb3045d1221f14a8bd4098c5374708, type: 3}
       propertyPath: respawnCooldownSeconds
-      value: 120
+      value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -176634,7 +176558,7 @@ MonoBehaviour:
   waterQuality:
     ammonia: 0
     oxygen: 8
-    temperature: 26
+    temperature: 24
     ph: 7.2
     salinity: 33.5
   rasTimeScale: 1
@@ -176643,7 +176567,7 @@ MonoBehaviour:
   dangerIndicatorColor: {r: 1, g: 0.6, b: 0.15, a: 1}
   criticalIndicatorColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
   oxygenThresholds:
-    batasAmanMinimum: 5
+    batasAmanMinimum: 5.1
     batasAmanMaksimum: 8
     gunakanBahayaRendah: 1
     batasBahayaRendah: 5
@@ -176659,14 +176583,14 @@ MonoBehaviour:
     gunakanBahayaRendah: 1
     batasBahayaRendah: 21
     gunakanBahayaTinggi: 1
-    batasBahayaTinggi: 31
+    batasBahayaTinggi: 27
     gunakanKritisRendah: 0
     batasKritisRendah: 0
-    gunakanKritisTinggi: 0
-    batasKritisTinggi: 0
+    gunakanKritisTinggi: 1
+    batasKritisTinggi: 31
   phThresholds:
-    batasAmanMinimum: 6.5
-    batasAmanMaksimum: 7.5
+    batasAmanMinimum: 6.1
+    batasAmanMaksimum: 7.9
     gunakanBahayaRendah: 1
     batasBahayaRendah: 6
     gunakanBahayaTinggi: 1

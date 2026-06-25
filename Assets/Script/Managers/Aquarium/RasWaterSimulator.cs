@@ -10,7 +10,8 @@ public enum DOStatus
 
 public class RasWaterSimulator : MonoBehaviour
 {
-    private const float TEMP_RANDOM_INTERVAL = 300f;
+    private const float TEMP_RANDOM_INTERVAL = 180f;
+    private const float TEMP_LOW_FEED_THRESHOLD = 21f;
     private const float TEMP_CHAIN_THRESHOLD = 27f;
     private const float TEMP_CRITICAL_THRESHOLD = 31f;
 
@@ -116,10 +117,21 @@ public class RasWaterSimulator : MonoBehaviour
     public float GetFeedEfficiency()
     {
         if (water == null) return FEED_NORMAL;
-        return water.ph < PH_LOW_FEED_THRESHOLD ? FEED_EFFICIENCY_LOW : FEED_NORMAL;
+        return IsFeedEffectivenessReduced() ? FEED_EFFICIENCY_LOW : FEED_NORMAL;
     }
 
     public bool IsAmmoniaProductionDoubled() => water != null && water.ph > PH_NH3_PRODUCTION_THRESHOLD;
+
+    public bool IsFeedEffectivenessReduced()
+    {
+        if (water == null) return false;
+        return water.ph < PH_LOW_FEED_THRESHOLD || water.temperature < TEMP_LOW_FEED_THRESHOLD;
+    }
+
+    public float GetHungerDecayMultiplier()
+    {
+        return IsFeedEffectivenessReduced() ? 2f : 1f;
+    }
 
     private void TickTemperatureRandomWalk(float dt)
     {
@@ -187,11 +199,11 @@ public class RasWaterSimulator : MonoBehaviour
         float measuredAmmonia = water.ammonia;
         if (livingFishCount <= 0) return;
 
-        if (measuredAmmonia >= NH3_DANGER_MAX)
+        if (measuredAmmonia > NH3_DANGER_MAX)
         {
             water.oxygen -= DO_LOSS_NH3_CRITICAL_PER_FISH_PER_SECOND * livingFishCount * dt;
         }
-        else if (measuredAmmonia >= NH3_SAFE_MAX)
+        else if (measuredAmmonia > NH3_SAFE_MAX)
         {
             water.oxygen -= DO_LOSS_NH3_DANGER_PER_FISH_PER_SECOND * livingFishCount * dt;
         }

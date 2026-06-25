@@ -66,7 +66,8 @@ public class RasFishManager : MonoBehaviour
 
     private void TickHunger(FishInstanceState fish, float dt)
     {
-        fish.hunger = Mathf.Max(0f, fish.hunger - HUNGER_LOSS_PER_SEC * dt);
+        float hungerDecayMultiplier = simulator != null ? simulator.GetHungerDecayMultiplier() : 1f;
+        fish.hunger = Mathf.Max(0f, fish.hunger - (HUNGER_LOSS_PER_SEC * hungerDecayMultiplier * dt));
         if (fish.hunger <= 0f)
             KillFish(fish, "tidak diberi makan selama 5 menit");
     }

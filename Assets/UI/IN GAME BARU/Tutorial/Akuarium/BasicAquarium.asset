@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BasicAquarium
   m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceSO
   tutorialId: basic_aquarium
-  displayName: Petunjuk Budidaya Akuarium
+  displayName: Petunjuk Gameplay
   playOnce: 1
   lockPlayerWhileOpen: 1
   steps:
@@ -50,3 +50,6 @@ MonoBehaviour:
   - title: Kuis Berhadiah
     description: Selesaikan kuis dengan mencapai target skor untuk mendapatkan hadiah!!!
     illustration: {fileID: 21300000, guid: 2813f32e2522dce49b469b2a7d600b3f, type: 3}
+  - title: Menyimpan Progres
+    description: Interaksi dengan tv yang ada di rumah untuk menyimpan progres
+    illustration: {fileID: 21300000, guid: c2dbc3314e916194d8e6af880687d07e, type: 3}

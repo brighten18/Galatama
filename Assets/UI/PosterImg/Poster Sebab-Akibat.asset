@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 880c8175a94a43748a8723c13927b9a6, type: 3}
-  m_Name: Poster Suhu
+  m_Name: Poster Sebab-Akibat
   m_EditorClassIdentifier: Assembly-CSharp::PosterData
-  posterName: Poster Suhu
-  posterSprite: {fileID: 21300000, guid: 3be707b58ca53c744af5d202359d3ff1, type: 3}
+  posterName: Poster Sebab-Akibat
+  posterSprite: {fileID: 21300000, guid: 734dec17e7c6ded4496029afd2c970ef, type: 3}
   anchoredPosition: {x: 0, y: 0}
   localScale: {x: 1, y: 1, z: 1}
   sizeDelta: {x: 707, y: 1000}

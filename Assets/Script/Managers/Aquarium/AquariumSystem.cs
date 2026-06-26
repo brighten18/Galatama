@@ -1231,16 +1231,16 @@ public class AquariumSystem : MonoBehaviour
             fishCountText.text = FishCount + " / " + maxFish;
 
         UpdateWaterIndicator(ammoniaIndicator, waterQuality.ammonia, "{0}: {1:0.0000} mg/L", EvaluateParameterSeverity(waterQuality.ammonia, ammoniaThresholds));
-        UpdateWaterIndicator(oxygenIndicator, waterQuality.oxygen, "{0}: {1:0.0000} mg/L", EvaluateParameterSeverity(waterQuality.oxygen, oxygenThresholds));
-        UpdateWaterIndicator(salinityIndicator, waterQuality.salinity, "{0}: {1:0.0000} ppt", EvaluateParameterSeverity(waterQuality.salinity, salinityThresholds));
-        UpdateWaterIndicator(phIndicator, waterQuality.ph, "{0}: {1:0.0000}", EvaluateParameterSeverity(waterQuality.ph, phThresholds));
-        UpdateWaterIndicator(temperatureIndicator, waterQuality.temperature, "{0}: {1:0.0000} C", EvaluateParameterSeverity(waterQuality.temperature, temperatureThresholds));
+        UpdateWaterIndicator(oxygenIndicator, waterQuality.oxygen, "{0}: {1:0.00} mg/L", EvaluateParameterSeverity(waterQuality.oxygen, oxygenThresholds));
+        UpdateWaterIndicator(salinityIndicator, waterQuality.salinity, "{0}: {1:0.00} ppt", EvaluateParameterSeverity(waterQuality.salinity, salinityThresholds));
+        UpdateWaterIndicator(phIndicator, waterQuality.ph, "{0}: {1:0.00}", EvaluateParameterSeverity(waterQuality.ph, phThresholds));
+        UpdateWaterIndicator(temperatureIndicator, waterQuality.temperature, "{0}: {1:0.00} C", EvaluateParameterSeverity(waterQuality.temperature, temperatureThresholds));
 
         if (waterQualityText != null)
         {
             waterQualityText.text = HasConfiguredSplitIndicators()
                 ? string.Empty
-                : $"NH3 {waterQuality.ammonia:0.0000} | O2 {waterQuality.oxygen:0.0000} | Temp {waterQuality.temperature:0.0000} | pH {waterQuality.ph:0.0000} | Sal {waterQuality.salinity:0.0000}";
+                : $"NH3 {waterQuality.ammonia:0.0000} | O2 {waterQuality.oxygen:0.00} | Temp {waterQuality.temperature:0.00} | pH {waterQuality.ph:0.00} | Sal {waterQuality.salinity:0.00}";
         }
 
         if (warningText != null)

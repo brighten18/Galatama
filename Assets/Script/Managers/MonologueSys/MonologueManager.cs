@@ -59,6 +59,12 @@ public class MonologueManager : MonoBehaviour
     [Tooltip("Daftar semua monologue tambahan. Isi Key unik untuk setiap entry.")]
     [SerializeField] private MonologueEntry[] monologues;
 
+    [Header("Typing SFX")]
+    [SerializeField] private AudioSource typingAudioSource;
+    [SerializeField] private AudioClip typingSfx;
+    [Range(0f, 1f)]
+    [SerializeField] private float typingSfxVolume = 0.5f;
+
     [Header("Settings")]
     [SerializeField] private float typewriterSpeed = 0.04f;
     [SerializeField] private float fadeDuration = 0.3f;
@@ -273,12 +279,23 @@ public class MonologueManager : MonoBehaviour
         _isTyping = true;
         int totalVisible = CountVisibleChars(fullText);
 
+        if (typingAudioSource != null && typingSfx != null)
+        {
+            typingAudioSource.clip = typingSfx;
+            typingAudioSource.loop = true;
+            typingAudioSource.volume = typingSfxVolume;
+            typingAudioSource.Play();
+        }
+
         for (int i = 0; i <= totalVisible; i++)
         {
             if (bodyText != null)
                 bodyText.text = RevealRichText(fullText, i);
             yield return new WaitForSecondsRealtime(typewriterSpeed);
         }
+
+        if (typingAudioSource != null)
+            typingAudioSource.Stop();
 
         _isTyping = false;
     }
@@ -296,6 +313,7 @@ public class MonologueManager : MonoBehaviour
                 StopCoroutine(_typewriterCoroutine);
 
             _isTyping = false;
+            if (typingAudioSource != null) typingAudioSource.Stop();
 
             if (bodyText != null)
                 bodyText.text = _processedPanels[_currentIndex];

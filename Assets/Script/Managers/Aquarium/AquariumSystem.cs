@@ -98,10 +98,8 @@ public class FishRuntimeData : MonoBehaviour
 [Serializable]
 public class WaterQualityState
 {
-    public const float MaxOxygen = 8f;
-
     public float ammonia;
-    public float oxygen = MaxOxygen;
+    public float oxygen = 8f;
     public float temperature = 26f;
     public float ph = 8.1f;
     public float salinity = 35f;
@@ -109,7 +107,7 @@ public class WaterQualityState
     public void Clamp()
     {
         ammonia = Mathf.Max(0f, ammonia);
-        oxygen = Mathf.Clamp(oxygen, 0f, MaxOxygen);
+        oxygen = Mathf.Max(0f, oxygen);
         temperature = Mathf.Clamp(temperature, 0f, 50f);
         ph = Mathf.Clamp(ph, 0f, 14f);
         salinity = Mathf.Max(0f, salinity);
@@ -159,7 +157,7 @@ public class WaterParameterThreshold
             gunakanBahayaRendah = true,
             batasBahayaRendah = 21f,
             gunakanBahayaTinggi = true,
-            batasBahayaTinggi = 30f
+            batasBahayaTinggi = 31f
         };
     }
 
@@ -167,8 +165,8 @@ public class WaterParameterThreshold
     {
         return new WaterParameterThreshold
         {
-            batasAmanMinimum = 6f,
-            batasAmanMaksimum = 8f,
+            batasAmanMinimum = 6.5f,
+            batasAmanMaksimum = 7.5f,
             gunakanBahayaRendah = true,
             batasBahayaRendah = 6f,
             gunakanBahayaTinggi = true,
@@ -269,7 +267,7 @@ public class AquariumSystem : MonoBehaviour
     [SerializeField] private List<EquipmentData> installedEquipment = new List<EquipmentData>();
     [SerializeField] private float waterChangeAmmoniaMultiplier = 0.35f;
     [SerializeField] private float waterChangeOxygenRecovery = 2f;
-    [SerializeField] private float targetOxygen = WaterQualityState.MaxOxygen;
+    [SerializeField] private float targetOxygen = 8f;
     [SerializeField] private float targetSalinity = 35f;
 
     [Header("Reward Lock")]
@@ -389,7 +387,6 @@ public class AquariumSystem : MonoBehaviour
         float rasDt = dt * Mathf.Max(0f, rasTimeScale);
         rasSimulator?.Tick(rasDt, cachedLivingFishCount, cachedDeadFishCount);
         rasFishManager?.Tick(rasDt);
-        RefreshWaterQualityUI();
 
         // Simulasi tick lama (equipment effects, UI refresh) tetap berjalan
         TickSimulation(dt);
@@ -710,8 +707,6 @@ public class AquariumSystem : MonoBehaviour
             return;
 
         fish.hunger = Mathf.Min(fish.maxHunger, fish.hunger + Mathf.Abs(feedPoints));
-        if (rasSimulator != null && rasSimulator.GetDOStatus() == DOStatus.Safe)
-            fish.health = Mathf.Clamp(100f, 0f, fish.maxHealth);
         FishStateChanged?.Invoke(this, fish);
         RefreshUI();
     }
@@ -731,8 +726,6 @@ public class AquariumSystem : MonoBehaviour
         if (IsRewardLocked) return false;
         float before = waterQuality.ammonia;
         waterQuality.ammonia = Mathf.Max(0f, targetAmmonia);
-        if (targetAmmonia <= 0f)
-            rasSimulator?.StopFishAmmoniaProduction();
         CommitWaterQualityChange();
         Debug.Log($"[RAS][{name}] NH3: {before:0.00} â†’ {waterQuality.ammonia:0.00}");
         return true;
@@ -752,7 +745,7 @@ public class AquariumSystem : MonoBehaviour
     {
         if (IsRewardLocked) return false;
         float before = waterQuality.oxygen;
-        waterQuality.oxygen = Mathf.Clamp(waterQuality.oxygen + amount, 0f, WaterQualityState.MaxOxygen);
+        waterQuality.oxygen = Mathf.Max(0f, waterQuality.oxygen + amount);
         CommitWaterQualityChange();
         Debug.Log($"[RAS][{name}] O2: {before:0.00} â†’ {waterQuality.oxygen:0.00} (+{amount:0.00})");
         return true;
@@ -816,13 +809,9 @@ public class AquariumSystem : MonoBehaviour
         Bounds bounds = SwimBounds;
         pelletCount = Mathf.Max(1, pelletCount);
 
-        // Untuk relasi amonia, aksi memberi makan hanya menambah NH3 sekali per aksi.
-        // Jika salinitas < 32, NH3 bertambah lebih besar.
-        float feedAmmoniaIncrease = waterQuality.salinity < 32f ? 0.05f : 0.02f;
-        if (waterQuality.ph > 8f)
-            feedAmmoniaIncrease *= 2f;
-        rasSimulator?.StartFishAmmoniaProduction();
-        rasSimulator?.AddAmmonia(feedAmmoniaIncrease);
+        // Diagram: Pakan (+) --> Ammonia (+) dan Pakan (+) --> pH (-)
+        // Setiap pellet yang di-spawn dihitung sebagai food load.
+        // Ikan yang makan akan menguranginya; sisanya membusuk secara alami.
         rasSimulator?.AddFoodLoad(pelletCount);
 
         for (int i = 0; i < pelletCount; i++)
@@ -841,7 +830,7 @@ public class AquariumSystem : MonoBehaviour
             NotifyFishAboutFood(food);
         }
 
-        Debug.Log($"[Aquarium] {pelletCount} pelet ditebar ke aquarium. NH3 +{feedAmmoniaIncrease:0.00} | Food load: {rasSimulator?.FoodLoad:0.00}");
+        Debug.Log($"[Aquarium] {pelletCount} pelet ditebar ke aquarium. Food load: {rasSimulator?.FoodLoad:0.00}");
         return true;
     }
 
@@ -889,6 +878,8 @@ public class AquariumSystem : MonoBehaviour
         float baseReduction = food.HungerReduction;
         float efficiency    = rasSimulator != null ? rasSimulator.GetFeedEfficiency() : 1f;
         FeedFish(fishIndex, baseReduction * efficiency);
+        rasSimulator?.RegisterFedFish();
+
         if (!string.IsNullOrEmpty(fishState.instanceId))
             fishEatCooldownUntil[fishState.instanceId] = Time.time + Mathf.Max(0f, fishEatCooldownSeconds);
 
@@ -1230,17 +1221,17 @@ public class AquariumSystem : MonoBehaviour
         if (fishCountText != null)
             fishCountText.text = FishCount + " / " + maxFish;
 
-        UpdateWaterIndicator(ammoniaIndicator, waterQuality.ammonia, "{0}: {1:0.0000} mg/L", EvaluateParameterSeverity(waterQuality.ammonia, ammoniaThresholds));
-        UpdateWaterIndicator(oxygenIndicator, waterQuality.oxygen, "{0}: {1:0.00} mg/L", EvaluateParameterSeverity(waterQuality.oxygen, oxygenThresholds));
-        UpdateWaterIndicator(salinityIndicator, waterQuality.salinity, "{0}: {1:0.00} ppt", EvaluateParameterSeverity(waterQuality.salinity, salinityThresholds));
-        UpdateWaterIndicator(phIndicator, waterQuality.ph, "{0}: {1:0.00}", EvaluateParameterSeverity(waterQuality.ph, phThresholds));
-        UpdateWaterIndicator(temperatureIndicator, waterQuality.temperature, "{0}: {1:0.00} C", EvaluateParameterSeverity(waterQuality.temperature, temperatureThresholds));
+        UpdateWaterIndicator(ammoniaIndicator, waterQuality.ammonia, "{0}: {1:0.00} mg/L", EvaluateParameterSeverity(waterQuality.ammonia, ammoniaThresholds));
+        UpdateWaterIndicator(oxygenIndicator, waterQuality.oxygen, "{0}: {1:0.0} mg/L", EvaluateParameterSeverity(waterQuality.oxygen, oxygenThresholds));
+        UpdateWaterIndicator(salinityIndicator, waterQuality.salinity, "{0}: {1:0.0} ppt", EvaluateParameterSeverity(waterQuality.salinity, salinityThresholds));
+        UpdateWaterIndicator(phIndicator, waterQuality.ph, "{0}: {1:0.0}", EvaluateParameterSeverity(waterQuality.ph, phThresholds));
+        UpdateWaterIndicator(temperatureIndicator, waterQuality.temperature, "{0}: {1:0.0} C", EvaluateParameterSeverity(waterQuality.temperature, temperatureThresholds));
 
         if (waterQualityText != null)
         {
             waterQualityText.text = HasConfiguredSplitIndicators()
                 ? string.Empty
-                : $"NH3 {waterQuality.ammonia:0.0000} | O2 {waterQuality.oxygen:0.00} | Temp {waterQuality.temperature:0.00} | pH {waterQuality.ph:0.00} | Sal {waterQuality.salinity:0.00}";
+                : $"NH3 {waterQuality.ammonia:0.00} | O2 {waterQuality.oxygen:0.0} | Temp {waterQuality.temperature:0.0} | pH {waterQuality.ph:0.0} | Sal {waterQuality.salinity:0.0}";
         }
 
         if (warningText != null)

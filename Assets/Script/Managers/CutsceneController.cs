@@ -43,6 +43,19 @@ namespace GALATAMA.Cutscene
         [Header("Panels")]
         [SerializeField] private PanelData[] panels;
 
+        [Header("Background Music")]
+        [SerializeField] private AudioSource musicAudioSource;
+        [SerializeField] private AudioClip musicClip;
+        [Range(0f, 1f)]
+        [SerializeField] private float musicVolume = 0.5f;
+        [SerializeField] private float musicFadeOutDuration = 1f;
+
+        [Header("Typing SFX")]
+        [SerializeField] private AudioSource typingAudioSource;
+        [SerializeField] private AudioClip typingSfx;
+        [Range(0f, 1f)]
+        [SerializeField] private float typingSfxVolume = 0.5f;
+
         [Header("Settings")]
         [SerializeField] private string gameplaySceneName = "Galatama";
         [SerializeField] private bool useLoadingScene = false;
@@ -86,6 +99,14 @@ namespace GALATAMA.Cutscene
 
         private IEnumerator PlayIntro()
         {
+            if (musicAudioSource != null && musicClip != null)
+            {
+                musicAudioSource.clip = musicClip;
+                musicAudioSource.loop = true;
+                musicAudioSource.volume = musicVolume;
+                musicAudioSource.Play();
+            }
+
             if (fadeOverlay != null)
                 yield return StartCoroutine(Fade(1f, 0f));
             ShowPanel(0);
@@ -117,11 +138,24 @@ namespace GALATAMA.Cutscene
         {
             _isTyping = true;
             if (bodyText != null) bodyText.text = string.Empty;
+
+            if (typingAudioSource != null && typingSfx != null)
+            {
+                typingAudioSource.clip = typingSfx;
+                typingAudioSource.loop = true;
+                typingAudioSource.volume = typingSfxVolume;
+                typingAudioSource.Play();
+            }
+
             foreach (char c in fullText)
             {
                 if (bodyText != null) bodyText.text += c;
                 yield return new WaitForSeconds(typewriterSpeed);
             }
+
+            if (typingAudioSource != null)
+                typingAudioSource.Stop();
+
             _isTyping = false;
         }
 
@@ -132,6 +166,7 @@ namespace GALATAMA.Cutscene
                 // First click: instantly complete current panel text.
                 if (_typewriterCoroutine != null) StopCoroutine(_typewriterCoroutine);
                 _isTyping = false;
+                if (typingAudioSource != null) typingAudioSource.Stop();
                 if (bodyText != null && panels != null && panels.Length > _currentIndex)
                     bodyText.text = panels[_currentIndex].body;
                 return;
@@ -165,6 +200,10 @@ namespace GALATAMA.Cutscene
             // Sembunyikan panel UI, tampilkan video canvas
             if (panelUI != null) panelUI.SetActive(false);
             if (videoCanvas != null) videoCanvas.SetActive(true);
+
+            // Fade out musik sebelum video dimulai
+            if (musicAudioSource != null && musicAudioSource.isPlaying)
+                yield return StartCoroutine(FadeOutMusic());
 
             // Fallback: tunggu hanya jika prepare belum selesai (seharusnya sudah selesai dari Start)
             if (!videoPlayer.isPrepared)
@@ -202,6 +241,22 @@ namespace GALATAMA.Cutscene
         {
             if (nextButton != null) nextButton.interactable = state;
             if (skipButton != null) skipButton.interactable = state;
+        }
+
+        private IEnumerator FadeOutMusic()
+        {
+            float startVolume = musicAudioSource.volume;
+            float elapsed = 0f;
+
+            while (elapsed < musicFadeOutDuration)
+            {
+                elapsed += Time.deltaTime;
+                musicAudioSource.volume = Mathf.Lerp(startVolume, 0f, elapsed / musicFadeOutDuration);
+                yield return null;
+            }
+
+            musicAudioSource.Stop();
+            musicAudioSource.volume = startVolume;
         }
 
         private IEnumerator Fade(float from, float to)

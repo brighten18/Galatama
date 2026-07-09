@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using GALATAMA.MainMenu;
 using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,8 +14,10 @@ namespace GALATAMA.Benchmarking
     {
         [Header("Run Info")]
         [SerializeField] private string scenarioName = "Route A";
-        [SerializeField] private string lodLabel = "ON";
-        [SerializeField] private int runIndex = 1;
+
+        [Header("LOD Verification")]
+        [SerializeField] private LodCaptureMode lodCaptureMode = LodCaptureMode.UseSavedSetting;
+        [SerializeField] private bool reapplyLodAtRunStart = true;
 
         [Header("Capture Timing")]
         [SerializeField] private bool startOnPlay = true;
@@ -46,6 +49,9 @@ namespace GALATAMA.Benchmarking
         private float elapsedCaptureTime;
         private float elapsedSinceLastSample;
         private string outputFolderPath;
+        private bool expectedLodEnabled;
+        private int lastAppliedLodGroupCount;
+        private DateTime runStartedAt;
 
         private struct SecondSample
         {
@@ -55,6 +61,16 @@ namespace GALATAMA.Benchmarking
             public double gpuMs;
             public long drawCalls;
             public double memoryMb;
+            public int matchingLodGroups;
+            public int totalLodGroups;
+            public bool lodVerified;
+        }
+
+        private enum LodCaptureMode
+        {
+            UseSavedSetting = 0,
+            ForceOn = 1,
+            ForceOff = 2
         }
 
         private void OnEnable()
@@ -119,6 +135,17 @@ namespace GALATAMA.Benchmarking
         {
             outputFolderPath = Path.Combine(Application.persistentDataPath, outputFolderName);
             Directory.CreateDirectory(outputFolderPath);
+            runStartedAt = DateTime.Now;
+
+            expectedLodEnabled = ResolveExpectedLodEnabled();
+            if (reapplyLodAtRunStart)
+            {
+                lastAppliedLodGroupCount = LodSettingsUtility.ApplyLodModeToAllGroups(expectedLodEnabled);
+            }
+            else
+            {
+                lastAppliedLodGroupCount = 0;
+            }
 
             if (autoPilot != null)
             {
@@ -180,6 +207,7 @@ namespace GALATAMA.Benchmarking
 
             long drawCalls = drawCallsAvailable ? drawCallsRecorder.LastValue : -1;
             double memoryMb = memoryAvailable ? memoryRecorder.LastValue / (1024.0 * 1024.0) : -1.0;
+            LodSettingsUtility.LodVerificationResult lodVerification = LodSettingsUtility.VerifyLodMode(expectedLodEnabled);
 
             frameSamples.Add(new SecondSample
             {
@@ -188,16 +216,19 @@ namespace GALATAMA.Benchmarking
                 cpuMs = cpuMs,
                 gpuMs = gpuMs,
                 drawCalls = drawCalls,
-                memoryMb = memoryMb
+                memoryMb = memoryMb,
+                matchingLodGroups = lodVerification.matchingGroups,
+                totalLodGroups = lodVerification.totalGroups,
+                lodVerified = lodVerification.isFullyApplied
             });
         }
 
         private void SaveResults()
         {
             BenchmarkSummary summary = BuildSummary();
-            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture);
+            string timestamp = runStartedAt.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture);
             string safeScenario = MakeSafeFileToken(scenarioName);
-            string safeLod = MakeSafeFileToken(lodLabel);
+            string safeLod = MakeSafeFileToken(GetExpectedLodLabel());
 
             string summaryFilePath = Path.Combine(outputFolderPath, "benchmark_summary.csv");
             WriteSummaryCsv(summaryFilePath, summary, appendToSummaryFile);
@@ -206,10 +237,9 @@ namespace GALATAMA.Benchmarking
             {
                 string frameFileName = string.Format(
                     CultureInfo.InvariantCulture,
-                    "{0}_{1}_run{2}_{3}_frames.csv",
+                    "{0}_{1}_{2}_frames.csv",
                     safeScenario,
                     safeLod,
-                    runIndex,
                     timestamp);
 
                 WritePerFrameCsv(Path.Combine(outputFolderPath, frameFileName));
@@ -218,6 +248,8 @@ namespace GALATAMA.Benchmarking
             logBuilder.Length = 0;
             logBuilder.AppendLine("[BenchmarkMetricsLogger] Benchmark selesai.");
             logBuilder.Append("Summary CSV: ").Append(summaryFilePath).AppendLine();
+            logBuilder.Append("Expected LOD: ").Append(summary.expectedLodLabel)
+                .Append(" | Verified: ").Append(summary.lodVerificationPassed ? "YES" : "NO").AppendLine();
             logBuilder.Append("Avg FPS: ").Append(summary.avgFps.ToString("F2", CultureInfo.InvariantCulture)).AppendLine();
             logBuilder.Append("Min FPS: ").Append(summary.minFps.ToString("F2", CultureInfo.InvariantCulture)).AppendLine();
             logBuilder.Append("Avg Draw Calls: ").Append(summary.avgDrawCalls.ToString("F0", CultureInfo.InvariantCulture)).AppendLine();
@@ -238,6 +270,9 @@ namespace GALATAMA.Benchmarking
             int gpuCount = 0;
             int drawCallCount = 0;
             int memoryCount = 0;
+            int verifiedSampleCount = 0;
+            int latestMatchingLodGroups = 0;
+            int latestTotalLodGroups = 0;
 
             for (int i = 0; i < frameSamples.Count; i++)
             {
@@ -267,16 +302,24 @@ namespace GALATAMA.Benchmarking
                     memorySum += sample.memoryMb;
                     memoryCount++;
                 }
+
+                if (sample.lodVerified)
+                {
+                    verifiedSampleCount++;
+                }
+
+                latestMatchingLodGroups = sample.matchingLodGroups;
+                latestTotalLodGroups = sample.totalLodGroups;
             }
 
             int totalFrames = frameSamples.Count;
             return new BenchmarkSummary
             {
                 capturedAt = DateTime.Now,
+                runStartedAt = runStartedAt,
                 sceneName = SceneManager.GetActiveScene().name,
                 scenarioName = scenarioName,
-                lodLabel = lodLabel,
-                runIndex = runIndex,
+                expectedLodLabel = GetExpectedLodLabel(),
                 sampleCount = totalFrames,
                 warmupSeconds = warmupSeconds,
                 captureSeconds = elapsedCaptureTime,
@@ -285,7 +328,11 @@ namespace GALATAMA.Benchmarking
                 avgCpuMs = totalFrames > 0 ? cpuSum / totalFrames : 0.0,
                 avgGpuMs = gpuCount > 0 ? gpuSum / gpuCount : -1.0,
                 avgDrawCalls = drawCallCount > 0 ? drawCallSum / drawCallCount : -1.0,
-                avgMemoryMb = memoryCount > 0 ? memorySum / memoryCount : -1.0
+                avgMemoryMb = memoryCount > 0 ? memorySum / memoryCount : -1.0,
+                totalLodGroups = latestTotalLodGroups,
+                matchingLodGroups = latestMatchingLodGroups,
+                lodVerificationPassed = totalFrames > 0 && verifiedSampleCount == totalFrames,
+                reapplyLodGroupCount = lastAppliedLodGroupCount
             };
         }
 
@@ -297,17 +344,17 @@ namespace GALATAMA.Benchmarking
             {
                 if (shouldWriteHeader)
                 {
-                    writer.WriteLine("Timestamp,Scene,Scenario,LOD,Run,SampleCount,WarmupSeconds,CaptureSeconds,AvgFPS,MinFPS,AvgDrawCalls,AvgGPUTimeMs,AvgCPUTimeMs,AvgMemoryMB");
+                    writer.WriteLine("Timestamp,RunStartedAt,Scene,Scenario,ExpectedLOD,SampleCount,WarmupSeconds,CaptureSeconds,AvgFPS,MinFPS,AvgDrawCalls,AvgGPUTimeMs,AvgCPUTimeMs,AvgMemoryMB,TotalLODGroups,MatchingLODGroups,LODVerified,ReappliedLODGroups");
                 }
 
                 writer.WriteLine(string.Format(
                     CultureInfo.InvariantCulture,
-                    "{0},{1},{2},{3},{4},{5},{6:F2},{7:F2},{8:F3},{9:F3},{10:F3},{11:F3},{12:F3},{13:F3}",
+                    "{0},{1},{2},{3},{4},{5},{6:F2},{7:F2},{8:F3},{9:F3},{10:F3},{11:F3},{12:F3},{13:F3},{14},{15},{16},{17}",
                     summary.capturedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                    summary.runStartedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
                     EscapeCsv(summary.sceneName),
                     EscapeCsv(summary.scenarioName),
-                    EscapeCsv(summary.lodLabel),
-                    summary.runIndex,
+                    EscapeCsv(summary.expectedLodLabel),
                     summary.sampleCount,
                     summary.warmupSeconds,
                     summary.captureSeconds,
@@ -316,7 +363,11 @@ namespace GALATAMA.Benchmarking
                     summary.avgDrawCalls,
                     summary.avgGpuMs,
                     summary.avgCpuMs,
-                    summary.avgMemoryMb));
+                    summary.avgMemoryMb,
+                    summary.totalLodGroups,
+                    summary.matchingLodGroups,
+                    summary.lodVerificationPassed ? "TRUE" : "FALSE",
+                    summary.reapplyLodGroupCount));
             }
         }
 
@@ -324,22 +375,44 @@ namespace GALATAMA.Benchmarking
         {
             using (StreamWriter writer = new StreamWriter(filePath, false, Encoding.UTF8))
             {
-                writer.WriteLine("SecondIndex,FPS,CPUTimeMs,GPUTimeMs,DrawCalls,MemoryMB");
+                writer.WriteLine("SecondIndex,FPS,CPUTimeMs,GPUTimeMs,DrawCalls,MemoryMB,ExpectedLOD,MatchingLODGroups,TotalLODGroups,LODVerified");
 
                 for (int i = 0; i < frameSamples.Count; i++)
                 {
                     SecondSample sample = frameSamples[i];
                     writer.WriteLine(string.Format(
                         CultureInfo.InvariantCulture,
-                        "{0},{1:F4},{2:F4},{3:F4},{4},{5:F4}",
+                        "{0},{1:F4},{2:F4},{3:F4},{4},{5:F4},{6},{7},{8},{9}",
                         sample.secondIndex,
                         sample.fps,
                         sample.cpuMs,
                         sample.gpuMs,
                         sample.drawCalls,
-                        sample.memoryMb));
+                        sample.memoryMb,
+                        GetExpectedLodLabel(),
+                        sample.matchingLodGroups,
+                        sample.totalLodGroups,
+                        sample.lodVerified ? "TRUE" : "FALSE"));
                 }
             }
+        }
+
+        private bool ResolveExpectedLodEnabled()
+        {
+            switch (lodCaptureMode)
+            {
+                case LodCaptureMode.ForceOn:
+                    return true;
+                case LodCaptureMode.ForceOff:
+                    return false;
+                default:
+                    return LodSettingsUtility.GetSavedLodEnabled();
+            }
+        }
+
+        private string GetExpectedLodLabel()
+        {
+            return expectedLodEnabled ? "ON" : "OFF";
         }
 
         private void InitializeRecorders()
@@ -420,10 +493,10 @@ namespace GALATAMA.Benchmarking
         private struct BenchmarkSummary
         {
             public DateTime capturedAt;
+            public DateTime runStartedAt;
             public string sceneName;
             public string scenarioName;
-            public string lodLabel;
-            public int runIndex;
+            public string expectedLodLabel;
             public int sampleCount;
             public float warmupSeconds;
             public float captureSeconds;
@@ -433,6 +506,10 @@ namespace GALATAMA.Benchmarking
             public double avgGpuMs;
             public double avgCpuMs;
             public double avgMemoryMb;
+            public int totalLodGroups;
+            public int matchingLodGroups;
+            public bool lodVerificationPassed;
+            public int reapplyLodGroupCount;
         }
     }
 }

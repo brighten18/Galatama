@@ -29,7 +29,6 @@ namespace GALATAMA.MainMenu
         private const string PrefQuality = "settings.quality";
         private const string PrefResolutionIndex = "settings.resolutionIndex";
         private const string PrefFullscreen = "settings.fullscreen";
-        private const string PrefLodEnabled = "settings.lodEnabled";
         private const string PrefMusicVolume = "settings.musicVolume";
         private const string PrefSfxVolume = "settings.sfxVolume";
 
@@ -149,7 +148,7 @@ namespace GALATAMA.MainMenu
 
         private void ApplyLodEnabled()
         {
-            bool enabled = PlayerPrefs.GetInt(PrefLodEnabled, 1) == 1;
+            bool enabled = LodSettingsUtility.GetSavedLodEnabled();
             int appliedCount = LodSettingsUtility.ApplyLodModeToAllGroups(enabled);
             
             lastAppliedLodEnabled = enabled;
@@ -237,7 +236,7 @@ namespace GALATAMA.MainMenu
             debugBuilder.Length = 0;
             debugBuilder.AppendLine("Runtime Settings Debug");
             debugBuilder.Append("LOD: ").Append(lastAppliedLodEnabled ? "ON" : "OFF")
-                .Append(" | LODGroup Applied: ").Append(lastAppliedLodGroupCount).AppendLine();
+                .Append(" | LOD Targets Applied: ").Append(lastAppliedLodGroupCount).AppendLine();
             debugBuilder.Append("Quality: ").Append(qualityName)
                 .Append(" (index ").Append(lastAppliedQualityIndex).Append(')').AppendLine();
             debugBuilder.Append("Resolution: ").Append(lastAppliedWidth).Append("x").Append(lastAppliedHeight)

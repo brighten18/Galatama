@@ -303,7 +303,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1925873226565265906}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e4a55d3f36778047b54c8a53a383e1e, type: 3}
   m_Name: 
@@ -366,14 +366,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1925873226565265906}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 072cbff61a40d7b4c9a050c929fb4e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GALATAMA.Benchmarking.BenchmarkMetricsLogger
   scenarioName: Route A
-  lodLabel: ON
-  runIndex: 1
+  lodCaptureMode: 0
+  reapplyLodAtRunStart: 1
   startOnPlay: 1
   warmupSeconds: 5
   captureSeconds: 210

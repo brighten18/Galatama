@@ -73,7 +73,6 @@ public class PlayerInputManager : MonoBehaviour
 
         _input.Interact = false;
         _input.InteractOBJ = false;
-        _input.CursorCall = false;
 
         if (_interactionBlocked)
         {

@@ -821,7 +821,11 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
             if (_input == null || !_input.CursorCall) return;
             _input.CursorCall = false;
-            if (_cameraLookLocked) return; // Jangan izinkan toggle saat kamera dikunci eksternal
+
+            bool monologuePlaying = MonologueManager.Instance != null && MonologueManager.Instance.IsPlaying;
+            if (_cameraLookLocked && !monologuePlaying) return; // Jangan izinkan toggle saat kamera dikunci eksternal
+            if (monologuePlaying)
+                _cursorVisible = Cursor.visible;
 
             _cursorVisible = !_cursorVisible;
             Cursor.visible = _cursorVisible;
@@ -833,7 +837,7 @@ namespace StarterAssets
             if (!_cursorVisible)
                 _rightClickHeld = false;
 
-            _input.cursorInputForLook = !_cursorVisible;
+            _input.cursorInputForLook = !monologuePlaying && !_cursorVisible;
 #endif
         }
 

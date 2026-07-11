@@ -210,15 +210,15 @@ public class RasWaterSimulator : MonoBehaviour
     private void TickDOFromAmmonia(float dt, int livingFishCount)
     {
         float measuredAmmonia = water.ammonia;
-        if (livingFishCount <= 0) return;
+        int oxygenDemandLoad = Mathf.Max(1, livingFishCount);
 
         if (measuredAmmonia > NH3_DANGER_MAX)
         {
-            water.oxygen -= DO_LOSS_NH3_CRITICAL_PER_FISH_PER_SECOND * livingFishCount * dt;
+            water.oxygen -= DO_LOSS_NH3_CRITICAL_PER_FISH_PER_SECOND * oxygenDemandLoad * dt;
         }
         else if (measuredAmmonia > NH3_SAFE_MAX)
         {
-            water.oxygen -= DO_LOSS_NH3_DANGER_PER_FISH_PER_SECOND * livingFishCount * dt;
+            water.oxygen -= DO_LOSS_NH3_DANGER_PER_FISH_PER_SECOND * oxygenDemandLoad * dt;
         }
     }
 }

@@ -746,7 +746,11 @@ public class AquariumSystem : MonoBehaviour
     {
         if (IsRewardLocked) return false;
         float before = waterQuality.oxygen;
-        waterQuality.oxygen = Mathf.Clamp(waterQuality.oxygen + amount, 0f, targetOxygen);
+        float maxOxygen = GetMaxOxygenLimit();
+        float currentOxygen = Mathf.Max(0f, waterQuality.oxygen);
+        waterQuality.oxygen = currentOxygen >= maxOxygen
+            ? currentOxygen
+            : Mathf.Min(maxOxygen, currentOxygen + Mathf.Max(0f, amount));
         CommitWaterQualityChange();
         Debug.Log($"[RAS][{name}] O2: {before:0.00} â†’ {waterQuality.oxygen:0.00} (+{amount:0.00})");
         return true;
@@ -756,6 +760,15 @@ public class AquariumSystem : MonoBehaviour
     {
         machineAeratorControlActive = oxygenIncreasePerTick > 0f;
         machineAeratorIncreasePerTick = Mathf.Max(0f, oxygenIncreasePerTick);
+    }
+
+    private float GetMaxOxygenLimit()
+    {
+        float maxOxygen = targetOxygen;
+        if (oxygenThresholds != null)
+            maxOxygen = Mathf.Max(maxOxygen, oxygenThresholds.batasAmanMaksimum);
+
+        return Mathf.Max(0f, maxOxygen);
     }
 
     public void ConfigureMachineTemperature(AquariumEquipmentRole machineRole, float targetTemperature, float changePerTick)
@@ -931,7 +944,7 @@ public class AquariumSystem : MonoBehaviour
         if (IsRewardLocked) return;
         intensity = Mathf.Clamp01(intensity);
         waterQuality.ammonia *= Mathf.Lerp(1f, waterChangeAmmoniaMultiplier, intensity);
-        waterQuality.oxygen = Mathf.Min(targetOxygen, waterQuality.oxygen + waterChangeOxygenRecovery * intensity);
+        waterQuality.oxygen = Mathf.Min(GetMaxOxygenLimit(), waterQuality.oxygen + waterChangeOxygenRecovery * intensity);
         waterQuality.salinity = Mathf.Lerp(waterQuality.salinity, targetSalinity, intensity * 0.35f);
         CommitWaterQualityChange();
     }
@@ -1245,9 +1258,10 @@ public class AquariumSystem : MonoBehaviour
             return;
 
         bool oxygenHandledByMachine = false;
-        if (machineAeratorControlActive && machineAeratorIncreasePerTick > 0f && waterQuality.oxygen < targetOxygen)
+        float maxOxygen = GetMaxOxygenLimit();
+        if (machineAeratorControlActive && machineAeratorIncreasePerTick > 0f && waterQuality.oxygen < maxOxygen)
         {
-            float oxygenDelta = Mathf.Min(machineAeratorIncreasePerTick, targetOxygen - waterQuality.oxygen);
+            float oxygenDelta = Mathf.Min(machineAeratorIncreasePerTick, maxOxygen - waterQuality.oxygen);
             waterQuality.oxygen += oxygenDelta;
             oxygenHandledByMachine = true;
         }
@@ -1287,11 +1301,11 @@ public class AquariumSystem : MonoBehaviour
 
             if (!oxygenHandledByMachine &&
                 equipment.oxygenIncreasePerTick > 0f &&
-                waterQuality.oxygen < targetOxygen)
+                waterQuality.oxygen < maxOxygen)
             {
                 float oxygenDelta = Mathf.Min(
                     equipment.oxygenIncreasePerTick,
-                    targetOxygen - waterQuality.oxygen);
+                    maxOxygen - waterQuality.oxygen);
                 waterQuality.oxygen += oxygenDelta;
             }
 

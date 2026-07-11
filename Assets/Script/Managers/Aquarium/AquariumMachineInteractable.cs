@@ -203,7 +203,6 @@ public class AquariumMachineInteractable : InteractableObject, IInteractCooldown
             case AquariumEquipmentRole.Aerator:
             {
                 float before = wq.oxygen;
-                target.ConfigureMachineAerator(oxygenIncrease);
                 bool ok = target.IncreaseOxygen(oxygenIncrease);
                 Debug.Log($"[RAS][Aerator] O2: {before:0.00} â†’ {wq.oxygen:0.00} (+" + oxygenIncrease + $") | Aquarium: {target.name}");
                 return ok;

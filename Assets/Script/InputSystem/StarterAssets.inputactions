@@ -131,6 +131,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CursorCall",
+                    "type": "Button",
+                    "id": "a0ed7a24-b8f9-4679-9909-1727ec04a0ec",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -367,6 +376,17 @@
                 },
                 {
                     "name": "",
+                    "id": "7a469bfa-217b-4aa7-8c58-988e9abb9606",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "4acfcb64-b971-43f1-9383-ce467caef9d2",
                     "path": "<Gamepad>/buttonWest",
                     "interactions": "",
@@ -461,6 +481,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b6d93652-4018-49a5-a343-06443c6a59e8",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CursorCall",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d236e1a9-c202-46f7-99df-2bb04f94c285",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CursorCall",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

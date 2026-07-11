@@ -22,6 +22,7 @@ namespace StarterAssets
 		public bool QuickSlot5;
 		public bool QuickSlot6;
 		public bool Pause;
+		public bool CursorCall;
 	
 
 		[Header("Movement Settings")]
@@ -78,6 +79,11 @@ namespace StarterAssets
 		public void OnPause(InputValue value)
 		{
 			Pause = value.isPressed;
+		}
+
+		public void OnCursorCall(InputValue value)
+		{
+			CursorCallInput(value.isPressed);
 		}
 
 		// Quick Slot Input Handlers!!!!!!!
@@ -170,6 +176,11 @@ namespace StarterAssets
 		public void PauseInput(bool newPauseState)
 		{
 			Pause = newPauseState;
+		}
+
+		public void CursorCallInput(bool newCursorCallState)
+		{
+			CursorCall = newCursorCallState;
 		}
 
 		// Quick Slot Input Handlers!!!!!!!

@@ -18,6 +18,7 @@ public class PlayerInputManager : MonoBehaviour
     public bool Inventory => _input != null && _input.Inventory;
     public bool InteractOBJ => _input != null && _input.InteractOBJ;
     public bool Pause => _input != null && _input.Pause;
+    public bool CursorCall => _input != null && _input.CursorCall;
 
     // Quick Slot Inputs
     public bool QuickSlot1 => _input != null && _input.QuickSlot1;
@@ -72,6 +73,7 @@ public class PlayerInputManager : MonoBehaviour
 
         _input.Interact = false;
         _input.InteractOBJ = false;
+        _input.CursorCall = false;
 
         if (_interactionBlocked)
         {

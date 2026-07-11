@@ -812,15 +812,15 @@ namespace StarterAssets
         }
 
         /// <summary>
-        /// Memantau tombol Ctrl untuk toggle visibilitas kursor:
-        /// - Ctrl ditekan       : tampilkan cursor (None), nonaktifkan rotasi kamera bebas.
-        /// - Ctrl ditekan lagi  : sembunyikan cursor (Confined), aktifkan kembali rotasi kamera bebas.
+        /// Memantau action CursorCall untuk toggle visibilitas kursor:
+        /// - CursorCall ditekan       : tampilkan cursor (None), nonaktifkan rotasi kamera bebas.
+        /// - CursorCall ditekan lagi  : sembunyikan cursor (Confined), aktifkan kembali rotasi kamera bebas.
         /// </summary>
         private void HandleCtrlCameraMode()
         {
 #if ENABLE_INPUT_SYSTEM
-            if (Keyboard.current == null) return;
-            if (!Keyboard.current.ctrlKey.wasPressedThisFrame) return;
+            if (_input == null || !_input.CursorCall) return;
+            _input.CursorCall = false;
             if (_cameraLookLocked) return; // Jangan izinkan toggle saat kamera dikunci eksternal
 
             _cursorVisible = !_cursorVisible;

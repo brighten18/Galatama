@@ -147886,6 +147886,10 @@ PrefabInstance:
       value: PlayerCapsule
       objectReference: {fileID: 0}
     - target: {fileID: 5170739811698593075, guid: 2553cec8fdb3eb643bbe9f2ec880c472, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5170739811698593075, guid: 2553cec8fdb3eb643bbe9f2ec880c472, type: 3}
       propertyPath: waypointRoot
       value: 
       objectReference: {fileID: 2024592666}
@@ -148053,6 +148057,10 @@ PrefabInstance:
       propertyPath: 'cameraLookTargets.Array.data[19]'
       value: 
       objectReference: {fileID: 761561552}
+    - target: {fileID: 7233018160125719489, guid: 2553cec8fdb3eb643bbe9f2ec880c472, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -155275,6 +155283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GALATAMA.Debugging.LodSceneDebugReporter
   logOnStart: 1
+  logDelaySeconds: 15
 --- !u!1 &2024633508
 GameObject:
   m_ObjectHideFlags: 0

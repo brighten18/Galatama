@@ -220,7 +220,6 @@ public class AquariumMachineInteractable : InteractableObject, IInteractCooldown
             case AquariumEquipmentRole.Heater:
             {
                 float before = wq.temperature;
-                target.ConfigureMachineTemperature(AquariumEquipmentRole.Heater, targetTemperature, temperatureChangePerUse);
                 bool ok = target.ChangeTemperature(targetTemperature, temperatureChangePerUse);
                 Debug.Log($"[RAS][Heater] Suhu: {before:0.0} â†’ {wq.temperature:0.0} (target={targetTemperature}, step={temperatureChangePerUse}) | Aquarium: {target.name}");
                 return ok;
@@ -229,7 +228,6 @@ public class AquariumMachineInteractable : InteractableObject, IInteractCooldown
             case AquariumEquipmentRole.Chiller:
             {
                 float before = wq.temperature;
-                target.ConfigureMachineTemperature(AquariumEquipmentRole.Chiller, targetTemperature, temperatureChangePerUse);
                 bool ok = target.ChangeTemperature(targetTemperature, temperatureChangePerUse);
                 Debug.Log($"[RAS][Chiller] Suhu: {before:0.0} â†’ {wq.temperature:0.0} (target={targetTemperature}, step={temperatureChangePerUse}) | Aquarium: {target.name}");
                 return ok;

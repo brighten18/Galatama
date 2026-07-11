@@ -27,8 +27,9 @@ public class RasWaterSimulator : MonoBehaviour
     private const float DO_DANGER_THRESHOLD = 5f;
     private const float DO_CRITICAL_THRESHOLD = 4f;
 
-    private const float NH3_PER_FISH_PER_SECOND = 0.001f;
+    private const float NH3_PER_FISH_PER_SECOND = 0.0001f;
     private const float NH3_DEAD_FISH_PER_MIN = 0.05f;
+    private const float NH3_PER_FED_PELLET = 0.002f;
 
     private const float DO_LOSS_SAL_HIGH_PER_SECOND = 0.002f;
     private const float DO_LOSS_TEMP_PER_DEG_PER_SECOND = 0.5f;
@@ -42,6 +43,7 @@ public class RasWaterSimulator : MonoBehaviour
     private const float PH_RISE_CRITICAL_TEMP_PER_SECOND = 0.004f;
 
     private const float FOOD_LOAD_DECAY_PER_SEC = 1f / 120f;
+    private const float FOOD_NH3_PER_UNIT_PER_SEC = 0.0005f;
     private const float FOOD_PH_DROP_PER_UNIT_PER_SEC = 0.00004f;
 
     private const float FEED_EFFICIENCY_LOW = 0.40f;
@@ -77,11 +79,21 @@ public class RasWaterSimulator : MonoBehaviour
         foodLoad = Mathf.Max(0f, foodLoad - amount);
     }
 
-    public void RegisterFedFish() { }
+    public void RegisterFedFish(float consumedFoodUnits = 1f)
+    {
+        fishAmmoniaProductionActive = true;
+        AddAmmonia(NH3_PER_FED_PELLET * Mathf.Max(0f, consumedFoodUnits));
+    }
 
     public void StartFishAmmoniaProduction() => fishAmmoniaProductionActive = true;
 
     public void StopFishAmmoniaProduction() => fishAmmoniaProductionActive = false;
+
+    public void StopAmmoniaProduction()
+    {
+        fishAmmoniaProductionActive = false;
+        foodLoad = 0f;
+    }
 
     public void AddAmmonia(float amount)
     {
@@ -190,6 +202,7 @@ public class RasWaterSimulator : MonoBehaviour
     {
         if (foodLoad <= 0f) return;
 
+        water.ammonia += FOOD_NH3_PER_UNIT_PER_SEC * foodLoad * dt;
         water.ph -= FOOD_PH_DROP_PER_UNIT_PER_SEC * foodLoad * dt;
         foodLoad = Mathf.Max(0f, foodLoad - FOOD_LOAD_DECAY_PER_SEC * foodLoad * dt);
     }

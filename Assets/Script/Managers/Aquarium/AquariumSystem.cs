@@ -726,6 +726,7 @@ public class AquariumSystem : MonoBehaviour
         if (IsRewardLocked) return false;
         float before = waterQuality.ammonia;
         waterQuality.ammonia = Mathf.Max(0f, targetAmmonia);
+        rasSimulator?.StopAmmoniaProduction();
         CommitWaterQualityChange();
         Debug.Log($"[RAS][{name}] NH3: {before:0.00} â†’ {waterQuality.ammonia:0.00}");
         return true;
@@ -745,7 +746,7 @@ public class AquariumSystem : MonoBehaviour
     {
         if (IsRewardLocked) return false;
         float before = waterQuality.oxygen;
-        waterQuality.oxygen = Mathf.Max(0f, waterQuality.oxygen + amount);
+        waterQuality.oxygen = Mathf.Clamp(waterQuality.oxygen + amount, 0f, targetOxygen);
         CommitWaterQualityChange();
         Debug.Log($"[RAS][{name}] O2: {before:0.00} â†’ {waterQuality.oxygen:0.00} (+{amount:0.00})");
         return true;
